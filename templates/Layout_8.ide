@@ -1,0 +1,113 @@
+[GENERAL]
+project = "Layout8"
+icon = Layout8.png
+description = "Layout 8 - Two docking windows at the bottom and two at the top"
+type = qt
+style = dark
+
+[WINDOWS]
+window[0] = MAIN
+window[1] = DOCK1
+window[2] = DOCK2
+window[3] = DOCK3
+window[4] = DOCK4
+window[5] = DOCK5
+window[6] = DOCK6
+
+
+################################################################
+[MAIN]
+title = "Layout 8"
+display_title = true
+order = 0
+use_action_quit = false
+use_action_exit = false
+use_action_about = false
+use_action_reset_windows = false
+transformation_widget = false
+ogre_control = true
+ogre_control_visuals = false
+
+################################################################
+[DOCK1]
+title = "Dock1"
+display_title = true
+order = 1
+use_action_quit = false
+use_action_exit = false
+use_action_about = false
+use_action_reset_windows = false
+transformation_widget = false
+area = left
+ogre_control = true
+ogre_control_visuals = false
+
+################################################################
+[DOCK2]
+title = "Dock2"
+display_title = true
+order = 2
+use_action_quit = false
+use_action_exit = false
+use_action_about = false
+use_action_reset_windows = false
+transformation_widget = false
+area = center
+ogre_control = true
+ogre_control_visuals = false
+
+################################################################
+[DOCK3]
+title = "Dock3"
+display_title = true
+order = 3
+use_action_quit = false
+use_action_exit = false
+use_action_about = false
+use_action_reset_windows = false
+transformation_widget = false
+area = bottom
+ogre_control = true
+ogre_control_visuals = false
+
+################################################################
+[DOCK4]
+title = "Dock4"
+display_title = true
+order = 4
+use_action_quit = false
+use_action_exit = false
+use_action_about = false
+use_action_reset_windows = false
+transformation_widget = false
+area = bottom
+ogre_control = true
+ogre_control_visuals = false
+
+################################################################
+[DOCK5]
+title = "Dock5"
+display_title = true
+order = 5
+use_action_quit = false
+use_action_exit = false
+use_action_about = false
+use_action_reset_windows = false
+transformation_widget = false
+area = top
+ogre_control = false
+ogre_control_visuals = false
+
+################################################################
+[DOCK6]
+title = "Dock6"
+display_title = true
+order = 6
+use_action_quit = false
+use_action_exit = false
+use_action_about = false
+use_action_reset_windows = false
+transformation_widget = false
+area = top
+ogre_control = false
+ogre_control_visuals = false

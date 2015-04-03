@@ -1,0 +1,65 @@
+[GENERAL]
+
+# Project name
+project = "Layout2"
+
+# Properties for displaying in the Magus selection dialog
+icon = Layout2.png
+description = "Layout 2 - Main window with plain menu and 2 dockable widgets"
+
+# Determine the type of gui; each gui (qt, wxwidgets, wpf, ...) will get its own builder class in the Magus application to generate the project files
+type = qt
+
+# Define the style of the gui (default, dark_grey, ...)
+style = dark
+
+# List the windows of the template; each window has its own group in the .ide file
+[WINDOWS]
+window[0] = MAIN
+window[1] = DOCK1
+window[2] = DOCK2
+
+################################################################
+# Define the main window
+################################################################
+[MAIN]
+# Title of this window; this is the caption (must be unique within a .ide file)
+title = "Layout 2"
+
+# Identifies the window order in the layout; order = 0 is always the main window
+order = 0
+
+# Define the groupname of the menu; this has its own group
+menu_group = MAIN.MENU
+
+# Use a default action and associate it with the 'Quit' subitem
+use_action_quit = true
+
+# Define the main items of the menu; each entry has its own group.
+[MAIN.MENU]
+menu[0] = MAIN.MENU.EXIT
+
+# Define the 'EXIT' item of the menu
+[MAIN.MENU.EXIT]
+item = Exit
+
+# Define the subitems in the 'EXIT' menu item
+subitem[0] = Quit
+
+################################################################
+# Define dock window 1
+################################################################
+[DOCK1]
+title = Dock1
+order = 1
+
+# Defines the location on the screen
+area = left
+
+################################################################
+# Define dock window 2
+################################################################
+[DOCK2]
+title = Dock2
+order = 2
+area = center

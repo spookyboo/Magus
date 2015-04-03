@@ -1,0 +1,24 @@
+[GENERAL]
+project = "Ogre3d"
+icon = Ogre3d.png
+description = "Mainwindow with Ogre3d widget"
+type = qt
+style = dark
+
+[WINDOWS]
+window[0] = MAIN
+
+
+################################################################
+[MAIN]
+title = "Ogre3d"
+display_title = true
+order = 0
+use_action_quit = false
+use_action_exit = false
+use_action_about = false
+use_action_reset_windows = false
+transformation_widget = false
+ogre_control = true
+ogre_target = 0
+ogre_control_visuals = false

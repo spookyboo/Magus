@@ -1,0 +1,23 @@
+QT += widgets
+
+${ogre_root}
+
+HEADERS       = \
+    ${project.header}constants.h \
+    ${project.header}mainwindow.h \
+${project.additionalheader}
+
+SOURCES       = \
+    ${project.src}main.cpp \
+    ${project.src}mainwindow.cpp \
+${project.additionalsrc}
+
+INCLUDEPATH += "../${project.project}/${project.header}"
+${include_ogre}
+
+${lib_ogre}
+
+Release:DESTDIR = ../${project.project}/bin
+Debug:DESTDIR = ../${project.project}/bin
+target.path = $$[QTDIR]/
+INSTALLS += target

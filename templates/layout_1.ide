@@ -1,0 +1,28 @@
+[GENERAL]
+
+# Project name
+project = "Layout1"
+
+# Properties for displaying in the Magus selection dialog
+icon = Layout1.png
+description = "Layout 1 - Main window without menu or dockable widgets"
+
+# Determine the type of gui; each gui (qt, wxwidgets, wpf, ...) will get its own builder class in the Magus application to generate the project files
+type = qt
+
+# Define the style of the gui (default, dark_grey, ...)
+style = dark
+
+# List the windows of the template; each window has its own group in the .ide file
+[WINDOWS]
+window[0] = MAIN
+
+################################################################
+# Define the main window
+################################################################
+[MAIN]
+# Title of this window; this is the caption
+title = "Layout 1"
+
+# Identifies the window order in the layout; order = 0 is always the main window
+order = 0

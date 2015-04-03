@@ -1,0 +1,95 @@
+[GENERAL]
+
+project = "Layout4"
+icon = Layout4.png
+description = "Layout 4 - Main window with several dockable widgets and menu in a dockwidget"
+type = qt
+style = dark
+
+[WINDOWS]
+window[0] = MAIN
+window[1] = DOCK1
+window[2] = DOCK2
+window[3] = DOCK3
+window[4] = DOCK4
+window[5] = DOCK5
+window[6] = DOCK6
+
+################################################################
+[MAIN]
+title = "Layout 4"
+order = 0
+menu_group = MAIN.MENU
+use_action_quit = true
+use_action_about = true
+use_action_reset_windows = true
+
+[MAIN.MENU]
+menu[0] = MAIN.MENU.FILE
+menu[1] = MAIN.MENU.WINDOW
+menu[2] = MAIN.MENU.HELP
+
+[MAIN.MENU.FILE]
+item = &File
+subitem[0] = New
+subitem[1] = Open
+subitem[2] = Save
+subitem[3] = Quit
+
+[MAIN.MENU.WINDOW]
+item = Window
+subitem[0] = "Reset Window Layout"
+
+[MAIN.MENU.HELP]
+item = &Help
+subitem[0] = "Info"
+subitem[1] = About
+
+################################################################
+[DOCK1]
+title = Dock1
+order = 1
+area = left
+
+################################################################
+[DOCK2]
+title = Dock2
+order = 2
+area = left
+
+################################################################
+[DOCK3]
+title = Dock3
+order = 3
+area = top
+
+################################################################
+[DOCK4]
+title = Dock4
+order = 4
+area = center
+
+################################################################
+[DOCK5]
+title = Dock5
+order = 5
+area = right
+
+################################################################
+[DOCK6]
+title = Dock6
+order = 6
+area = right
+menu_group = DOCK6.MENU
+use_action_exit = true
+
+[DOCK6.MENU]
+menu[0] = DOCK6.MENU.TYPE
+
+[DOCK6.MENU.TYPE]
+item = Type
+subitem[0] = Type1
+subitem[1] = Type2
+subitem[2] = Type3
+subitem[3] = Type4
+subitem[4] = Exit

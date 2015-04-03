@@ -1,0 +1,81 @@
+[GENERAL]
+
+# Project name
+project = "Layout3"
+
+# Properties for displaying in the Magus selection dialog
+icon = Layout3.png
+description = "Layout 3 - Main window with plain menu and 3 dockable widgets"
+
+# Determine the type of gui; each gui (qt, wxwidgets, wpf, ...) will get its own builder class in the Magus application to generate the project files
+type = qt
+
+# Define the style of the gui (default, dark_grey, ...)
+style = dark
+
+# List the windows of the template; each window has its own group in the .ide file
+[WINDOWS]
+window[0] = MAIN
+window[1] = DOCK1
+window[2] = DOCK2
+window[3] = DOCK3
+
+################################################################
+# Define the main window
+################################################################
+[MAIN]
+# Title of this window; this is the caption (must be unique within a .ide file)
+title = "Layout 3"
+
+# Identifies the window order in the layout; order = 0 is always the main window
+order = 0
+
+# Define the groupname of the menu; this has its own group
+menu_group = MAIN.MENU
+
+# Define the main items of the menu; each entry has its own group.
+[MAIN.MENU]
+menu[0] = MAIN.MENU.FILE
+menu[1] = MAIN.MENU.HELP
+
+# Define the 'FILE' item of the menu
+[MAIN.MENU.FILE]
+item = &File
+
+# Define the subitems in the 'FILE' menu item
+subitem[0] = New
+subitem[1] = Open
+subitem[2] = Save
+subitem[3] = Quit
+
+# Define the 'HELP' item of the menu
+[MAIN.MENU.HELP]
+item = &Help
+subitem[0] = "Info"
+subitem[1] = About
+
+################################################################
+# Define dock window 1
+################################################################
+[DOCK1]
+title = Dock1
+order = 1
+
+# Defines the location on the screen
+area = left
+
+################################################################
+# Define dock window 2
+################################################################
+[DOCK2]
+title = Dock2
+order = 2
+area = right
+
+################################################################
+# Define dock window 3
+################################################################
+[DOCK3]
+title = Dock3
+order = 3
+area = right

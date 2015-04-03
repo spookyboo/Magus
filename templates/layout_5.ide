@@ -1,0 +1,73 @@
+[GENERAL]
+
+project = "Layout5"
+icon = Layout5.png
+description = "Layout 5 - Main window with menu, three dockable widgets with tabs"
+type = qt
+style = dark
+
+[WINDOWS]
+window[0] = MAIN
+window[1] = DOCK1
+window[2] = DOCK2
+window[3] = DOCK3
+
+################################################################
+[MAIN]
+title = "Layout 5"
+order = 0
+menu_group = MAIN.MENU
+use_action_quit = true
+use_action_reset_windows = true
+
+[MAIN.MENU]
+menu[0] = MAIN.MENU.FILE
+menu[1] = MAIN.MENU.WINDOW
+
+[MAIN.MENU.FILE]
+item = &File
+subitem[0] = New
+subitem[1] = Open
+subitem[2] = Save
+subitem[3] = Quit
+
+[MAIN.MENU.WINDOW]
+item = Window
+subitem[0] = "Reset Window Layout"
+
+################################################################
+[DOCK1]
+title = Dock1
+order = 1
+area = left
+tab_group = DOCK1.TAB
+
+[DOCK1.TAB]
+tab[0] = DOCK1.TAB.EXPLORER
+tab[1] = DOCK1.TAB.VIEW
+tab[2] = DOCK1.TAB.PROPERTIES
+
+[DOCK1.TAB.EXPLORER]
+name = "Solution Explorer"
+icon = explorer.png
+
+[DOCK1.TAB.VIEW]
+name = View
+icon = view.png
+
+[DOCK1.TAB.PROPERTIES]
+name = Properties
+icon = properties.png
+
+################################################################
+[DOCK2]
+title = Dock2
+order = 2
+area = left
+
+################################################################
+[DOCK3]
+title = Dock3
+order = 3
+area = center
+
