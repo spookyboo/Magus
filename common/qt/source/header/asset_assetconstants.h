@@ -36,6 +36,23 @@ namespace Magus
     static const int DEFAULT_ICON_DIMENSION = 32;
     static const int CONTAINER_HEADER_HEIGHT = 16;
     static const int CONTAINER_DEFAULT_ICON_DIMENSION = 16;
+
+    // Util function to determine whether a file is of type 'image, based on the file extenstion
+    static bool isImageBasedOnExtension(const QString& fileName)
+    {
+        int lastPoint = fileName.lastIndexOf(".");
+        if (lastPoint > 0)
+        {
+            QString ext[] = {"bmp", "ico", "jpg", "jif", "jpeg", "jpe", "jng", "koa", "iff", "lbm", "mng", "pbm", "pbm", "pcd", "pcx", "pgm", "pgm", "png", "ppm", "ppm", "ras", "tga", "targa", "tif", "tiff", "wap", "wbmp", "wbm", "psd", "cut", "xbm", "xpm", "gif", "hdr", "g3", "sgi", "exr", "j2k", "j2c", "jp2", "pfm", "pct", "pict", "pic", "dds"};
+            QString extension = fileName.right(fileName.length() - lastPoint - 1);
+            extension.toLower();
+            for (int i = 0; i < 45; ++i)
+                if (extension == ext[i])
+                    return true;
+        }
+
+        return false;
+    };
 }
 
 #endif

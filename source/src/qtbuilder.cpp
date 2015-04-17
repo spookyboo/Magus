@@ -677,9 +677,6 @@ QString QtBuilder::createAssetHeaderForPro(const QString& additionalHeader)
     fileUtil.copy(mQtHeader + FILE_ASSET_PROPERTY_TEXTURE_H, mFullOutputHeaderDir + FILE_ASSET_PROPERTY_TEXTURE_H);
     fileUtil.copy(mQtHeader + FILE_ASSET_PROPERTY_CURVE_H, mFullOutputHeaderDir + FILE_ASSET_PROPERTY_CURVE_H);
     fileUtil.copy(mQtHeader + FILE_ASSET_PROPERTY_QUATERNION_H, mFullOutputHeaderDir + FILE_ASSET_PROPERTY_QUATERNION_H);
-    fileUtil.copy(mQtHeader + FILE_ASSET_TEXTURE_DIALOG_H, mFullOutputHeaderDir + FILE_ASSET_TEXTURE_DIALOG_H);
-    fileUtil.copy(mQtHeader + FILE_ASSET_TEXTURE_DIALOG_MODEL_H, mFullOutputHeaderDir + FILE_ASSET_TEXTURE_DIALOG_MODEL_H);
-    fileUtil.copy(mQtHeader + FILE_ASSET_DIR_TREE_H, mFullOutputHeaderDir + FILE_ASSET_DIR_TREE_H);
     fileUtil.copy(mQtHeader + FILE_ASSET_CURVE_GRID_H, mFullOutputHeaderDir + FILE_ASSET_CURVE_GRID_H);
     fileUtil.copy(mQtHeader + FILE_ASSET_CURVE_DIALOG_H, mFullOutputHeaderDir + FILE_ASSET_CURVE_DIALOG_H);
 
@@ -794,24 +791,6 @@ QString QtBuilder::createAssetHeaderForPro(const QString& additionalHeader)
     str = str +
         TAB +
         mOutputHeaderDir +
-        FILE_ASSET_TEXTURE_DIALOG_H +
-        QString(" \\ ") +
-        QString("\n");
-    str = str +
-        TAB +
-        mOutputHeaderDir +
-        FILE_ASSET_TEXTURE_DIALOG_MODEL_H +
-        QString(" \\ ") +
-        QString("\n");
-    str = str +
-        TAB +
-        mOutputHeaderDir +
-        FILE_ASSET_DIR_TREE_H +
-        QString(" \\ ") +
-        QString("\n");
-    str = str +
-        TAB +
-        mOutputHeaderDir +
         FILE_ASSET_PROPERTY_CURVE_H +
         QString(" \\ ") +
         QString("\n");
@@ -858,9 +837,6 @@ QString QtBuilder::createAssetSrcForPro(const QString& additionalSrc)
     fileUtil.copy(mQtSrc + FILE_ASSET_PROPERTY_TEXTURE_CPP, mFullOutputSrcDir + FILE_ASSET_PROPERTY_TEXTURE_CPP);
     fileUtil.copy(mQtSrc + FILE_ASSET_PROPERTY_CURVE_CPP, mFullOutputSrcDir + FILE_ASSET_PROPERTY_CURVE_CPP);
     fileUtil.copy(mQtSrc + FILE_ASSET_PROPERTY_QUATERNION_CPP, mFullOutputSrcDir + FILE_ASSET_PROPERTY_QUATERNION_CPP);
-    fileUtil.copy(mQtSrc + FILE_ASSET_TEXTURE_DIALOG_CPP, mFullOutputSrcDir + FILE_ASSET_TEXTURE_DIALOG_CPP);
-    fileUtil.copy(mQtSrc + FILE_ASSET_TEXTURE_DIALOG_MODEL_CPP, mFullOutputSrcDir + FILE_ASSET_TEXTURE_DIALOG_MODEL_CPP);
-    fileUtil.copy(mQtSrc + FILE_ASSET_DIR_TREE_CPP, mFullOutputSrcDir + FILE_ASSET_DIR_TREE_CPP);
     fileUtil.copy(mQtSrc + FILE_ASSET_CURVE_GRID_CPP, mFullOutputSrcDir + FILE_ASSET_CURVE_GRID_CPP);
     fileUtil.copy(mQtSrc + FILE_ASSET_CURVE_DIALOG_CPP, mFullOutputSrcDir + FILE_ASSET_CURVE_DIALOG_CPP);
 
@@ -930,24 +906,6 @@ QString QtBuilder::createAssetSrcForPro(const QString& additionalSrc)
         TAB +
         mOutputSrcDir +
         FILE_ASSET_PROPERTY_TEXTURE_CPP +
-        QString(" \\ ") +
-        QString("\n");
-    str = str +
-        TAB +
-        mOutputSrcDir +
-        FILE_ASSET_TEXTURE_DIALOG_CPP +
-        QString(" \\ ") +
-        QString("\n");
-    str = str +
-        TAB +
-        mOutputSrcDir +
-        FILE_ASSET_TEXTURE_DIALOG_MODEL_CPP +
-        QString(" \\ ") +
-        QString("\n");
-    str = str +
-        TAB +
-        mOutputSrcDir +
-        FILE_ASSET_DIR_TREE_CPP +
         QString(" \\ ") +
         QString("\n");
     str = str +

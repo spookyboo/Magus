@@ -72,9 +72,6 @@ static const QString FILE_ASSET_PROPERTY_COLOR_H = QString("asset_propertywidget
 static const QString FILE_ASSET_PROPERTY_TEXTURE_H = QString("asset_propertywidget_texture.h");
 static const QString FILE_ASSET_PROPERTY_CURVE_H = QString("asset_propertywidget_curve.h");
 static const QString FILE_ASSET_PROPERTY_QUATERNION_H = QString("asset_propertywidget_quaternion.h");
-static const QString FILE_ASSET_TEXTURE_DIALOG_H = QString("asset_texture_dialog.h");
-static const QString FILE_ASSET_TEXTURE_DIALOG_MODEL_H = QString("asset_texture_dialog_model.h");
-static const QString FILE_ASSET_DIR_TREE_H = QString("asset_dirtree.h");
 static const QString FILE_ASSET_CURVE_GRID_H = QString("asset_curve_grid.h");
 static const QString FILE_ASSET_CURVE_DIALOG_H = QString("asset_curve_dialog.h");
 
@@ -91,9 +88,6 @@ static const QString FILE_ASSET_PROPERTY_COLOR_CPP = QString("asset_propertywidg
 static const QString FILE_ASSET_PROPERTY_TEXTURE_CPP = QString("asset_propertywidget_texture.cpp");
 static const QString FILE_ASSET_PROPERTY_CURVE_CPP = QString("asset_propertywidget_curve.cpp");
 static const QString FILE_ASSET_PROPERTY_QUATERNION_CPP = QString("asset_propertywidget_quaternion.cpp");
-static const QString FILE_ASSET_TEXTURE_DIALOG_CPP = QString("asset_texture_dialog.cpp");
-static const QString FILE_ASSET_TEXTURE_DIALOG_MODEL_CPP = QString("asset_texture_dialog_model.cpp");
-static const QString FILE_ASSET_DIR_TREE_CPP = QString("asset_dirtree.cpp");
 static const QString FILE_ASSET_CURVE_GRID_CPP = QString("asset_curve_grid.cpp");
 static const QString FILE_ASSET_CURVE_DIALOG_CPP = QString("asset_curve_dialog.cpp");
 

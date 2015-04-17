@@ -27,7 +27,6 @@
 #include <QPushButton>
 #include <QLineEdit>
 #include "asset_propertywidget.h"
-#include "asset_texture_dialog.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -59,7 +58,6 @@ namespace Magus
             QString mFileNameTexture; // Fully qualified filename (path + filename)
             QString mBaseFileNameTexture; // Filename without path
             QString mSearchPath;
-            QtTextureDialog* textureDialog;
             QLabel* mTextureLabel;
             QLineEdit* mTextureNameLabel;
             QPixmap mTexturePixmap;

@@ -19,10 +19,13 @@
 ****************************************************************************/
 
 // Include
+#include "asset_assetconstants.h"
 #include <QVBoxLayout>
 #include <QMessageBox>
 #include <QLabel>
 #include <QFileInfo>
+#include <QImageReader>
+#include <QFileDialog>
 #include "asset_propertywidget_texture.h"
 
 namespace Magus
@@ -33,7 +36,6 @@ namespace Magus
         mFileNameTexture = QString("");
         mBaseFileNameTexture = QString("");
         mSearchPath = QString("");
-        textureDialog = 0;
         QVBoxLayout* mainLayout = new QVBoxLayout;
         QHBoxLayout* horizontalLayout = new QHBoxLayout;
         QHBoxLayout* textureAndButtonLayout = new QHBoxLayout;
@@ -68,9 +70,13 @@ namespace Magus
     //****************************************************************************/
     void QtTextureProperty::setTextureFileName(const QString& fileNameTexture)
     {
-        mFileNameTexture = fileNameTexture;
+        // Check whether the file is an image (based on the extension)
+        if (!isImageBasedOnExtension(fileNameTexture))
+            return;
+
         QFile f(fileNameTexture);
         QFileInfo fileInfo(f.fileName());
+        mFileNameTexture = fileNameTexture;
         mBaseFileNameTexture = fileInfo.fileName();
         mTextureNameLabel->setText(mBaseFileNameTexture);
         mTexturePixmap = QPixmap(fileNameTexture).scaled(mTextureSize.width(),
@@ -98,10 +104,6 @@ namespace Magus
     void QtTextureProperty::setSearchPath(const QString& searchPath)
     {
         mSearchPath = searchPath;
-        if (textureDialog)
-        {
-            textureDialog->fillTextures(mSearchPath);
-        }
     }
 
     //****************************************************************************/
@@ -115,16 +117,10 @@ namespace Magus
     //****************************************************************************/
     void QtTextureProperty::dialogButtonClicked(void)
     {
-        if (!textureDialog)
-        {
-            textureDialog = new QtTextureDialog (this);
-            textureDialog->fillTextures(mSearchPath);
-        }
-        if (textureDialog->exec())
-        {
-            QString fileName = textureDialog->getTextureFileName();
+        QString fileName = QFileDialog::getOpenFileName(this, QString("Select an image file"), mSearchPath);
+
+        if (!fileName.isEmpty())
             setTextureFileName(fileName);
-        }
     }
 
     //****************************************************************************/
