@@ -33,9 +33,8 @@ namespace Magus
         mSize.setHeight(DEFAULT_GRADIENT_HEIGHT);
         mBackground = new QGraphicsPathItem(this);
         mForeground = new QGraphicsPathItem(this);
-        init();
-        drawGradient();
         drawBackground();
+        init();
     }
 
     //****************************************************************************/
@@ -46,8 +45,9 @@ namespace Magus
     //****************************************************************************/
     void QtGradient::init (void)
     {
-        mColorFractionList.clear();
-        mAlphaFractionList.clear();
+        mColorFractionMap.clear();
+        mAlphaFractionMap.clear();
+        drawGradient();
     }
 
     //****************************************************************************/
@@ -57,7 +57,7 @@ namespace Magus
         cf.id = id;
         cf.fraction = fraction;
         cf.color = color;
-        mColorFractionList.insertMulti(cf.fraction, cf);
+        mColorFractionMap.insertMulti(cf.fraction, cf);
         drawGradient();
     }
 
@@ -66,15 +66,15 @@ namespace Magus
     {
         QMultiMap<qreal, QtColorFraction>::iterator iC;
         QtColorFraction cf;
-        for (iC = mColorFractionList.begin(); iC != mColorFractionList.end(); ++iC)
+        for (iC = mColorFractionMap.begin(); iC != mColorFractionMap.end(); ++iC)
         {
             cf = iC.value();
             if (id == cf.id)
             {
                 //QMessageBox::information(0, "test", QVariant(id).toString()); // Test
-                mColorFractionList.erase(iC);
+                mColorFractionMap.erase(iC);
                 cf.fraction = newFraction;
-                mColorFractionList.insertMulti(cf.fraction, cf);
+                mColorFractionMap.insertMulti(cf.fraction, cf);
                 drawGradient();
                 return;
             }
@@ -86,14 +86,14 @@ namespace Magus
     {
         QMultiMap<qreal, QtColorFraction>::iterator iC;
         QtColorFraction cf;
-        for (iC = mColorFractionList.begin(); iC != mColorFractionList.end(); ++iC)
+        for (iC = mColorFractionMap.begin(); iC != mColorFractionMap.end(); ++iC)
         {
             cf = iC.value();
             if (id == cf.id)
             {
-                mColorFractionList.erase(iC);
+                mColorFractionMap.erase(iC);
                 cf.color = newColor;
-                mColorFractionList.insertMulti(cf.fraction, cf);
+                mColorFractionMap.insertMulti(cf.fraction, cf);
                 drawGradient();
                 return;
             }
@@ -103,7 +103,7 @@ namespace Magus
     //****************************************************************************/
     qreal QtGradient::getNumColor (void) const
     {
-        return mColorFractionList.count();
+        return mColorFractionMap.count();
     }
 
     //****************************************************************************/
@@ -111,12 +111,12 @@ namespace Magus
     {
         QMultiMap<qreal, QtColorFraction>::iterator iC;
         QtColorFraction cf;
-        for (iC = mColorFractionList.begin(); iC != mColorFractionList.end(); ++iC)
+        for (iC = mColorFractionMap.begin(); iC != mColorFractionMap.end(); ++iC)
         {
             cf = iC.value();
             if (id == cf.id)
             {
-                mColorFractionList.erase(iC);
+                mColorFractionMap.erase(iC);
                 drawGradient();
                 return;
             }
@@ -130,7 +130,7 @@ namespace Magus
         af.id = id;
         af.fraction = fraction;
         af.alpha = alpha;
-        mAlphaFractionList.insertMulti(af.fraction, af);
+        mAlphaFractionMap.insertMulti(af.fraction, af);
         drawGradient();
     }
 
@@ -139,14 +139,14 @@ namespace Magus
     {
         QMultiMap<qreal, QtAlphaFraction>::iterator iA;
         QtAlphaFraction af;
-        for (iA = mAlphaFractionList.begin(); iA != mAlphaFractionList.end(); ++iA)
+        for (iA = mAlphaFractionMap.begin(); iA != mAlphaFractionMap.end(); ++iA)
         {
             af = iA.value();
             if (id == af.id)
             {
-                mAlphaFractionList.erase(iA);
+                mAlphaFractionMap.erase(iA);
                 af.fraction = newFraction;
-                mAlphaFractionList.insertMulti(af.fraction, af);
+                mAlphaFractionMap.insertMulti(af.fraction, af);
                 drawGradient();
                 return;
             }
@@ -159,14 +159,14 @@ namespace Magus
     {
         QMultiMap<qreal, QtAlphaFraction>::iterator iA;
         QtAlphaFraction af;
-        for (iA = mAlphaFractionList.begin(); iA != mAlphaFractionList.end(); ++iA)
+        for (iA = mAlphaFractionMap.begin(); iA != mAlphaFractionMap.end(); ++iA)
         {
             af = iA.value();
             if (id == af.id)
             {
-                mAlphaFractionList.erase(iA);
+                mAlphaFractionMap.erase(iA);
                 af.alpha = newAlpha;
-                mAlphaFractionList.insertMulti(af.fraction, af);
+                mAlphaFractionMap.insertMulti(af.fraction, af);
                 drawGradient();
                 return;
             }
@@ -176,7 +176,7 @@ namespace Magus
     //****************************************************************************/
     qreal QtGradient::getNumAlpha (void) const
     {
-        return mAlphaFractionList.count();
+        return mAlphaFractionMap.count();
     }
 
     //****************************************************************************/
@@ -184,12 +184,12 @@ namespace Magus
     {
         QMultiMap<qreal, QtAlphaFraction>::iterator iA;
         QtAlphaFraction af;
-        for (iA = mAlphaFractionList.begin(); iA != mAlphaFractionList.end(); ++iA)
+        for (iA = mAlphaFractionMap.begin(); iA != mAlphaFractionMap.end(); ++iA)
         {
             af = iA.value();
             if (id == af.id)
             {
-                mAlphaFractionList.erase(iA);
+                mAlphaFractionMap.erase(iA);
                 drawGradient();
                 return;
             }
@@ -233,7 +233,7 @@ namespace Magus
         QLinearGradient linearGrad(0, 0, mSize.width(), mSize.height());
         QMultiMap<qreal, QtColorFraction>::iterator iC;
         QtColorFraction cf;
-        for (iC = mColorFractionList.begin(); iC != mColorFractionList.end(); ++iC)
+        for (iC = mColorFractionMap.begin(); iC != mColorFractionMap.end(); ++iC)
         {
             cf = iC.value();
             int alpha = getInterpolatedAlpha(cf.fraction);
@@ -258,8 +258,8 @@ namespace Magus
         int alphaValue2 = 255;
         bool end = false;
         QtAlphaFraction af;
-        QMultiMap<qreal, QtAlphaFraction>::iterator i = mAlphaFractionList.begin();
-        if (i != mAlphaFractionList.end())
+        QMultiMap<qreal, QtAlphaFraction>::iterator i = mAlphaFractionMap.begin();
+        if (i != mAlphaFractionMap.end())
         {
             alphaFraction2 = i.key();
             af = i.value();
@@ -280,7 +280,7 @@ namespace Magus
             }
             alphaFraction1 = alphaFraction2;
             alphaValue1 = alphaValue2;
-            if (i != mAlphaFractionList.end())
+            if (i != mAlphaFractionMap.end())
             {
                 alphaFraction2 = i.key();
                 af = i.value();
@@ -309,6 +309,66 @@ namespace Magus
         mSize = size;
         drawGradient();
         drawBackground();
+    }
+
+    //****************************************************************************/
+    QMultiMap<qreal, QColor> QtGradient::getColorMap(void)
+    {
+        QMultiMap<qreal, QColor> map;
+        QMultiMap<qreal, QtColorFraction>::iterator iC;
+        QtColorFraction cf;
+        for (iC = mColorFractionMap.begin(); iC != mColorFractionMap.end(); ++iC)
+        {
+            cf = iC.value();
+            map.insertMulti(cf.fraction, cf.color);
+        }
+        return map;
+    }
+
+    //****************************************************************************/
+    QMultiMap<qreal, int> QtGradient::getAlphaMap(void)
+    {
+        QMultiMap<qreal, int> map;
+        QMultiMap<qreal, QtAlphaFraction>::iterator iA;
+        QtAlphaFraction af;
+        for (iA = mAlphaFractionMap.begin(); iA != mAlphaFractionMap.end(); ++iA)
+        {
+            af = iA.value();
+            map.insertMulti(af.fraction, af.alpha);
+        }
+        return map;
+    }
+
+    //****************************************************************************/
+    QMultiMap<qreal, QColor> QtGradient::exportColorAndAlpha(void)
+    {
+        QMultiMap<qreal, QColor> map;
+        QMultiMap<qreal, QtColorFraction>::iterator iC;
+        QtColorFraction cf;
+        for (iC = mColorFractionMap.begin(); iC != mColorFractionMap.end(); ++iC)
+        {
+            cf = iC.value();
+            int alpha = getInterpolatedAlpha(cf.fraction);
+            cf.color.setAlpha(alpha);
+            map.insertMulti(cf.fraction, cf.color);
+        }
+
+        return map;
+    }
+
+    //****************************************************************************/
+    void QtGradient::importColorAndAlpha(QMultiMap<qreal, QColor> colorMap)
+    {
+        QMultiMap<qreal, QColor>::iterator iC;
+        qreal fraction;
+        QColor color;
+        for (iC = colorMap.begin(); iC != colorMap.end(); ++iC)
+        {
+            fraction = iC.key();
+            color = iC.value();
+            addColor (0, fraction, color);
+            addAlpha (0, fraction, color.alpha());
+        }
     }
 
 }

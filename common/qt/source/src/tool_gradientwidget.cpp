@@ -35,8 +35,10 @@ namespace Magus
         setContentsMargins(-4, -4, -4, -4);
         QGroupBox* alphaGroup = new QGroupBox(QString("Alpha"));
         QGroupBox* colorGroup = new QGroupBox(QString("Color"));
+        QGroupBox* generalGroup = new QGroupBox();
         QVBoxLayout* alphaLayout = new QVBoxLayout;
         QVBoxLayout* colorLayout = new QVBoxLayout;
+        QHBoxLayout* generalLayout = new QHBoxLayout;
 
         idCounter = 0;
         mCurrentMarker = 0;
@@ -124,10 +126,18 @@ namespace Magus
         enableColorWidgets(false);
         colorGroup->setLayout(colorLayout);
 
+        // General
+        mClearButton = new QPushButton(QString("Clear gradient"));
+        connect(mClearButton, SIGNAL(clicked()), this, SLOT(clearGradient()));
+        generalLayout->addStretch(3);
+        generalLayout->addWidget(mClearButton, 1);
+        generalGroup->setLayout(generalLayout);
+
         // Set the main layout
         mainLayout->addWidget(alphaGroup, 1);
         mainLayout->addWidget(mView, 2);
         mainLayout->addWidget(colorGroup, 2);
+        mainLayout->addWidget(generalGroup, 1);
         mScene->setSceneRect(frameGeometry());
         setLayout(mainLayout);
     }
@@ -291,10 +301,20 @@ namespace Magus
         if (pos.x() > mMarkerMaxX)
             pos.setX(mMarkerMaxX);
 
+        qreal fraction = pos.x() / (mMarkerMaxX - mMarkerMinX);
+        QtGradientMarkerColor* marker = createGradientMarkerColor(fraction);
+        marker->setPos(pos.x(), mColorY);
+        return marker;
+    }
+
+    //****************************************************************************/
+    QtGradientMarkerColor* QtGradientWidget::createGradientMarkerColor(qreal fraction, const QColor color)
+    {
         QtGradientMarkerColor* marker = new QtGradientMarkerColor();
+        marker->setFraction(fraction);
+        marker->setColor(color);
         mScene->addItem(marker);
         marker->setMarkerSize(mMarkerSize);
-        marker->setPos(pos.x(), mColorY);
         if (mCurrentMarker)
             mCurrentMarker->selectMarker(false);
 
@@ -303,8 +323,6 @@ namespace Magus
         mCurrentColorValue = marker->getColor();
         updateHexWithCurrentColor();
         valueChangedHex();
-        qreal fraction = pos.x() / (mMarkerMaxX - mMarkerMinX);
-        marker->setFraction(fraction);
         marker->setId(idCounter);
         ++idCounter;
         mGradient->addColor(mCurrentMarker->getId(), fraction, marker->getColor());
@@ -320,10 +338,20 @@ namespace Magus
         if (pos.x() > mMarkerMaxX)
             pos.setX(mMarkerMaxX);
 
+        qreal fraction = pos.x() / (mMarkerMaxX - mMarkerMinX);
+        QtGradientMarkerAlpha* marker = createGradientMarkerAlpha(fraction);
+        marker->setPos(pos.x(), mAlphaY);
+        return marker;
+    }
+
+    //****************************************************************************/
+    QtGradientMarkerAlpha* QtGradientWidget::createGradientMarkerAlpha(qreal fraction, qreal alpha)
+    {
         QtGradientMarkerAlpha* marker = new QtGradientMarkerAlpha();
+        marker->setFraction(fraction);
+        marker->setAlpha(alpha);
         mScene->addItem(marker);
         marker->setMarkerSize(mMarkerSize);
-        marker->setPos(pos.x(), mAlphaY);
         if (mCurrentMarker)
             mCurrentMarker->selectMarker(false);
 
@@ -331,8 +359,6 @@ namespace Magus
         mCurrentMarker = marker;
         mAlphaSlider->setValue(marker->getAlpha());
         mAlphaEdit->setText(QVariant(marker->getAlpha()).toString());
-        qreal fraction = pos.x() / (mMarkerMaxX - mMarkerMinX);
-        marker->setFraction(fraction);
         marker->setId(idCounter);
         ++idCounter;
         mGradient->addAlpha(mCurrentMarker->getId(), fraction, marker->getColor().alpha());
@@ -476,4 +502,98 @@ namespace Magus
             mCurrentMarker = 0;
         }
     }
+
+    //****************************************************************************/
+    void QtGradientWidget::clearGradient(void)
+    {
+        // Remove markers
+        QList<QGraphicsItem*> items = mScene->items();
+
+        foreach(QGraphicsItem* item, items)
+            if (item->isVisible())
+                if (item->data(KEY_GRADIENT_MARKER).toInt() == VALUE_GRADIENT_MARKER_COLOR ||
+                    item->data(KEY_GRADIENT_MARKER).toInt() == VALUE_GRADIENT_MARKER_ALPHA)
+                        mScene->removeItem(item);
+
+        // Initialize the gradient and buttons of the widget
+        mGradient->init();
+        enableColorWidgets(false);
+        enableAlphaWidgets(false);
+        mCurrentMarker = 0;
+    }
+
+    //****************************************************************************/
+    QMultiMap<qreal, QColor> QtGradientWidget::getColorMap(void)
+    {
+        QMultiMap<qreal, QColor> map;
+        map = mGradient->getColorMap();
+        return map;
+    }
+
+    //****************************************************************************/
+    void QtGradientWidget::setColorMap(QMultiMap<qreal, QColor> colorMap)
+    {
+        QMultiMap<qreal, QColor>::iterator iC;
+        qreal fraction;
+        QColor color;
+        for (iC = colorMap.begin(); iC != colorMap.end(); ++iC)
+        {
+            fraction = iC.key();
+            color = iC.value();
+            color.setAlpha(255);
+            QtGradientMarkerColor* colorMarker = createGradientMarkerColor(fraction, color);
+            colorMarker->setPos(fraction * mMarkerMaxX, mColorY);
+        }
+    }
+
+    //****************************************************************************/
+    QMultiMap<qreal, int> QtGradientWidget::getAlphaMap(void)
+    {
+        QMultiMap<qreal, int> map;
+        map = mGradient->getAlphaMap();
+        return map;
+    }
+
+    //****************************************************************************/
+    void QtGradientWidget::setAlphaMap(QMultiMap<qreal, int> alphaMap)
+    {
+        QMultiMap<qreal, int>::iterator iA;
+        qreal fraction;
+        qreal alpha;
+        for (iA = alphaMap.begin(); iA != alphaMap.end(); ++iA)
+        {
+            fraction = iA.key();
+            alpha = iA.value();
+            QtGradientMarkerAlpha* alphaMarker = createGradientMarkerAlpha(fraction, alpha);
+            alphaMarker->setPos(fraction * mMarkerMaxX, mAlphaY);
+        }
+    }
+
+    //****************************************************************************/
+    QMultiMap<qreal, QColor> QtGradientWidget::exportColorAndAlpha(void)
+    {
+        QMultiMap<qreal,QColor> map = mGradient->exportColorAndAlpha();
+        return map;
+    }
+
+    //****************************************************************************/
+    void QtGradientWidget::importColorAndAlpha(QMultiMap<qreal, QColor> colorMap)
+    {
+        QMultiMap<qreal, QColor>::iterator iC;
+        qreal fraction;
+        qreal alpha;
+        QColor color;
+        for (iC = colorMap.begin(); iC != colorMap.end(); ++iC)
+        {
+            fraction = iC.key();
+            color = iC.value();
+            alpha = color.alpha();
+            color.setAlpha(255);
+            QtGradientMarkerColor* colorMarker = createGradientMarkerColor(fraction, color);
+            colorMarker->setPos(fraction * mMarkerMaxX, mColorY);
+            QtGradientMarkerAlpha* alphaMarker = createGradientMarkerAlpha(fraction, alpha);
+            alphaMarker->setPos(fraction * mMarkerMaxX, mAlphaY);
+        }
+    }
+
 }
