@@ -90,6 +90,11 @@ void TemplateWriter::writeAll(ApplicationTemplate* applicationTemplate, const QS
     out << boolToString(applicationTemplate->mUseNodeEditor);
     out << QString ("\n\n");
 
+    out << TEMPLATE_KEY_USE_TOOLS;
+    out << QString (" = ");
+    out << boolToString(applicationTemplate->mUseTools);
+    out << QString ("\n\n");
+
     out << QString ("[WINDOWS]");
     out << QString ("\n");
 

@@ -395,6 +395,7 @@ void MainWindow::createApplicationTemplateFromWidgets(void)
         mApplicationTemplate->mUseAssetWidget = mGeneralTab->mUseAssetWidgetCheckBox->isChecked();
         mApplicationTemplate->mUseOgreAssetWidgets = mGeneralTab->mUseOgreAssetWidgetCheckBox->isChecked();
         mApplicationTemplate->mUseNodeEditor = mGeneralTab->mUseNodeEditorCheckBox->isChecked();
+        mApplicationTemplate->mUseTools = mGeneralTab->mUseToolsCheckBox->isChecked();
     }
 
     // ------------------------ Create the window properties ------------------------

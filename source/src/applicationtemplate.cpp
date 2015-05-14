@@ -254,6 +254,7 @@ ApplicationTemplate::ApplicationTemplate (void)
     mUseAssetWidget = false;
     mUseOgreAssetWidgets = false;
     mUseNodeEditor = false;
+    mUseTools = false;
 }
 
 // ****************************************************************************

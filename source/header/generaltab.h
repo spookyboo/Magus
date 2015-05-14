@@ -46,6 +46,7 @@ class GeneralTab : public QWidget
         QCheckBox* mUseAssetWidgetCheckBox;
         QCheckBox* mUseOgreAssetWidgetCheckBox;
         QCheckBox* mUseNodeEditorCheckBox;
+        QCheckBox* mUseToolsCheckBox;
 
     public slots:
         void addWindow();

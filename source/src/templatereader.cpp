@@ -46,6 +46,7 @@ void TemplateReader::readGeneral(ApplicationTemplate* applicationTemplate, const
     applicationTemplate->mUseAssetWidget = settings.value(TEMPLATE_KEY_USE_ASSET_WIDGET).toBool();
     applicationTemplate->mUseOgreAssetWidgets = settings.value(TEMPLATE_KEY_USE_OGRE_ASSET).toBool();
     applicationTemplate->mUseNodeEditor = settings.value(TEMPLATE_KEY_USE_NODE_EDITOR).toBool();
+    applicationTemplate->mUseTools = settings.value(TEMPLATE_KEY_USE_TOOLS).toBool();
 }
 
 //****************************************************************************/
@@ -61,6 +62,7 @@ void TemplateReader::readAll(ApplicationTemplate* applicationTemplate, const QSt
     applicationTemplate->mUseAssetWidget = settings.value(TEMPLATE_KEY_USE_ASSET_WIDGET).toBool();
     applicationTemplate->mUseOgreAssetWidgets = settings.value(TEMPLATE_KEY_USE_OGRE_ASSET).toBool();
     applicationTemplate->mUseNodeEditor = settings.value(TEMPLATE_KEY_USE_NODE_EDITOR).toBool();
+    applicationTemplate->mUseTools = settings.value(TEMPLATE_KEY_USE_TOOLS).toBool();
 
     // Read Windows group; create a vector with all window properties. The list is in the form:
     // [WINDOWS]

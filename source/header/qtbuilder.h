@@ -51,6 +51,7 @@ static const QString FILE_MAINWINDOW_H = QString("mainwindow.h");
 static const QString FILE_PROJECT_PTP = QString("project.ptp");
 static const QString FILE_DOCKWIDGET_HTP = QString("dockwidget.htp");
 static const QString FILE_DOCKWIDGET_CTP = QString("dockwidget.ctp");
+static const QString FILE_GENERIC_FUNCTIONS_H = QString("generic_funtions.h");
 static const QString FILE_TRANSFORMATION_WIDGET_H = QString("tb_transformationwidget.h");
 static const QString FILE_TRANSFORMATION_WIDGET_CPP = QString("tb_transformationwidget.cpp");
 
@@ -125,6 +126,18 @@ static const QString FILE_NODE_EDITOR_WIDGET_CPP = QString("node_editorwidget.cp
 static const QString FILE_NODE_CPP = QString("node_node.cpp");
 static const QString FILE_NODE_PORT_CPP = QString("node_port.cpp");
 static const QString FILE_NODE_PORTTYPE_CPP = QString("node_porttype.cpp");
+
+// Tool filenames
+static const QString FILE_TOOL_GRADIENT_H = QString("tool_gradient.h");
+static const QString FILE_TOOL_GRADIENT_MARKER_H = QString("tool_gradientmarker.h");
+static const QString FILE_TOOL_GRADIENT_WIDGET_H = QString("tool_gradientwidget.h");
+static const QString FILE_TOOL_GRADIENT_CPP = QString("tool_gradient.cpp");
+static const QString FILE_TOOL_GRADIENT_MARKER_CPP = QString("tool_gradientmarker.cpp");
+static const QString FILE_TOOL_GRADIENT_WIDGET_CPP = QString("tool_gradientwidget.cpp");
+static const QString FILE_TOOL_TEXTURE_MODEL_H = QString("tool_texturemodel.h");
+static const QString FILE_TOOL_TEXTURE_WIDGET_H = QString("tool_texturewidget.h");
+static const QString FILE_TOOL_TEXTURE_MODEL_CPP = QString("tool_texturemodel.cpp");
+static const QString FILE_TOOL_TEXTURE_WIDGET_CPP = QString("tool_texturewidget.cpp");
 
 //****************************************************************************/
 // References for project.ptp
@@ -215,6 +228,8 @@ class QtBuilder : public Builder
         QString createAssetSrcForPro(const QString& additionalSrc);
         QString createNodeHeaderForPro(const QString& additionalHeader);
         QString createNodeSrcForPro(const QString& additionalSrc);
+        QString createToolHeaderForPro(const QString& additionalHeader);
+        QString createToolSrcForPro(const QString& additionalSrc);
 
         QString mIconDir;
         QString mQtDir;

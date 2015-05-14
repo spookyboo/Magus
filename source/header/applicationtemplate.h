@@ -170,6 +170,7 @@ class ApplicationTemplate
         bool mUseAssetWidget;
         bool mUseOgreAssetWidgets;
         bool mUseNodeEditor;
+        bool mUseTools;
         QVector<WindowProperties*> mWindowPropertiesList;
 };
 

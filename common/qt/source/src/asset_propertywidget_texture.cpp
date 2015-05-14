@@ -27,6 +27,7 @@
 #include <QImageReader>
 #include <QFileDialog>
 #include "asset_propertywidget_texture.h"
+#include "generic_funtions.h"
 
 namespace Magus
 {

@@ -94,6 +94,10 @@ GeneralTab::GeneralTab(MainWindow* parent): QWidget(parent), mParent(parent)
     mUseNodeEditorCheckBox = new QCheckBox(QString("Use node editor library"));
     mUseNodeEditorCheckBox->setChecked(parent->getApplicationTemplate()->mUseNodeEditor);
 
+    // Use Node editor
+    mUseToolsCheckBox = new QCheckBox(QString("Use Tool widgets"));
+    mUseToolsCheckBox->setChecked(parent->getApplicationTemplate()->mUseTools);
+
     // General Layout
     QGridLayout* generalLayout = new QGridLayout;
     generalLayout->setColumnStretch(1, 10); // Stretch the second column, so it is closer to the label
@@ -115,6 +119,7 @@ GeneralTab::GeneralTab(MainWindow* parent): QWidget(parent), mParent(parent)
     actionLayout->addWidget(mUseAssetWidgetCheckBox);
     actionLayout->addWidget(mUseOgreAssetWidgetCheckBox);
     actionLayout->addWidget(mUseNodeEditorCheckBox);
+    actionLayout->addWidget(mUseToolsCheckBox);
     actionGroup->setLayout(actionLayout);
 
     // Main layout

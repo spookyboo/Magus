@@ -138,6 +138,7 @@ void QtBuilder::build(ApplicationTemplate* applicationTemplate)
     bool ogreControlWidget = false; // Only used to indicate that there is at least one window with an Ogre widget
     bool ogreAssetWidgets = false; // Use Ogre Asset widgets
     bool useNodeEditor = false; // Use Node editor
+    bool useTools = false; // Use Tool items
 
     // --------------------------------------------------------------------------------------------------------------------
     // Step 1: Delete old output files and directories
@@ -158,6 +159,7 @@ void QtBuilder::build(ApplicationTemplate* applicationTemplate)
     // --------------------------------------------------------------------------------------------------------------------
     // Step 3: Copy the base files (that do not need to be changed)
     fileUtil.copy(mQtHeader + FILE_CONSTANTS_HTP, mFullOutputHeaderDir + FILE_CONSTANTS_H);
+    fileUtil.copy(mQtHeader + FILE_GENERIC_FUNCTIONS_H, mFullOutputHeaderDir + FILE_GENERIC_FUNCTIONS_H);
     fileUtil.copy(mQtSrc + FILE_MAIN_CTP, mFullOutputSrcDir + FILE_MAIN_CPP);
     fileUtil.copy(mQtDir + STYLE_DARK, mFullOutputBinDir + STYLE_DARK);
 
@@ -170,7 +172,7 @@ void QtBuilder::build(ApplicationTemplate* applicationTemplate)
     fileUtil.copy(PATH_QT_DLL_WINDOWS + FILE_QT_DLL_WINDOWS, mFullOutputBinDir + PATH_QT_DLL_WINDOWS + FILE_QT_DLL_WINDOWS);
 
     // --------------------------------------------------------------------------------------------------------------------
-    // Step 4: Mark that the asset and/or node widget is used
+    // Step 4: Mark that the asset/node/tool widgets are used
     if (applicationTemplate->mUseAssetWidget)
     {
         useAssetWidget = true; // Generic assets
@@ -182,6 +184,10 @@ void QtBuilder::build(ApplicationTemplate* applicationTemplate)
     if (applicationTemplate->mUseNodeEditor)
     {
         useNodeEditor = true; // Node editor
+    }
+    if (applicationTemplate->mUseTools)
+    {
+        useTools = true; // Tool items
     }
 
     // --------------------------------------------------------------------------------------------------------------------
@@ -529,7 +535,15 @@ void QtBuilder::build(ApplicationTemplate* applicationTemplate)
     }
 
     // --------------------------------------------------------------------------------------------------------------------
-    // Step 12: Create the project file (update the references in the .ptp file)
+    // Step 12: If the 'Tool' items are used, copy the h and cpp file (and icons) and update the .pro file.
+    if (useTools)
+    {
+        projectAdditionalHeader = createToolHeaderForPro(projectAdditionalHeader); // This also copies files
+        projectAdditionalSrc = createToolSrcForPro(projectAdditionalSrc); // This also copies files
+    }
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // Step 13: Create the project file (update the references in the .ptp file)
     project.replace(PROJECT_OGRE_ROOT, projectOgreRoot);
     project.replace(PROJECT_HEADER, mOutputHeaderDir);
     project.replace(PROJECT_ADDITIONAL_HEADER, projectAdditionalHeader);
@@ -541,7 +555,7 @@ void QtBuilder::build(ApplicationTemplate* applicationTemplate)
     Utils::writeStringtoFile(project, mOutputDir + mCurrentProjectSlash + mCurrentProject + QString(".pro"));
 
 
-    // Step 13: Create the mainwindow.h file (update the references in the .htp files)
+    // Step 14: Create the mainwindow.h file (update the references in the .htp files)
     mainWindowHeader.replace(MAINWINDOW_INCLUDES, mainWindowAdditionalInclude);
     mainWindowHeader.replace(MAINWINDOW_QT_NAMESPACE, "");
     mainWindowHeader.replace(MAINWINDOW_PUBLIC, mainWindowAdditionalPublic);
@@ -551,7 +565,7 @@ void QtBuilder::build(ApplicationTemplate* applicationTemplate)
     //QMessageBox::information(0, "test", mainWindowHeader); // Test
 
     // --------------------------------------------------------------------------------------------------------------------
-    // Step 14: Create the mainwindow.cpp file (update the references in the .ctp files)
+    // Step 15: Create the mainwindow.cpp file (update the references in the .ctp files)
     mainWindowSrc.replace(MAINWINDOW_TITLE, mainTitle);
     mainWindowSrc.replace(MAINWINDOW_INCLUDES, "");
     mainWindowSrc.replace(MAINWINDOW_STYLE, applicationTemplate->mStyle + QString(".qss"));
@@ -1063,6 +1077,109 @@ QString QtBuilder::createNodeSrcForPro(const QString& additionalSrc)
         TAB +
         mOutputSrcDir +
         FILE_NODE_PORT_CPP +
+        QString(" \\ ") +
+        QString("\n");
+
+    return str;
+}
+
+/****************************************************************************
+ Generates code to copy the 'Tool' header files and add
+ them to the project (.pro) file.
+****************************************************************************/
+QString QtBuilder::createToolHeaderForPro(const QString& additionalHeader)
+{
+    QString str = additionalHeader;
+    QFile fileUtil;
+    fileUtil.copy(mQtHeader + FILE_TOOL_GRADIENT_H, mFullOutputHeaderDir + FILE_TOOL_GRADIENT_H);
+    fileUtil.copy(mQtHeader + FILE_TOOL_GRADIENT_MARKER_H, mFullOutputHeaderDir + FILE_TOOL_GRADIENT_MARKER_H);
+    fileUtil.copy(mQtHeader + FILE_TOOL_GRADIENT_WIDGET_H, mFullOutputHeaderDir + FILE_TOOL_GRADIENT_WIDGET_H);
+    fileUtil.copy(mQtHeader + FILE_TOOL_TEXTURE_MODEL_H, mFullOutputHeaderDir + FILE_TOOL_TEXTURE_MODEL_H);
+    fileUtil.copy(mQtHeader + FILE_TOOL_TEXTURE_WIDGET_H, mFullOutputHeaderDir + FILE_TOOL_TEXTURE_WIDGET_H);
+
+    // Also copy the icons
+    // TODO
+
+    // Add to the project file
+    // Headers
+    str = str +
+        TAB +
+        mOutputHeaderDir +
+        FILE_TOOL_GRADIENT_H +
+        QString(" \\ ") +
+        QString("\n");
+    str = str +
+        TAB +
+        mOutputHeaderDir +
+        FILE_TOOL_GRADIENT_MARKER_H +
+        QString(" \\ ") +
+        QString("\n");
+    str = str +
+        TAB +
+        mOutputHeaderDir +
+        FILE_TOOL_GRADIENT_WIDGET_H +
+        QString(" \\ ") +
+        QString("\n");
+    str = str +
+        TAB +
+        mOutputHeaderDir +
+        FILE_TOOL_TEXTURE_MODEL_H +
+        QString(" \\ ") +
+        QString("\n");
+    str = str +
+        TAB +
+        mOutputHeaderDir +
+        FILE_TOOL_TEXTURE_WIDGET_H +
+        QString(" \\ ") +
+        QString("\n");
+
+    return str;
+}
+
+/****************************************************************************
+ Generates code to copy the 'Node editor 'Tool' cpp files and add
+ them to the project (.pro) file.
+****************************************************************************/
+QString QtBuilder::createToolSrcForPro(const QString& additionalSrc)
+{
+    QString str = additionalSrc;
+    QFile fileUtil;
+    fileUtil.copy(mQtSrc + FILE_TOOL_GRADIENT_CPP, mFullOutputSrcDir + FILE_TOOL_GRADIENT_CPP);
+    fileUtil.copy(mQtSrc + FILE_TOOL_GRADIENT_MARKER_CPP, mFullOutputSrcDir + FILE_TOOL_GRADIENT_MARKER_CPP);
+    fileUtil.copy(mQtSrc + FILE_TOOL_GRADIENT_WIDGET_CPP, mFullOutputSrcDir + FILE_TOOL_GRADIENT_WIDGET_CPP);
+    fileUtil.copy(mQtSrc + FILE_TOOL_TEXTURE_MODEL_CPP, mFullOutputSrcDir + FILE_TOOL_TEXTURE_MODEL_CPP);
+    fileUtil.copy(mQtSrc + FILE_TOOL_TEXTURE_WIDGET_CPP, mFullOutputSrcDir + FILE_TOOL_TEXTURE_WIDGET_CPP);
+
+    // Add to the project file
+    // Src
+    str = str +
+        TAB +
+        mOutputSrcDir +
+        FILE_TOOL_GRADIENT_CPP +
+        QString(" \\ ") +
+        QString("\n");
+    str = str +
+        TAB +
+        mOutputSrcDir +
+        FILE_TOOL_GRADIENT_MARKER_CPP +
+        QString(" \\ ") +
+        QString("\n");
+    str = str +
+        TAB +
+        mOutputSrcDir +
+        FILE_TOOL_GRADIENT_WIDGET_CPP +
+        QString(" \\ ") +
+        QString("\n");
+    str = str +
+        TAB +
+        mOutputSrcDir +
+        FILE_TOOL_TEXTURE_MODEL_CPP +
+        QString(" \\ ") +
+        QString("\n");
+    str = str +
+        TAB +
+        mOutputSrcDir +
+        FILE_TOOL_TEXTURE_WIDGET_CPP +
         QString(" \\ ") +
         QString("\n");
 

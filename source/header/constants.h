@@ -78,6 +78,7 @@ static const QString TEMPLATE_KEY_TYPE = QString("type");
 static const QString TEMPLATE_KEY_STYLE = QString("style");
 static const QString TEMPLATE_KEY_USE_ASSET_WIDGET = QString("use_asset_widget");
 static const QString TEMPLATE_KEY_USE_NODE_EDITOR = QString("use_node_editor");
+static const QString TEMPLATE_KEY_USE_TOOLS = QString("use_tools");
 static const QString TEMPLATE_KEY_TEMPLATE = QString("template");
 static const QString TEMPLATE_KEY_WINDOW = QString("window");
 static const QString TEMPLATE_KEY_WINDOW_TITLE = QString("title");
