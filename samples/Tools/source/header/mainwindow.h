@@ -50,6 +50,7 @@ class MainWindow : public QMainWindow
 	private slots:
         void doGradientMenuAction(void);
         void doTextureMenuAction(void);
+        void doLayerAndSceneViewMenuAction(void);
         void textureSelected(const QString& fileName);
 
 	private:
@@ -63,6 +64,7 @@ class MainWindow : public QMainWindow
         QMenu* mToolsMenu;
         QAction* mGradientMenuAction;
         QAction* mTextureMenuAction;
+        QAction* mLayerAndSceneViewMenuAction;
 };
 
 #endif

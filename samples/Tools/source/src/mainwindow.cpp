@@ -26,6 +26,8 @@
 #include "mainwindow.h"
 #include "tool_texturewidget.h"
 #include "tool_gradientwidget.h"
+#include "tool_sceneviewwidget.h"
+#include "tool_layered_sceneviewwidget.h"
 
 //****************************************************************************/
 MainWindow::MainWindow(void) : mIsClosing(false)
@@ -65,8 +67,10 @@ void MainWindow::createActions(void)
 {
     mGradientMenuAction = new QAction(QString("Gradient"), this);
     mTextureMenuAction = new QAction(QString("Texture selection"), this);
+    mLayerAndSceneViewMenuAction = new QAction(QString("Layer and Scene view"), this);
     connect(mGradientMenuAction, SIGNAL(triggered()), this, SLOT(doGradientMenuAction()));
     connect(mTextureMenuAction, SIGNAL(triggered()), this, SLOT(doTextureMenuAction()));
+    connect(mLayerAndSceneViewMenuAction, SIGNAL(triggered()), this, SLOT(doLayerAndSceneViewMenuAction()));
 }
 
 //****************************************************************************/
@@ -75,6 +79,7 @@ void MainWindow::createMenus(void)
     mToolsMenu = menuBar()->addMenu(QString("Tools"));
     mToolsMenu->addAction(mGradientMenuAction);
     mToolsMenu->addAction(mTextureMenuAction);
+    mToolsMenu->addAction(mLayerAndSceneViewMenuAction);
 }
 
 //****************************************************************************/
@@ -130,6 +135,50 @@ void MainWindow::doTextureMenuAction(void)
     textureSelection.fillTextures(QString("../common"));
     setCursor(Qt::ArrowCursor);
     dialog.exec();
+}
+
+//****************************************************************************/
+void MainWindow::doLayerAndSceneViewMenuAction(void)
+{
+    QDialog dialog(this);
+    dialog.setWindowTitle(QString("Layer and Scene view"));
+    dialog.setMinimumWidth(840);
+    dialog.setMaximumWidth(840);
+    dialog.setMinimumHeight(448);
+    dialog.setMaximumHeight(448);
+    QVBoxLayout mainLayout;
+
+    // Create an overall scene view; this is used to drop assets (scene items) to a layered scene.
+    // The overall scene view 'contains' all the items of a scene.
+    // Note, that 'overallSceneViewWidget' only contains 1 scene view (defined by OVERALL_SCENE).
+    // The 'overallSceneViewWidget' has 3 example groups and 6 assets.
+    Magus::QtSceneViewWidget* overallSceneViewWidget = new Magus::QtSceneViewWidget(QString("../common/icons/"), this);
+    int OVERALL_SCENE = 0;
+    int GROUP_AUDIO = 1;
+    int GROUP_LIGHT = 2;
+    int GROUP_MESH = 3;
+    overallSceneViewWidget->createSceneView(OVERALL_SCENE);
+    overallSceneViewWidget->addGroup(GROUP_AUDIO, QString("audio.png"), QString("Audio"));
+    overallSceneViewWidget->addGroup(GROUP_LIGHT, QString("light_off.png"), QString("Light"));
+    overallSceneViewWidget->addGroup(GROUP_MESH, QString("softbody.png"), QString("Mesh"));
+    overallSceneViewWidget->addAssetToSceneView(OVERALL_SCENE, GROUP_AUDIO, 1, "audio 1");
+    overallSceneViewWidget->addAssetToSceneView(OVERALL_SCENE, GROUP_AUDIO, 2, "audio 2");
+    overallSceneViewWidget->addAssetToSceneView(OVERALL_SCENE, GROUP_LIGHT, 3, "light 1");
+    overallSceneViewWidget->addAssetToSceneView(OVERALL_SCENE, GROUP_LIGHT, 4, "light 2");
+    overallSceneViewWidget->addAssetToSceneView(OVERALL_SCENE, GROUP_MESH, 5, "mesh 1");
+    overallSceneViewWidget->addAssetToSceneView(OVERALL_SCENE, GROUP_MESH, 6, "mesh 2");
+
+    // Create a layered scene view widget.
+    // This widgets is used to display the assets (items) that are asociated to a layer.
+    // An asset (or an entire group) can be dropped onto a layer.
+    Magus::QtLayeredSceneViewWidget* layeredSceneViewWidget = new Magus::QtLayeredSceneViewWidget(QString("../common/icons/"), this);
+    layeredSceneViewWidget->setSceneViewWidgetForDragDrop(overallSceneViewWidget);
+
+    // Layout
+    mainLayout.addWidget(layeredSceneViewWidget);
+    mainLayout.addWidget(overallSceneViewWidget);
+    dialog.setLayout(&mainLayout);
+    dialog.exec(); // Note: don't delete the widgets
 }
 
 //****************************************************************************/

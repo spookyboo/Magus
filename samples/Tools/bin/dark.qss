@@ -631,7 +631,7 @@ QStatusBar
 QTableView
 {
 	background: #808080;
-	selection-background-color: #787878;
+	selection-background-color: #cc7800;
 	selection-color: #f5f5f5;
 	padding-left: 5px;
 	padding-right: 5px;
@@ -654,7 +654,6 @@ QTreeView
 QTreeView::item 
 {
 	color: #cccccc;
-	padding-left: 10px;
 }
 
 QTreeView::item:hover
@@ -678,34 +677,6 @@ QTreeView::item:selected:!active
 {
 	color: #f5f5f5;
 	background: #686868;
-}
-
-QTreeView::branch:has-siblings:!adjoins-item 
-{
-     border-image: url(:/vline) 0;
-}
-
-QTreeView::branch:has-siblings:adjoins-item 
-{
-     border-image: url(:/branch-more) 0;
-}
-
-QTreeView::branch:!has-children:!has-siblings:adjoins-item
-{
-     border-image: url(:/branch-end) 0;
-}
-
-QTreeView::branch:has-children:!has-siblings:closed,
-QTreeView::branch:closed:has-children:has-siblings
-{
-         image: url(:/branch-closed);
-}
-
-QTreeView::branch:open:has-children:!has-siblings,
-QTreeView::branch:open:has-children:has-siblings
-{
-         border-image: none;
-         image: url(:/branch-open);
 }
 
 /* The tab widget frame */
