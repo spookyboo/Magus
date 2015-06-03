@@ -147,6 +147,10 @@ static const QString ICON_CURVE = QString("curve.png");
 static const QString ICON_CLOSE = QString("close.png");
 static const QString ICON_MINMAX = QString("minmax.png");
 static const QString ICON_COMPOUND = QString("compound.png");
+static const QString ICON_CLOSE_BOLD = QString("close_bold.png");
+static const QString ICON_LAYER_BOLD = QString("layer_bold.png");
+static const QString ICON_VISIBLE_BOLD = QString("view_visible_bold.png");
+static const QString ICON_INVISIBLE_BOLD = QString("view_invisible_bold.png");
 
 // The separator names must match the names in tbicons.cfg to be recognized as a separator
 static const QString ICON_HSEPARATOR = QString("separator_horizontal.png");

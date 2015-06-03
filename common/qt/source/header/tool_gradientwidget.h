@@ -40,14 +40,9 @@ QT_END_NAMESPACE
 
 /*
  * TODO:
- * - Add button 'clear gradient'
  * - Add 'Close' button
  * - Add selection list with predefined gradients (create function enablePredefinedList)
  * - Add button 'Add to list' (moves the current gradient to the predefined list)
- * - Add function getColorList (returns color values)
- * - Add function getAlphaList (returns alpha values)
- * - Add function exportColorAndAlpha (returns colors and corresponding alpha values)
- * - Add function setGradientColorList / setGradientAlphaList
  */
 
 namespace Magus
@@ -66,6 +61,38 @@ namespace Magus
             // To be used for mouse events
             bool QtGradientWidget::eventFilter(QObject* object, QEvent* event);
 
+            // Set/get the width and the height offset (in fraction of the total widget height) of the gradient
+            void setGradientDimension (qreal width, qreal heightOffsetFraction = 0.13f);
+            qreal getGradientHeightOffsetFraction(void) const {return mGradientHeightOffsetFraction;};
+            qreal getGradientWidth(void) const {return mGradientWidth;};
+
+            // Returns colors, without alpha values
+            QMultiMap<qreal, QColor> getColorMap(void);
+
+            // Set colors, without alpha values; this results in adding color markers to the gradient
+            void setColorMap(QMultiMap<qreal, QColor> colorMap);
+
+            // Returns alpha values
+            QMultiMap<qreal, int> getAlphaMap(void);
+
+            // Set alpha values; this results in adding alpha markers to the gradient
+            void setAlphaMap(QMultiMap<qreal, int> alphaMap);
+
+            // Returns colors, including corresponding alpha values
+            QMultiMap<qreal, QColor> exportColorAndAlpha(void);
+
+            // Read colors from the colorMap and create a gradient
+            // Note, that the alpha markers are derived from the colors in the colorMap (which contain an alpha value)
+            // This means that if the colorMap was created by means of the 'exportColorAndAlpha' function, the
+            // alpha markers may differ (in position and value) from the situation before the export was done.
+            // If the original alpha values need to be restored, use setColorMap and setAlphaMap instead.
+            void importColorAndAlpha(QMultiMap<qreal, QColor> colorMap);
+
+        protected:
+            QGraphicsItem* itemAt(const QPointF& pos);
+            void enableAlphaWidgets(bool enabled);
+            void enableColorWidgets(bool enabled);
+
             // Handle mouse events
             void mouseMoveHandler(QGraphicsSceneMouseEvent* mouseEvent);
             void mouseClickHandler(QGraphicsSceneMouseEvent* mouseEvent);
@@ -74,19 +101,15 @@ namespace Magus
             // (where the marker is placed).
             QtGradientMarkerColor* createGradientMarkerColor(QGraphicsSceneMouseEvent* mouseEvent);
 
+            // Create a marker for color.
+            QtGradientMarkerColor* createGradientMarkerColor(qreal fraction, const QColor color = Qt::white);
+
             // Create a marker for alpha value. Argument 'mousePos' determines the mouse position
             // (where the marker is placed).
             QtGradientMarkerAlpha* createGradientMarkerAlpha(QGraphicsSceneMouseEvent* mouseEvent);
 
-            // Set/get the width and the height offset (in fraction of the total widget height) of the gradient
-            void setGradientDimension (qreal width, qreal heightOffsetFraction = 0.13f);
-            qreal getGradientHeightOffsetFraction(void) const {return mGradientHeightOffsetFraction;};
-            qreal getGradientWidth(void) const {return mGradientWidth;};
-
-        protected:
-            QGraphicsItem* itemAt(const QPointF& pos);
-            void enableAlphaWidgets(bool enabled);
-            void enableColorWidgets(bool enabled);
+            // Create a marker for alpha value.
+            QtGradientMarkerAlpha* createGradientMarkerAlpha(qreal fraction, qreal alpha = 255);
 
         private slots:
             void alphaSliderValueChanged(int value);
@@ -96,6 +119,7 @@ namespace Magus
             void dialogButtonClicked(void);
             void deleteAlphaMarker(void);
             void deleteColorMarker(void);
+            void clearGradient(void);
 
         private:
             int idCounter;
@@ -121,6 +145,7 @@ namespace Magus
             QPushButton* mDialogButton;
             QPushButton* mDeleteAlphaMarkerButton;
             QPushButton* mDeleteColorMarkerButton;
+            QPushButton* mClearButton;
             void updateRGBWithCurrentColor(void);
             void updateHexWithCurrentColor(void);
             void updateColorFill (void);

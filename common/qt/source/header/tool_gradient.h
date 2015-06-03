@@ -104,6 +104,18 @@ namespace Magus
             // Return the number of color markers
             qreal getNumColor (void) const;
 
+            // Returns colors, without alpha values
+            QMultiMap<qreal, QColor> getColorMap(void);
+
+            // Returns alpha values
+            QMultiMap<qreal, int> getAlphaMap(void);
+
+            // Return the colors, including the interpolated alpha values
+            QMultiMap<qreal, QColor> exportColorAndAlpha(void);
+
+            // Used for testing
+            void importColorAndAlpha(QMultiMap<qreal, QColor> colorMap);
+
         protected:
             // Draw the background
             void drawBackground (void);
@@ -113,8 +125,8 @@ namespace Magus
 
         private:
             QSizeF mSize;
-            QMultiMap<qreal, QtColorFraction> mColorFractionList;
-            QMultiMap<qreal, QtAlphaFraction>mAlphaFractionList;
+            QMultiMap<qreal, QtColorFraction> mColorFractionMap;
+            QMultiMap<qreal, QtAlphaFraction>mAlphaFractionMap;
             QGraphicsPathItem* mBackground;
             QGraphicsPathItem* mForeground;
     };

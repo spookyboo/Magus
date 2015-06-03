@@ -111,7 +111,7 @@ TemplateDialog::TemplateDialog(MainWindow* parent) : QDialog(parent)
             model->setItem(line, 0, item);
 
             // Column 'Layout'
-            item = new QStandardItem(templateName);
+            item = new QStandardItem(templateName); // TODO: Incorrect copy-paste?
             QImage image(layoutDir + applicationTemplate.mIconName);
             item = new QStandardItem();
             QPixmap pixMap = QPixmap::fromImage(image).scaled(TEMPLATE_DIALOG_ICON_WIDTH, TEMPLATE_DIALOG_ICON_HEIGHT);

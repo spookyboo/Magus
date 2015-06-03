@@ -229,18 +229,18 @@ namespace Magus
 
                     if (item->data(KEY_GRADIENT_MARKER).toInt() == VALUE_GRADIENT_MARKER_COLOR)
                     {
-                        enableColorWidgets(true);
                         enableAlphaWidgets(false);
                         mCurrentColorValue = marker->getColor();
                         updateHexWithCurrentColor();
                         valueChangedHex();
+                        enableColorWidgets(true);
                     }
                     else if (item->data(KEY_GRADIENT_MARKER).toInt() == VALUE_GRADIENT_MARKER_ALPHA)
                     {
                         enableColorWidgets(false);
-                        enableAlphaWidgets(true);
                         mAlphaSlider->setValue(marker->getAlpha());
                         mAlphaEdit->setText(QVariant(marker->getAlpha()).toString());
+                        enableAlphaWidgets(true);
                     }
 
                     return;
@@ -386,7 +386,7 @@ namespace Magus
         if (mCurrentMarker)
         {
             mCurrentMarker->setAlpha(intValue);
-            mGradient->changeAlpha(mCurrentMarker->getFraction(), intValue);
+            mGradient->changeAlpha(mCurrentMarker->getId(), intValue);
         }
     }
 

@@ -129,15 +129,21 @@ static const QString FILE_NODE_PORTTYPE_CPP = QString("node_porttype.cpp");
 
 // Tool filenames
 static const QString FILE_TOOL_GRADIENT_H = QString("tool_gradient.h");
-static const QString FILE_TOOL_GRADIENT_MARKER_H = QString("tool_gradientmarker.h");
-static const QString FILE_TOOL_GRADIENT_WIDGET_H = QString("tool_gradientwidget.h");
 static const QString FILE_TOOL_GRADIENT_CPP = QString("tool_gradient.cpp");
+static const QString FILE_TOOL_GRADIENT_MARKER_H = QString("tool_gradientmarker.h");
 static const QString FILE_TOOL_GRADIENT_MARKER_CPP = QString("tool_gradientmarker.cpp");
+static const QString FILE_TOOL_GRADIENT_WIDGET_H = QString("tool_gradientwidget.h");
 static const QString FILE_TOOL_GRADIENT_WIDGET_CPP = QString("tool_gradientwidget.cpp");
 static const QString FILE_TOOL_TEXTURE_MODEL_H = QString("tool_texturemodel.h");
-static const QString FILE_TOOL_TEXTURE_WIDGET_H = QString("tool_texturewidget.h");
 static const QString FILE_TOOL_TEXTURE_MODEL_CPP = QString("tool_texturemodel.cpp");
+static const QString FILE_TOOL_TEXTURE_WIDGET_H = QString("tool_texturewidget.h");
 static const QString FILE_TOOL_TEXTURE_WIDGET_CPP = QString("tool_texturewidget.cpp");
+static const QString FILE_TOOL_SCENE_WIDGET_H = QString("tool_sceneviewwidget.h");
+static const QString FILE_TOOL_SCENE_WIDGET_CPP = QString("tool_sceneviewwidget.cpp");
+static const QString FILE_TOOL_LAYERED_SCENE_WIDGET_H = QString("tool_layered_sceneviewwidget.h");
+static const QString FILE_TOOL_LAYERED_SCENE_WIDGET_CPP = QString("tool_layered_sceneviewwidget.cpp");
+static const QString FILE_TOOL_LAYER_WIDGET_H = QString("tool_layerwidget.h");
+static const QString FILE_TOOL_LAYER_WIDGET_CPP = QString("tool_layerwidget.cpp");
 
 //****************************************************************************/
 // References for project.ptp
