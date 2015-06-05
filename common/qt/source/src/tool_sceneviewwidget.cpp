@@ -38,6 +38,10 @@ namespace Magus
         mIconDir = iconDir;
         QHBoxLayout* mainLayout = new QHBoxLayout;
         mTreeLayout = new QVBoxLayout;
+        mVisibilityIconVisibleForGroups = true;
+        mVisibilityIconVisibleForAssets = true;
+        mDeletionIconVisibleForGroups = true;
+        mDeletionIconVisibleForAssets = true;
 
         // Layout
         mainLayout->addLayout(mTreeLayout);
@@ -79,18 +83,40 @@ namespace Magus
                 QTreeWidget* sceneView = getCurrentVisibleScene();
                 if (sceneView)
                 {
-                    //QTreeWidgetItem* item = getCurrentItem(sceneView);
                     QTreeWidgetItem* item = sceneView->itemAt(event->pos());
                     int col = sceneView->columnAt(event->pos().x());
-                    if (col == TOOL_SCENEVIEW_COLUMN_GROUP_VISIBILITY)
+                    if (itemIsGroup(item))
                     {
-                        // Toggle visibility
-                        toggleVisibility(item);
+                        if (col == TOOL_SCENEVIEW_COLUMN_GROUP_CLOSE)
+                        {
+                            handleDeletionOfGroup(sceneView, item);
+                            return;
+                        }
+                        else if (col == TOOL_SCENEVIEW_COLUMN_GROUP_VISIBILITY)
+                        {
+                            // Toggle visibility
+                            toggleVisibilityOfGroup(item);
+                        }
+
+                        int groupId =getGroupIdOfGroupItem(item);
+                        emit groupSelected(sceneView, groupId);
                     }
-                    else
+                    else if (itemIsAsset(item))
                     {
-                        // Deletion
-                        handleDeletion(sceneView, item, col);
+                        if (col == TOOL_SCENEVIEW_COLUMN_ASSET_CLOSE)
+                        {
+                            handleDeletionOfAsset(sceneView, item);
+                            return;
+                        }
+                        else if (col == TOOL_SCENEVIEW_COLUMN_ASSET_VISIBILITY)
+                        {
+                            // Toggle visibility
+                            toggleVisibilityOfAsset(item);
+                        }
+
+                        int groupId = getGroupIdOfAssetItem(item);
+                        int assetId = getAssetIdOfAssetItem(item);
+                        emit assetSelected(sceneView, groupId, assetId);
                     }
                 }
             }
@@ -98,82 +124,202 @@ namespace Magus
 
             case Qt::RightButton:
             {
-                //QPoint pos;
-                //pos.setX(event->screenPos().x());
-                //pos.setY(event->screenPos().y());
-                //mContextMenu->popup(pos);
+                // TODO
             }
             break;
         }
     }
 
     //****************************************************************************/
-    void QtSceneViewWidget::toggleVisibility(QTreeWidgetItem* item)
+    bool QtSceneViewWidget::groupIsVisible(QTreeWidgetItem* groupItem)
     {
-        // TODO:
-        // - If Group => also make all children visisble / invisible
-        // - If Asset => Make asset only visisble/invisible if the Group is visible; if the
-        //               group is not visible, the assets cannot be toggled
+        if (itemIsGroup(groupItem))
+        {
+            return (groupItem->data(TOOL_SCENEVIEW_KEY_VISIBLE, Qt::UserRole)).toBool();
+        }
 
-        if (!item)
+        return false;
+    }
+
+    //****************************************************************************/
+    bool QtSceneViewWidget::groupOfAssetItemIsVisible(QTreeWidgetItem* assetItem)
+    {
+        if (itemIsAsset(assetItem))
+        {
+            QTreeWidgetItem* groupItem = assetItem->parent();
+            if (groupItem)
+            {
+                return (groupItem->data(TOOL_SCENEVIEW_KEY_VISIBLE, Qt::UserRole)).toBool();
+            }
+        }
+
+        return false;
+    }
+
+    //****************************************************************************/
+    bool QtSceneViewWidget::assetIsVisible(QTreeWidgetItem* assetItem)
+    {
+        if (itemIsAsset(assetItem))
+        {
+            return (assetItem->data(TOOL_SCENEVIEW_KEY_VISIBLE, Qt::UserRole)).toBool();
+        }
+
+        return false;
+    }
+
+    //****************************************************************************/
+    void QtSceneViewWidget::toggleVisibilityOfGroup(QTreeWidgetItem* groupItem)
+    {
+        if (!groupItem)
             return;
 
-        bool visible = (item->data(TOOL_SCENEVIEW_KEY_VISIBLE, Qt::UserRole)).toBool();
-        int col = TOOL_SCENEVIEW_COLUMN_ASSET_VISIBILITY;
-        if (itemIsGroup(item))
-            col = TOOL_SCENEVIEW_COLUMN_GROUP_VISIBILITY;
+        bool visible = groupIsVisible(groupItem);
+        setVisibilityOfGroup(groupItem, !visible);
+    }
+
+    //****************************************************************************/
+    void QtSceneViewWidget::setVisibilityOfGroup(int sceneId, int groupId, bool visible)
+    {
+        QTreeWidgetItem* groupItem = getGroupItem(sceneId, groupId);
+        setVisibilityOfGroup(groupItem, visible);
+    }
+
+    //****************************************************************************/
+    void QtSceneViewWidget::setVisibilityOfAllGroups(int sceneId, bool visible)
+    {
+        foreach (QtAssetGroup* group , mAssetGroupMap)
+            setVisibilityOfGroup(sceneId, group->groupId, visible);
+    }
+
+    //****************************************************************************/
+    void QtSceneViewWidget::setVisibilityOfGroup(QTreeWidgetItem* groupItem, bool visible)
+    {
+        if (!mVisibilityIconVisibleForGroups)
+            return;
+
+        if (!groupItem)
+            return;
 
         // Set the icon
         QImage imageVis;
         if (visible)
-            imageVis = QImage(mIconDir + TOOL_SCENEVIEW_ICON_INVISIBLE);
-        else
             imageVis = QImage(mIconDir + TOOL_SCENEVIEW_ICON_VISIBLE);
+        else
+            imageVis = QImage(mIconDir + TOOL_SCENEVIEW_ICON_INVISIBLE);
 
         QPixmap pixMapVis = QPixmap::fromImage(imageVis).scaled(TOOL_SCENEVIEW_ICON_WIDTH, TOOL_SCENEVIEW_ICON_WIDTH);
-        item->setData(col, Qt::DecorationRole, QVariant(pixMapVis));
+        groupItem->setData(TOOL_SCENEVIEW_COLUMN_GROUP_VISIBILITY, Qt::DecorationRole, QVariant(pixMapVis));
 
         // Set the visibility flag
-        item->setData(TOOL_SCENEVIEW_KEY_VISIBLE, Qt::UserRole, QVariant(!visible));
+        groupItem->setData(TOOL_SCENEVIEW_KEY_VISIBLE, Qt::UserRole, QVariant(visible));
 
-        // TODO: emit signal
+        // Signal that visibility of a group is changed
+        emit groupVisibiltyChanged(getCurrentVisibleScene(), getGroupIdOfGroupItem(groupItem));
+
+        // Set visibility of the children
+        QTreeWidgetItemIterator it(groupItem);
+        while (*it)
+        {
+            if (itemIsAsset(*it) && (*it)->parent() == groupItem)
+                setVisibilityOfAsset(*it, visible);
+
+            ++it;
+        }
+
     }
 
     //****************************************************************************/
-    void QtSceneViewWidget::handleDeletion(QTreeWidget* sceneView, QTreeWidgetItem* item, int col)
+    void QtSceneViewWidget::toggleVisibilityOfAsset(QTreeWidgetItem* assetItem)
+    {
+        if (!assetItem)
+            return;
+
+        // Make asset only visisble/invisible if the parent group is visible;
+        // if the group is not visible, the assets cannot be toggled.
+        if (!groupOfAssetItemIsVisible(assetItem))
+            return;
+
+        bool visible = assetIsVisible(assetItem);
+        setVisibilityOfAsset(assetItem, !visible);
+    }
+
+    //****************************************************************************/
+    void QtSceneViewWidget::setVisibilityOfAsset(int sceneId, int assetId, bool visible)
+    {
+        QTreeWidgetItem* assetItem = getAssetItem(sceneId, assetId);
+        setVisibilityOfAsset(assetItem, visible);
+    }
+
+    //****************************************************************************/
+    void QtSceneViewWidget::setVisibilityOfAsset(QTreeWidgetItem* assetItem, bool visible)
+    {
+        if (!mVisibilityIconVisibleForAssets)
+            return;
+
+        if (!assetItem)
+            return;
+
+        // Set the icon
+        QImage imageVis;
+        if (visible)
+            imageVis = QImage(mIconDir + TOOL_SCENEVIEW_ICON_VISIBLE);
+        else
+            imageVis = QImage(mIconDir + TOOL_SCENEVIEW_ICON_INVISIBLE);
+
+        QPixmap pixMapVis = QPixmap::fromImage(imageVis).scaled(TOOL_SCENEVIEW_ICON_WIDTH, TOOL_SCENEVIEW_ICON_WIDTH);
+        assetItem->setData(TOOL_SCENEVIEW_COLUMN_ASSET_VISIBILITY, Qt::DecorationRole, QVariant(pixMapVis));
+
+        // Set the visibility flag
+        assetItem->setData(TOOL_SCENEVIEW_KEY_VISIBLE, Qt::UserRole, QVariant(visible));
+
+        // Signal that visibility of a group is changed
+        emit groupVisibiltyChanged(getCurrentVisibleScene(), getGroupIdOfGroupItem(assetItem));
+    }
+
+    //****************************************************************************/
+    void QtSceneViewWidget::handleDeletionOfGroup(QTreeWidget* sceneView, QTreeWidgetItem* groupItem)
+    {
+        if (!mDeletionIconVisibleForGroups)
+            return;
+
+        if (!groupItem)
+            return;
+
+        int groupId = getGroupIdOfGroupItem(groupItem);
+        handleDeletionOfItem(sceneView, groupItem);
+
+        // Emit signal
+        emit groupDeleted(sceneView, groupId);
+        emit groupDeleted(getSceneId(sceneView), groupId);
+    }
+
+    //****************************************************************************/
+    void QtSceneViewWidget::handleDeletionOfAsset(QTreeWidget* sceneView, QTreeWidgetItem* assetItem)
+    {
+        if (!mDeletionIconVisibleForGroups)
+            return;
+
+        if (!assetItem)
+            return;
+
+        int groupId = getGroupIdOfAssetItem(assetItem);
+        int assetId = getAssetIdOfAssetItem(assetItem);
+        handleDeletionOfItem(sceneView, assetItem);
+
+        // Emit signal
+        emit assetDeleted(sceneView, groupId, assetId);
+        emit assetDeleted(getSceneId(sceneView), groupId, assetId);
+    }
+
+    //****************************************************************************/
+    void QtSceneViewWidget::handleDeletionOfItem(QTreeWidget* sceneView, QTreeWidgetItem* item)
     {
         if (!item)
             return;
 
-        if (itemIsGroup(item))
-        {
-            if (col == TOOL_SCENEVIEW_COLUMN_GROUP_CLOSE)
-            {
-                // Deletion
-                int index = sceneView->indexOfTopLevelItem(item);
-                int groupId = getGroupIdOfGroupItem(item);
-                sceneView->takeTopLevelItem(index);
-                delete item;
-
-                // Emit signal
-                emit groupDeleted(sceneView, groupId);
-            }
-        }
-        else if (itemIsAsset(item))
-        {
-            if (col == TOOL_SCENEVIEW_COLUMN_ASSET_CLOSE)
-            {
-                // Deletion
-                int index = sceneView->indexOfTopLevelItem(item);
-                int groupId = getGroupIdOfAssetItem(item);
-                int assetId = getAssetIdOfAssetItem(item);
-                sceneView->takeTopLevelItem(index);
-                delete item;
-
-                // Emit signal
-                emit assetDeleted(sceneView, groupId, assetId);
-            }
-        }
+        int index = sceneView->indexOfTopLevelItem(item);
+        sceneView->takeTopLevelItem(index);
+        delete item;
     }
 
     //****************************************************************************/
@@ -252,6 +398,133 @@ namespace Magus
     }
 
     //****************************************************************************/
+    void QtSceneViewWidget::setVisibilityIconVisible (bool visible)
+    {
+        setVisibilityIconVisibleForGroups (visible);
+        setVisibilityIconVisibleForAssets (visible);
+    }
+
+    //****************************************************************************/
+    void QtSceneViewWidget::setVisibilityIconVisibleForGroups (bool visible)
+    {
+        mVisibilityIconVisibleForGroups = visible;
+        foreach (QTreeWidget* sceneView, mSceneViewMap)
+        {
+            QTreeWidgetItemIterator it(sceneView);
+            while (*it)
+            {
+                if (itemIsGroup(*it))
+                {
+                    (*it)->setData(TOOL_SCENEVIEW_COLUMN_GROUP_VISIBILITY, Qt::DecorationRole, QVariant(0));
+                }
+
+                ++it;
+            }
+        }
+
+        // Check whether the header text changes
+        checkHeader();
+    }
+
+    //****************************************************************************/
+    void QtSceneViewWidget::setVisibilityIconVisibleForAssets (bool visible)
+    {
+        mVisibilityIconVisibleForAssets = visible;
+        foreach (QTreeWidget* sceneView, mSceneViewMap)
+        {
+            QTreeWidgetItemIterator it(sceneView);
+            while (*it)
+            {
+                if (itemIsAsset(*it))
+                {
+                    (*it)->setData(TOOL_SCENEVIEW_COLUMN_ASSET_VISIBILITY, Qt::DecorationRole, QVariant(0));
+                }
+
+                ++it;
+            }
+        }
+
+        // Check whether the header text changes
+        checkHeader();
+    }
+
+    //****************************************************************************/
+    void QtSceneViewWidget::setDeletionIconVisible (bool visible)
+    {
+        setDeletionIconVisibleForGroups (visible);
+        setDeletionIconVisibleForAssets (visible);
+    }
+
+    //****************************************************************************/
+    void QtSceneViewWidget::setDeletionIconVisibleForGroups (bool visible)
+    {
+        mDeletionIconVisibleForGroups = visible;
+        foreach (QTreeWidget* sceneView, mSceneViewMap)
+        {
+            QTreeWidgetItemIterator it(sceneView);
+            while (*it)
+            {
+                if (itemIsGroup(*it))
+                {
+                    (*it)->setData(TOOL_SCENEVIEW_COLUMN_GROUP_CLOSE, Qt::DecorationRole, QVariant(0));
+                }
+
+                ++it;
+            }
+        }
+
+        // Check whether the header text changes
+        checkHeader();
+    }
+
+    //****************************************************************************/
+    void QtSceneViewWidget::setDeletionIconVisibleForAssets (bool visible)
+    {
+        mDeletionIconVisibleForAssets = visible;
+        foreach (QTreeWidget* sceneView, mSceneViewMap)
+        {
+            QTreeWidgetItemIterator it(sceneView);
+            while (*it)
+            {
+                if (itemIsAsset(*it))
+                {
+                    (*it)->setData(TOOL_SCENEVIEW_COLUMN_ASSET_CLOSE, Qt::DecorationRole, QVariant(0));
+                }
+
+                ++it;
+            }
+        }
+
+        // Check whether the header text changes
+        checkHeader();
+    }
+
+    //****************************************************************************/
+    void QtSceneViewWidget::checkHeader(void)
+    {
+        QStringList headers;
+        headers << tr("") << tr("Asset Group");
+
+        if (!mVisibilityIconVisibleForGroups && !mVisibilityIconVisibleForAssets)
+            headers << tr("");
+        else
+            headers << tr("Visibility");
+
+        if (!mDeletionIconVisibleForGroups && !mDeletionIconVisibleForAssets)
+            headers << tr("");
+        else
+            headers << tr("Remove");
+
+        foreach (QTreeWidget* sceneView, mSceneViewMap)
+        {
+            sceneView->setHeaderLabels(headers);
+            QFont font;
+            font.setBold(true);
+            sceneView->header()->setFont(font);
+        }
+    }
+
+    //****************************************************************************/
     bool QtSceneViewWidget::sceneViewHasGroup(QTreeWidget* sceneView, int groupId)
     {
         if (!sceneView)
@@ -302,7 +575,39 @@ namespace Magus
                         return *it;
             }
 
-                ++it;
+            ++it;
+        }
+
+        return 0;
+    }
+
+    //****************************************************************************/
+    QTreeWidgetItem* QtSceneViewWidget::getAssetItem(int sceneId, int assetId)
+    {
+        QTreeWidget* sceneView = getSceneView (sceneId);
+        return getAssetItem(sceneView, assetId);
+    }
+
+    //****************************************************************************/
+    QTreeWidgetItem* QtSceneViewWidget::getAssetItem(QTreeWidget* sceneView, int assetId)
+    {
+        if (!sceneView)
+            return false;
+
+        QTreeWidgetItemIterator it(sceneView);
+        QVariant assetVar;
+        QVariant typeVar;
+        while (*it)
+        {
+            typeVar = (*it)->data(TOOL_SCENEVIEW_KEY_ITEM_TYPE, Qt::UserRole);
+            if (typeVar.toInt() == TOOL_SCENEVIEW_KEY_ITEM_TYPE_ASSET)
+            {
+                assetVar = (*it)->data(TOOL_SCENEVIEW_KEY_ASSETID, Qt::UserRole);
+                if (assetVar.toInt() == assetId)
+                        return *it;
+            }
+
+            ++it;
         }
 
         return 0;
@@ -311,12 +616,13 @@ namespace Magus
     //****************************************************************************/
     void QtSceneViewWidget::addGroup (int groupId, const QString& iconName, const QString& groupName)
     {
-        // Add group to list
-        QtAssetGroup* group = new QtAssetGroup();
-        group->groupId = groupId;
-        group->groupIcon = iconName;
-        group->groupName = groupName;
-        mAssetGroupMap[groupId] = group;
+        // Add group to the map
+        //QtAssetGroup* group = new QtAssetGroup();
+        //group->groupId = groupId;
+        //group->groupIcon = iconName;
+        //group->groupName = groupName;
+        //mAssetGroupMap[groupId] = group;
+        addGroupToMap(groupId, iconName, groupName);
 
         // Add groups to current sceneviews
         foreach (QTreeWidget* sceneView, mSceneViewMap)
@@ -324,6 +630,22 @@ namespace Magus
             if (!sceneViewHasGroup(sceneView, groupId))
                 addGroupToSceneView(sceneView, iconName, groupId, groupName);
         }
+    }
+
+    //****************************************************************************/
+    void QtSceneViewWidget::addGroupToMap (int groupId,
+                                           const QString& iconName,
+                                           const QString& groupName)
+    {
+        if (mAssetGroupMap[groupId])
+            return;
+
+        // Add group to list
+        QtAssetGroup* group = new QtAssetGroup();
+        group->groupId = groupId;
+        group->groupIcon = iconName;
+        group->groupName = groupName;
+        mAssetGroupMap[groupId] = group;
     }
 
     //****************************************************************************/
@@ -381,6 +703,9 @@ namespace Magus
 
         // Add it to the table
         sceneView->addTopLevelItem(group);
+
+        // Add group to list (ignores duplicates)
+        addGroupToMap(groupId, iconName, groupName);
 
         // Emit signal
         emit groupCreatedOrAdded(sceneView, groupId);
@@ -496,6 +821,12 @@ namespace Magus
     QTreeWidget* QtSceneViewWidget::getSceneView (int sceneId)
     {
         return mSceneViewMap[sceneId];
+    }
+
+    //****************************************************************************/
+    int QtSceneViewWidget::getSceneId (QTreeWidget* sceneView)
+    {
+        return mSceneViewMap.key(sceneView);
     }
 
     //****************************************************************************/
@@ -660,4 +991,33 @@ namespace Magus
 
         return mResultText;
     }
+
+    //****************************************************************************/
+    void QtSceneViewWidget::deleteGroup(int sceneId, int groupId)
+    {
+        QTreeWidget* sceneView = getSceneView(sceneId);
+        if (!sceneView)
+            return;
+
+        QTreeWidgetItem* groupItem = getGroupItem(sceneView, groupId);
+        if (!groupItem)
+            return;
+
+        handleDeletionOfGroup(sceneView, groupItem);
+    }
+
+    //****************************************************************************/
+    void QtSceneViewWidget::deleteAsset(int sceneId, int assetId)
+    {
+        QTreeWidget* sceneView = getSceneView(sceneId);
+        if (!sceneView)
+            return;
+
+        QTreeWidgetItem* assetItem = getAssetItem(sceneView, assetId);
+        if (!assetItem)
+            return;
+
+        handleDeletionOfAsset(sceneView, assetItem);
+    }
+
 }

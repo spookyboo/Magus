@@ -33,6 +33,10 @@ QT_BEGIN_NAMESPACE
 
 QT_END_NAMESPACE
 
+// TODO
+// - mListenToVisibilityEvents: If the visibility in a group/asset in mListenToSceneViewWidget is toggled, the QtLayerWidget
+//   handles it.
+
 namespace Magus
 {
     static const int TOOL_LAYER_ICON_WIDTH = 24;
@@ -60,7 +64,21 @@ namespace Magus
     };
 
     /****************************************************************************
-    Main class for layer widget
+    Main class for layer widget. This widgets displays layers. The layers can
+    be asociated with certain assets. The QtLayerWidget has optional relations
+    with the QtSceneViewWidget class:
+    - QtSceneViewWidget passed as argument while creating a QtLayerWidget object
+      (mSceneViewWidget).
+      In this case, the QtSceneViewWidget creates a sceneview object (QTreeWidget)
+      for each layer. Assets can be assigned to the layer and show up in the
+      QTreeWidget.
+    - QtSceneViewWidget passed as argument in QtLayerWidget::setListenToSceneViewWidget
+      (mListenToSceneViewWidget).
+      This is a different QtSceneViewWidget, which usually represents all assets
+      of a 3d scene or of a project. Items (assets) of this QtSceneViewWidget can
+      be dropped onto a layer within the QtLayerWidget. The QtLayerWidget decides
+      what to do with this (eg. add it to the QTreeWidget of the associated
+      QtSceneViewWidget).
     ***************************************************************************/
     class QtLayerWidget : public QWidget
     {
@@ -106,7 +124,19 @@ namespace Magus
 
             // Set a sceneviewwidget; this widgets is used to determine the item dragged and dropped
             // The sceneId identifies the scene(view) that is associated with this layer widget
-            void setSceneViewWidgetForDragDrop(QtSceneViewWidget* sceneViewWidget, int sceneId = 0);
+            void setListenToSceneViewWidget(QtSceneViewWidget* sceneViewWidget,
+                                            bool listenToDropEvents = true,
+                                            bool listenToDeleteEvents = true,
+                                            int sceneId = 0);
+
+
+            // The QtLayerWidget does not respons to drop events (from QtSceneViewWidget set by setListenToSceneViewWidget)
+            void setListenToDropEvents (bool listenToDropEvents = true);
+
+            // The QtLayerWidget does not respons to delete events (from QtSceneViewWidget set by setListenToSceneViewWidget)
+            // Note:
+            // This function does not have any meaning if QtSceneViewWidget set not set by means of setListenToSceneViewWidget
+            void setListenToDeleteEvents (bool listenToDeleteEvents = true);
 
             // Return the list of layers with a given name pattern
             //QVector<Layer*> findByName(const QString& namePattern);
@@ -117,6 +147,12 @@ namespace Magus
 
             // Activated when an item in the table is selected
             void tableClicked(QModelIndex index);
+
+            // Activated when a group of the ListenToSceneViewWidget is deleted
+            void groupDeleted(int sceneId, int groupId);
+
+            // Activated when an asset of the ListenToSceneViewWidget is deleted
+            void assetDeleted(int sceneId, int groupId, int assetId);
 
         signals:
             // Emitted when the visibility of a layer is enabled or disabled; layerId, name and visibility is passed
@@ -145,8 +181,10 @@ namespace Magus
         private:
             QString mIconDir;
             QtSceneViewWidget* mSceneViewWidget; // Used to create a sceneview for each layer
-            QtSceneViewWidget* mSceneViewWidgetForDragDrop; // Used for drag and drop
-            int mSceneIdForDragDrop;
+            QtSceneViewWidget* mListenToSceneViewWidget; // Used for drag and drop
+            bool mListenToVisibilityEvents;
+            bool mListenToDeleteEvents;
+            int mListenToSceneId;
             int mLayerIdCounter;
             QVector<QtLayer*> mLayerVec; // Use this for additional data
             QTableWidget* mTable;
