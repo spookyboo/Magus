@@ -52,7 +52,7 @@ namespace Magus
     QtSceneViewWidget::~QtSceneViewWidget(void)
     {
         // Delete all QtAssetGroups in mAssetGroupMap
-        foreach (QtAssetGroup* group , mAssetGroupMap)
+        foreach (QtAssetGroup* group, mAssetGroupMap)
             delete group;
 
         mAssetGroupMap.clear();
@@ -98,7 +98,7 @@ namespace Magus
                             toggleVisibilityOfGroup(item);
                         }
 
-                        int groupId =getGroupIdOfGroupItem(item);
+                        int groupId = getGroupIdOfGroupItem(item);
                         emit groupSelected(sceneView, groupId);
                     }
                     else if (itemIsAsset(item))
@@ -225,7 +225,6 @@ namespace Magus
 
             ++it;
         }
-
     }
 
     //****************************************************************************/
@@ -296,7 +295,7 @@ namespace Magus
     //****************************************************************************/
     void QtSceneViewWidget::handleDeletionOfAsset(QTreeWidget* sceneView, QTreeWidgetItem* assetItem)
     {
-        if (!mDeletionIconVisibleForGroups)
+        if (!mDeletionIconVisibleForAssets)
             return;
 
         if (!assetItem)

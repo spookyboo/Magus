@@ -182,7 +182,7 @@ namespace Magus
             QString mIconDir;
             QtSceneViewWidget* mSceneViewWidget; // Used to create a sceneview for each layer
             QtSceneViewWidget* mListenToSceneViewWidget; // Used for drag and drop
-            bool mListenToVisibilityEvents;
+            bool mListenToDropEvents;
             bool mListenToDeleteEvents;
             int mListenToSceneId;
             int mLayerIdCounter;
