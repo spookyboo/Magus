@@ -36,6 +36,7 @@ QT_END_NAMESPACE
 // TODO
 // - mListenToVisibilityEvents: If the visibility in a group/asset in mListenToSceneViewWidget is toggled, the QtLayerWidget
 //   handles it.
+// - Implement find
 
 namespace Magus
 {

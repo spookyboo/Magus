@@ -40,9 +40,7 @@ QT_END_NAMESPACE
 
 /*
  * TODO:
- * - Add 'Close' button
- * - Add selection list with predefined gradients (create function enablePredefinedList)
- * - Add button 'Add to list' (moves the current gradient to the predefined list)
+ * - Bug: Add new alphamarker => all alpha becomes 0% unless another alpha marker has been selected
  */
 
 namespace Magus

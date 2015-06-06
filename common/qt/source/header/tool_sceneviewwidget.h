@@ -25,7 +25,10 @@
 #include <QWidget>
 #include <QMouseEvent>
 #include <QTreeWidget>
+#include <QLineEdit>
 #include <QVBoxLayout>
+#include <QPushButton>
+#include <QLabel>
 
 QT_BEGIN_NAMESPACE
 
@@ -50,6 +53,7 @@ namespace Magus
     static const QString TOOL_SCENEVIEW_ICON_VISIBLE = QString("view_visible_bold.png");
     static const QString TOOL_SCENEVIEW_ICON_INVISIBLE = QString("view_invisible_bold.png");
     static const QString TOOL_SCENEVIEW_ICON_CLOSE = QString("close_bold.png");
+    static const QString TOOL_SCENEVIEW_ICON_SEARCH = QString("search_bold.png");
 
     /****************************************************************************
     Struct for asset group info
@@ -119,15 +123,19 @@ namespace Magus
             // Note, that groupIcon must be a base filename. E.g. "mesh_icon.png"
             void addGroup (int groupId, const QString& iconName, const QString& groupName);
 
-            // Add a group (and icon) to a particular sceneview
+            // Add a group (and icon) to a particular sceneview.
+            // The addGroupToMapFlag determines whether the group is also added to the overall map of this widget.
+            // Creation of subsequent sceneviews also get these added groups.
             void addGroupToSceneView (int sceneId,
                                       const QString& iconName,
                                       int groupId,
-                                      const QString& groupName);
+                                      const QString& groupName,
+                                      bool addGroupToMapFlag = true);
             void addGroupToSceneView (QTreeWidget* sceneView,
                                       const QString& iconName,
                                       int groupId,
-                                      const QString& groupName);
+                                      const QString& groupName,
+                                      bool addGroupToMapFlag = true);
 
             // Add an asset item to a particular sceneview (identified by sceneView or id).
             // The asset is associated with a group (identified by means of the groupId).
@@ -227,6 +235,13 @@ namespace Magus
             // Delete an asset
             void deleteAsset(int sceneId, int assetId);
 
+        public slots:
+            // Called when the search clearbutton is pressed
+            void clearSearchLine(void);
+
+            // Called when the search string changes
+            void searchLineTextChanged(QString text);
+
         signals:
             // TODO
             // Emitted when a group is added to the sceneView tree
@@ -263,11 +278,18 @@ namespace Magus
             void handleDeletionOfAsset(QTreeWidget* sceneView, QTreeWidgetItem* assetItem);
             void handleDeletionOfItem(QTreeWidget* sceneView, QTreeWidgetItem* item);
             void checkHeader(void);
+            void setVisibilitySearchWidgets(bool visible);
             void addGroupToMap (int groupId, const QString& iconName, const QString& groupName);
+            void findAndShowItems(QTreeWidget* sceneView, const QString& searchPattern);
+            void resetSearch(void);
 
         private:
             QString mIconDir;
             QVBoxLayout* mTreeLayout;
+            QHBoxLayout* mSearchLayout;
+            QLineEdit* mSearchLine;
+            QLabel* mSearchLabel;
+            QPushButton* mSearchClearButton;
             QMap<int, QTreeWidget*> mSceneViewMap; // Multiple scenes (QTreeWidget) are possible
             QMap<int, QtAssetGroup*> mAssetGroupMap; // The groups
             QVector<QTreeWidgetItem*> mResultItemVec;

@@ -131,13 +131,13 @@ namespace Magus
                 updateVisibilityIcon(row, true);
         }
 
-        // Signal that layer is selected
-        emit layerSelected(layer->layerId, layer->name);
-
         // Set associated sceneview to visible (if mSceneView available)
         if (mSceneViewWidget)
             mSceneViewWidget->setSceneViewVisible(layer->layerId);
-    }
+
+        // Signal that layer is selected
+        emit layerSelected(layer->layerId, layer->name);
+}
 
     //****************************************************************************/
     void QtLayerWidget::mouseClickHandler(QMouseEvent* event)
@@ -219,7 +219,8 @@ namespace Magus
                 mSceneViewWidget->addGroupToSceneView(layerId,
                                                       assetGroupInfo.groupIcon,
                                                       groupId,
-                                                      assetGroupInfo.groupName);
+                                                      assetGroupInfo.groupName,
+                                                      false);
 
                 // 2. Determine the item type and add either the asset or all assets in a group
                 if (mListenToSceneViewWidget->itemIsGroup(item))
@@ -383,6 +384,8 @@ namespace Magus
             mSceneViewWidget->setSceneViewsInvisible();
             mSceneViewWidget->createSceneView(layer->layerId); // Create a sceneView per layer
         }
+
+        mTable->resizeRowsToContents();
 
         // Emit signal
         emit layerCreatedOrAdded(layer->layerId, layer->name);

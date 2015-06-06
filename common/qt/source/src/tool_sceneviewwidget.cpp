@@ -24,8 +24,8 @@
 #include <QMessageBox>
 #include <QHeaderView>
 #include <QEvent>
-#include <QPixmap>
 #include <QImage>
+#include <QPixmap>
 #include <QTreeWidgetItem>
 #include "tool_sceneviewwidget.h"
 
@@ -36,15 +36,45 @@ namespace Magus
     {
         setWindowTitle(QString("Scene view"));
         mIconDir = iconDir;
-        QHBoxLayout* mainLayout = new QHBoxLayout;
+        QVBoxLayout* mainLayout = new QVBoxLayout;
+        mSearchLayout = new QHBoxLayout;
         mTreeLayout = new QVBoxLayout;
+
+        // Create edit
+        mSearchLine = new QLineEdit();
+        connect(mSearchLine, SIGNAL(textChanged(QString)), this, SLOT(searchLineTextChanged(QString)));
+
+        // Create findbutton
+        QImage imageSearch(mIconDir + TOOL_SCENEVIEW_ICON_SEARCH);
+        QPixmap pixMapSearch = QPixmap::fromImage(imageSearch).scaled(TOOL_SCENEVIEW_ICON_WIDTH, TOOL_SCENEVIEW_ICON_WIDTH);
+        mSearchLabel = new QLabel();
+        mSearchLabel->setPixmap(pixMapSearch);
+        mSearchLabel->setContentsMargins(-8, -8, -8, -8);
+
+        // Create clearbutton
+        QImage imageClear(mIconDir + TOOL_SCENEVIEW_ICON_CLOSE);
+        QPixmap pixMapClear = QPixmap::fromImage(imageClear).scaled(TOOL_SCENEVIEW_ICON_WIDTH, TOOL_SCENEVIEW_ICON_WIDTH);
+        mSearchClearButton = new QPushButton();
+        mSearchClearButton->setStyleSheet(QString("QPushButton {border: none; background: transparent;} QPushButton:hover {background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #565656, stop:1 #464646);}"));
+        mSearchClearButton->setIcon(QIcon(pixMapClear));
+        mSearchClearButton->setIconSize(QSize(TOOL_SCENEVIEW_ICON_WIDTH, TOOL_SCENEVIEW_ICON_WIDTH));
+        mSearchClearButton->setContentsMargins(-8, -8, -8, -8);
+        connect(mSearchClearButton, SIGNAL(clicked()), this, SLOT(clearSearchLine()));
+
+
+        // Misc
         mVisibilityIconVisibleForGroups = true;
         mVisibilityIconVisibleForAssets = true;
         mDeletionIconVisibleForGroups = true;
         mDeletionIconVisibleForAssets = true;
 
         // Layout
-        mainLayout->addLayout(mTreeLayout);
+        mSearchLayout->addWidget(mSearchLabel, 1);
+        mSearchLayout->addWidget(mSearchLine, 2000);
+        mSearchLayout->addWidget(mSearchClearButton, 1);
+        setVisibilitySearchWidgets(false);
+        mainLayout->addLayout(mSearchLayout, 1);
+        mainLayout->addLayout(mTreeLayout, 2000);
         setLayout(mainLayout);
     }
 
@@ -187,8 +217,15 @@ namespace Magus
     //****************************************************************************/
     void QtSceneViewWidget::setVisibilityOfAllGroups(int sceneId, bool visible)
     {
-        foreach (QtAssetGroup* group , mAssetGroupMap)
-            setVisibilityOfGroup(sceneId, group->groupId, visible);
+        QTreeWidget* sceneView = getSceneView(sceneId);
+        QTreeWidgetItemIterator it(sceneView);
+        while (*it)
+        {
+            if (itemIsGroup(*it))
+                setVisibilityOfGroup(*it, visible);
+
+            ++it;
+        }
     }
 
     //****************************************************************************/
@@ -349,7 +386,7 @@ namespace Magus
 
         // Layout
         mTreeLayout->addWidget(sceneView);
-
+        setVisibilitySearchWidgets(true);
         return sceneView;
     }
 
@@ -357,9 +394,19 @@ namespace Magus
     void QtSceneViewWidget::deleteSceneView (int sceneId)
     {
         QTreeWidget* sceneView = mSceneViewMap[sceneId];
+
+        // If the sceneView is the one that is currently visible, the search widgets are set to non-visible
+        if (sceneView == getCurrentVisibleScene())
+            setVisibilitySearchWidgets(false);
+
+        // Delete it
         mSceneViewMap.remove(sceneId);
         //sceneView->close();
         delete sceneView;
+
+        // If no more sceneViews left, the seach widgets become invisible
+        if (mSceneViewMap.count() == 0)
+            setVisibilitySearchWidgets(false);
     }
 
     //****************************************************************************/
@@ -370,6 +417,18 @@ namespace Magus
             return;
 
         sceneView->setVisible(visible);
+
+        // If the sceneView is the one that is currently visible, the search widgets get the same visisbility
+        if (sceneView == getCurrentVisibleScene())
+            setVisibilitySearchWidgets(visible);
+    }
+
+    //****************************************************************************/
+    void QtSceneViewWidget::setVisibilitySearchWidgets(bool visible)
+    {
+        mSearchLabel->setVisible(visible);
+        mSearchLine->setVisible(visible);
+        mSearchClearButton->setVisible(visible);
     }
 
     //****************************************************************************/
@@ -386,6 +445,7 @@ namespace Magus
 
         // Set the selected one visible
         sceneView->setVisible(true);
+        setVisibilitySearchWidgets(true);
     }
 
     //****************************************************************************/
@@ -394,6 +454,9 @@ namespace Magus
         // Set all sceneviews invisible
         foreach (QTreeWidget* sceneView, mSceneViewMap)
             sceneView->setVisible(false);
+
+        // Also make the search widget invisible
+        setVisibilitySearchWidgets(false);
     }
 
     //****************************************************************************/
@@ -616,18 +679,13 @@ namespace Magus
     void QtSceneViewWidget::addGroup (int groupId, const QString& iconName, const QString& groupName)
     {
         // Add group to the map
-        //QtAssetGroup* group = new QtAssetGroup();
-        //group->groupId = groupId;
-        //group->groupIcon = iconName;
-        //group->groupName = groupName;
-        //mAssetGroupMap[groupId] = group;
         addGroupToMap(groupId, iconName, groupName);
 
         // Add groups to current sceneviews
         foreach (QTreeWidget* sceneView, mSceneViewMap)
         {
             if (!sceneViewHasGroup(sceneView, groupId))
-                addGroupToSceneView(sceneView, iconName, groupId, groupName);
+                addGroupToSceneView(sceneView, iconName, groupId, groupName, false);
         }
     }
 
@@ -651,17 +709,19 @@ namespace Magus
     void QtSceneViewWidget::addGroupToSceneView (int sceneId,
                                                  const QString& iconName,
                                                  int groupId,
-                                                 const QString& groupName)
+                                                 const QString& groupName,
+                                                 bool addGroupToMapFlag)
     {
         QTreeWidget* sceneView = getSceneView (sceneId);
-        addGroupToSceneView (sceneView, iconName, groupId, groupName);
+        addGroupToSceneView (sceneView, iconName, groupId, groupName, addGroupToMapFlag);
     }
 
     //****************************************************************************/
     void QtSceneViewWidget::addGroupToSceneView (QTreeWidget* sceneView,
                                                  const QString& iconName,
                                                  int groupId,
-                                                 const QString& groupName)
+                                                 const QString& groupName,
+                                                 bool addGroupToMapFlag)
     {
         if (!sceneView)
             return;
@@ -703,8 +763,9 @@ namespace Magus
         // Add it to the table
         sceneView->addTopLevelItem(group);
 
-        // Add group to list (ignores duplicates)
-        addGroupToMap(groupId, iconName, groupName);
+        // Add group to list if neeed (ignores duplicates)
+        if (addGroupToMapFlag)
+            addGroupToMap(groupId, iconName, groupName);
 
         // Emit signal
         emit groupCreatedOrAdded(sceneView, groupId);
@@ -1017,6 +1078,58 @@ namespace Magus
             return;
 
         handleDeletionOfAsset(sceneView, assetItem);
+    }
+
+    //****************************************************************************/
+    void QtSceneViewWidget::clearSearchLine(void)
+    {
+        mSearchLine->clear();
+        resetSearch();
+    }
+
+    //****************************************************************************/
+    void QtSceneViewWidget::searchLineTextChanged(QString text)
+    {
+        findAndShowItems (getCurrentVisibleScene(), text);
+    }
+
+    //****************************************************************************/
+    void QtSceneViewWidget::resetSearch(void)
+    {
+        QTreeWidget* sceneView = getCurrentVisibleScene();
+        QTreeWidgetItem* item;
+        QTreeWidgetItemIterator it(sceneView);
+        while (*it)
+        {
+            if (itemIsAsset(*it))
+                (*it)->setHidden(false);
+
+            ++it;
+        }
+    }
+
+    //****************************************************************************/
+    void QtSceneViewWidget::findAndShowItems(QTreeWidget* sceneView, const QString& searchPattern)
+    {
+        if (!sceneView)
+            return;
+
+        resetSearch();
+        QTreeWidgetItem* item;
+        QTreeWidgetItemIterator it(sceneView);
+        QString assetName;
+        sceneView->expandAll();
+        while (*it)
+        {
+            if (itemIsAsset(*it))
+            {
+                assetName =(*it)->text(TOOL_SCENEVIEW_COLUMN_ASSET_NAME);
+                if (!assetName.contains(searchPattern))
+                    (*it)->setHidden(true);
+            }
+
+            ++it;
+        }
     }
 
 }
