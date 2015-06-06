@@ -1,7 +1,7 @@
 # Magus
 Magus Gui wizzard
 
-Magus is a Qt application that generates C++ code for GUI applications and offers a set of standard widgets to quickly create an application. 
+Magus is a Qt application that generates C++ code for GUI applications and offers a set of standard widgets to quickly create an application (focussed on game/3D editors). 
 
 ![Magus overview](/Magus.png)
 Magus generates a c++ project, based on a template (.ide file). The template can be modified in the application. Currently only Qt projects are supported.
