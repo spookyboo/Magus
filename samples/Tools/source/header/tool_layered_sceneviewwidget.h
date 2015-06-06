@@ -51,7 +51,10 @@ namespace Magus
             virtual ~QtLayeredSceneViewWidget(void);
 
             // Set a sceneviewwidget; this widgets is used to determine the item dragged and dropped
-            void setSceneViewWidgetForDragDrop(QtSceneViewWidget* sceneViewWidget);
+            void setListenToSceneViewWidget(QtSceneViewWidget* sceneViewWidget,
+                                            bool listenToDropEvents = true,
+                                            bool listenToDeleteEvents = true,
+                                            int sceneId = 0);
 
             // Return pointer to QtSceneViewWidget
             QtSceneViewWidget* getSceneViewWidget(void);

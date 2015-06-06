@@ -42,8 +42,10 @@ namespace Magus
         mIconDir = iconDir;
         mLayerIdCounter = 1;
         mSceneViewWidget = sceneViewWidget;
-        mSceneViewWidgetForDragDrop = 0;
-        mSceneIdForDragDrop = 0;
+        mListenToSceneViewWidget = 0;
+        mListenToSceneId = 0;
+        mListenToDropEvents = true;
+        mListenToDeleteEvents = true;
 
         // Create table
         mTable = new QTableWidget(0, 3, this);
@@ -129,12 +131,13 @@ namespace Magus
                 updateVisibilityIcon(row, true);
         }
 
-        emit layerSelected(layer->layerId, layer->name);
-
         // Set associated sceneview to visible (if mSceneView available)
         if (mSceneViewWidget)
             mSceneViewWidget->setSceneViewVisible(layer->layerId);
-    }
+
+        // Signal that layer is selected
+        emit layerSelected(layer->layerId, layer->name);
+}
 
     //****************************************************************************/
     void QtLayerWidget::mouseClickHandler(QMouseEvent* event)
@@ -183,7 +186,11 @@ namespace Magus
     void QtLayerWidget::dropHandler(QObject* object, QEvent* event)
     {
         event->accept();
-        if (!mSceneViewWidgetForDragDrop)
+
+        if (!mListenToDropEvents)
+            return;
+
+        if (!mListenToSceneViewWidget)
             return;
 
         // Determine whether the data was from an abstractitem modellist
@@ -195,31 +202,32 @@ namespace Magus
 
         // Do not use the mimeData to retrieve the sceneview tree item, because a standard model is used,
         // which does not return the data that is needed.
-        // Use the data of the selected item in the sceneview (mSceneIdForDragDrop) as an alternative.
+        // Use the data of the selected item in the sceneview (mListenToSceneId) as an alternative.
         if (mTable->rowCount() > 0 && mSceneViewWidget)
         {
-            // Get the dropped item (this is the currently selected item of mSceneIdForDragDrop in widget mSceneViewWidgetForDragDrop)
-            QTreeWidgetItem* item = mSceneViewWidgetForDragDrop->getCurrentItem(mSceneIdForDragDrop);
+            // Get the dropped item (this is the currently selected item of mListenToSceneId in widget mListenToSceneViewWidget)
+            QTreeWidgetItem* item = mListenToSceneViewWidget->getCurrentItem(mListenToSceneId);
             if (item)
             {
                 // The layerId of the selected layer = the sceneId of the visible sceneview tree in mSceneViewWidget
-                // The currently selected group in the mSceneViewWidgetForDragDrop = the destination group of mSceneViewWidget
+                // The currently selected group in the mListenToSceneViewWidget = the destination group of mSceneViewWidget
                 int layerId = getCurrentLayerId();
-                int groupId = mSceneViewWidgetForDragDrop->getCurrentGroupId(item);
+                int groupId = mListenToSceneViewWidget->getCurrentGroupId(item);
 
                 // 1. Add the group; this is ignored if the group is already available
-                QtAssetGroup assetGroupInfo = mSceneViewWidgetForDragDrop->getGroupInfo(groupId);
+                QtAssetGroup assetGroupInfo = mListenToSceneViewWidget->getGroupInfo(groupId);
                 mSceneViewWidget->addGroupToSceneView(layerId,
                                                       assetGroupInfo.groupIcon,
                                                       groupId,
-                                                      assetGroupInfo.groupName);
+                                                      assetGroupInfo.groupName,
+                                                      false);
 
                 // 2. Determine the item type and add either the asset or all assets in a group
-                if (mSceneViewWidgetForDragDrop->itemIsGroup(item))
+                if (mListenToSceneViewWidget->itemIsGroup(item))
                 {
                     // The dropped item is a GROUP
                     // Add all the items of the source group to the destination group
-                    QVector<QTreeWidgetItem*> assetVec = mSceneViewWidgetForDragDrop->getAssetItemsOfGroup(mSceneIdForDragDrop, groupId);
+                    QVector<QTreeWidgetItem*> assetVec = mListenToSceneViewWidget->getAssetItemsOfGroup(mListenToSceneId, groupId);
                     foreach (QTreeWidgetItem* assetItem, assetVec)
                     {
                         mSceneViewWidget->addAssetToSceneView(layerId,
@@ -230,7 +238,7 @@ namespace Magus
 
                     //QMessageBox::information(0, "test", item->text(1)); // Test
                 }
-                else if (mSceneViewWidgetForDragDrop->itemIsAsset(item))
+                else if (mListenToSceneViewWidget->itemIsAsset(item))
                 {
                     // The dropped item is an ASSET
                     // The assetId of the item to be dropped = the assetId of the destination item
@@ -290,20 +298,25 @@ namespace Magus
 
         QPixmap pixMap;
         QtLayer* layer = mLayerVec.at(row);
+        layer->visible = visible;
         if (visible)
         {
             QImage image(mIconDir + TOOL_ICON_VIEW_VISIBLE);
             pixMap = QPixmap::fromImage(image).scaled(TOOL_LAYER_ICON_WIDTH, TOOL_LAYER_ICON_WIDTH);
             item->setData(Qt::DecorationRole, QVariant(pixMap));
-            layer->visible = true;
+            //layer->visible = true;
         }
         else
         {
             QImage image(mIconDir + TOOL_ICON_VIEW_INVISIBLE);
             pixMap = QPixmap::fromImage(image).scaled(TOOL_LAYER_ICON_WIDTH, TOOL_LAYER_ICON_WIDTH);
             item->setData(Qt::DecorationRole, QVariant(pixMap));
-            layer->visible = false;
+            //layer->visible = false;
         }
+
+        // Update the visibility of groups in the associated sceneView
+        if (mSceneViewWidget)
+            mSceneViewWidget->setVisibilityOfAllGroups(layer->layerId, layer->visible);
 
         emit layerVisibiltyChanged(layer->layerId, item->text(), layer->visible);
     }
@@ -371,6 +384,8 @@ namespace Magus
             mSceneViewWidget->setSceneViewsInvisible();
             mSceneViewWidget->createSceneView(layer->layerId); // Create a sceneView per layer
         }
+
+        mTable->resizeRowsToContents();
 
         // Emit signal
         emit layerCreatedOrAdded(layer->layerId, layer->name);
@@ -592,10 +607,44 @@ namespace Magus
     }
 
     //****************************************************************************/
-    void QtLayerWidget::setSceneViewWidgetForDragDrop(QtSceneViewWidget* sceneViewWidget, int sceneId)
+    void QtLayerWidget::setListenToSceneViewWidget(QtSceneViewWidget* sceneViewWidget,
+                                                   bool listenToDropEvents,
+                                                   bool listenToDeleteEvents,
+                                                   int sceneId)
     {
-        mSceneViewWidgetForDragDrop = sceneViewWidget;
-        mSceneIdForDragDrop = sceneId;
+        mListenToSceneViewWidget = sceneViewWidget;
+        mListenToDropEvents = listenToDropEvents;
+        setAcceptDrops(mListenToDropEvents);
+        mListenToDeleteEvents = listenToDeleteEvents;
+        mListenToSceneId = sceneId;
+
+        // The layer also responds to any group or asset deleted from the 'mListenToSceneViewWidget' widget
+        if (listenToDeleteEvents && mListenToSceneViewWidget)
+        {
+            connect(mListenToSceneViewWidget, SIGNAL(assetDeleted(int,int,int)), this, SLOT(assetDeleted(int,int,int)));
+            connect(mListenToSceneViewWidget, SIGNAL(groupDeleted(int,int)), this, SLOT(groupDeleted(int,int)));
+        }
+    }
+
+    //****************************************************************************/
+    void QtLayerWidget::setListenToDropEvents (bool listenToDropEvents)
+    {
+        mListenToDropEvents = listenToDropEvents;
+        setAcceptDrops(mListenToDropEvents);
+    }
+
+    //****************************************************************************/
+    void QtLayerWidget::setListenToDeleteEvents (bool listenToDeleteEvents)
+    {
+        // Note, that if the mListenToSceneViewWidget is not changed and the slot was already associated, a
+        // new signal/slot is assigned to the same mListenToSceneViewWidget. Use it with care.
+        if (listenToDeleteEvents && mListenToSceneViewWidget)
+        {
+            connect(mListenToSceneViewWidget, SIGNAL(assetDeleted(int,int,int)), this, SLOT(assetDeleted(int,int,int)));
+            connect(mListenToSceneViewWidget, SIGNAL(groupDeleted(int,int)), this, SLOT(groupDeleted(int,int)));
+        }
+
+        mListenToDeleteEvents = listenToDeleteEvents;
     }
 
     //****************************************************************************/
@@ -609,6 +658,33 @@ namespace Magus
             return 0;
 
         return -1;
+    }
+
+    //****************************************************************************/
+    void QtLayerWidget::groupDeleted(int sceneId, int groupId)
+    {
+        if (!mListenToDeleteEvents)
+            return;
+
+        if (!mSceneViewWidget)
+            return;
+
+        // Iterate over all layers and delete the group
+        foreach (QtLayer* layer, mLayerVec)
+            mSceneViewWidget->deleteGroup(layer->layerId, groupId);
+    }
+    //****************************************************************************/
+    void QtLayerWidget::assetDeleted(int sceneId, int groupId, int assetId)
+    {
+        if (!mListenToDeleteEvents)
+            return;
+
+        if (!mSceneViewWidget)
+            return;
+
+        // Iterate over all layers and delete the asset
+        foreach (QtLayer* layer, mLayerVec)
+            mSceneViewWidget->deleteAsset(layer->layerId, assetId);
     }
 
 }

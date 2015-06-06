@@ -168,11 +168,17 @@ void MainWindow::doLayerAndSceneViewMenuAction(void)
     overallSceneViewWidget->addAssetToSceneView(OVERALL_SCENE, GROUP_MESH, 5, "mesh 1");
     overallSceneViewWidget->addAssetToSceneView(OVERALL_SCENE, GROUP_MESH, 6, "mesh 2");
 
+    // Groups may not be deleted from the overal scene
+    overallSceneViewWidget->setDeletionIconVisibleForGroups(false);
+
+    // Groups cannot be set visible in the overall scene
+    overallSceneViewWidget->setVisibilityIconVisibleForGroups(false);
+
     // Create a layered scene view widget.
     // This widgets is used to display the assets (items) that are asociated to a layer.
     // An asset (or an entire group) can be dropped onto a layer.
     Magus::QtLayeredSceneViewWidget* layeredSceneViewWidget = new Magus::QtLayeredSceneViewWidget(QString("../common/icons/"), this);
-    layeredSceneViewWidget->setSceneViewWidgetForDragDrop(overallSceneViewWidget);
+    layeredSceneViewWidget->setListenToSceneViewWidget(overallSceneViewWidget);
 
     // Layout
     mainLayout.addWidget(layeredSceneViewWidget);

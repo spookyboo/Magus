@@ -44,9 +44,12 @@ namespace Magus
     }
 
     //****************************************************************************/
-    void QtLayeredSceneViewWidget::setSceneViewWidgetForDragDrop(QtSceneViewWidget* sceneViewWidget)
+    void QtLayeredSceneViewWidget::setListenToSceneViewWidget(QtSceneViewWidget* sceneViewWidget,
+                                                              bool listenToDropEvents,
+                                                              bool listenToDeleteEvents,
+                                                              int sceneId)
     {
-        mLayerWidget->setSceneViewWidgetForDragDrop(sceneViewWidget);
+        mLayerWidget->setListenToSceneViewWidget(sceneViewWidget, listenToDropEvents, listenToDeleteEvents, sceneId);
     }
 
     //****************************************************************************/

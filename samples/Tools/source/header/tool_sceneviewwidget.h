@@ -25,7 +25,10 @@
 #include <QWidget>
 #include <QMouseEvent>
 #include <QTreeWidget>
+#include <QLineEdit>
 #include <QVBoxLayout>
+#include <QPushButton>
+#include <QLabel>
 
 QT_BEGIN_NAMESPACE
 
@@ -50,6 +53,7 @@ namespace Magus
     static const QString TOOL_SCENEVIEW_ICON_VISIBLE = QString("view_visible_bold.png");
     static const QString TOOL_SCENEVIEW_ICON_INVISIBLE = QString("view_invisible_bold.png");
     static const QString TOOL_SCENEVIEW_ICON_CLOSE = QString("close_bold.png");
+    static const QString TOOL_SCENEVIEW_ICON_SEARCH = QString("search_bold.png");
 
     /****************************************************************************
     Struct for asset group info
@@ -90,23 +94,48 @@ namespace Magus
             // Return a sceneview
             QTreeWidget* getSceneView (int sceneId);
 
+            // Return a sceneId
+            int getSceneId (QTreeWidget* sceneView);
+
             // Set all sceneviews invisible
             void setSceneViewsInvisible (void);
+
+            // Visibility icons are not visible for both groups and assets
+            void setVisibilityIconVisible (bool visible);
+
+            // Visibility icons are not visible for groups
+            void setVisibilityIconVisibleForGroups (bool visible);
+
+            // Visibility icons are not visible for assets
+            void setVisibilityIconVisibleForAssets (bool visible);
+
+            // Deletion icons are not visible for both groups and assets
+            void setDeletionIconVisible (bool visible);
+
+            // Deletion icons are not visible for groups
+            void setDeletionIconVisibleForGroups (bool visible);
+
+            // Deletion icons are not visible for assets
+            void setDeletionIconVisibleForAssets (bool visible);
 
             // Add a group (and icon) to all sceneviews
             // The group info is internally stored. All newly created sceneviews will also get the groups
             // Note, that groupIcon must be a base filename. E.g. "mesh_icon.png"
             void addGroup (int groupId, const QString& iconName, const QString& groupName);
 
-            // Add a group (and icon) to a particular sceneview
+            // Add a group (and icon) to a particular sceneview.
+            // The addGroupToMapFlag determines whether the group is also added to the overall map of this widget.
+            // Creation of subsequent sceneviews also get these added groups.
             void addGroupToSceneView (int sceneId,
                                       const QString& iconName,
                                       int groupId,
-                                      const QString& groupName);
+                                      const QString& groupName,
+                                      bool addGroupToMapFlag = true);
             void addGroupToSceneView (QTreeWidget* sceneView,
                                       const QString& iconName,
                                       int groupId,
-                                      const QString& groupName);
+                                      const QString& groupName,
+                                      bool addGroupToMapFlag = true);
 
             // Add an asset item to a particular sceneview (identified by sceneView or id).
             // The asset is associated with a group (identified by means of the groupId).
@@ -131,7 +160,7 @@ namespace Magus
             // Determine whether an item is a group
             bool itemIsGroup(QTreeWidgetItem* item);
 
-            // Determine whether an item is aan asset
+            // Determine whether an item is an asset
             bool itemIsAsset(QTreeWidgetItem* item);
 
             // Check whether an asset with the given criteria already exists in a sceneView
@@ -173,8 +202,45 @@ namespace Magus
             QTreeWidgetItem* getGroupItem(int sceneId, int groupId);
             QTreeWidgetItem* getGroupItem(QTreeWidget* sceneView, int groupId);
 
+            // Return the item of an asset in a sceneview
+            QTreeWidgetItem* getAssetItem(int sceneId, int assetId);
+            QTreeWidgetItem* getAssetItem(QTreeWidget* sceneView, int assetId);
+
             // Return an info object
             const QtAssetGroup& getGroupInfo(int groupId);
+
+            // Set the visibility icon of a certain group
+            void setVisibilityOfGroup(int sceneId, int groupId, bool visible);
+            void setVisibilityOfGroup(QTreeWidgetItem* groupItem, bool visible);
+
+            // Set the visibility icon of a all groups in a sceneView
+            void setVisibilityOfAllGroups(int sceneId, bool visible);
+
+            // Set the visibility icon of a certain asset
+            void setVisibilityOfAsset(int sceneId, int assetId, bool visible);
+            void setVisibilityOfAsset(QTreeWidgetItem* assetItem, bool visible);
+
+            // Determine whether a group item is visible (status of the visibility icon)
+            bool groupIsVisible(QTreeWidgetItem* groupItem);
+
+            // Determine whether a parent group of a child asset item is visible (status of the visibility icon)
+            bool groupOfAssetItemIsVisible(QTreeWidgetItem* assetItem);
+
+            // Determine whether an asset item is visible (status of the visibility icon)
+            bool assetIsVisible(QTreeWidgetItem* assetItem);
+
+            // Delete a group
+            void deleteGroup(int sceneId, int groupId);
+
+            // Delete an asset
+            void deleteAsset(int sceneId, int assetId);
+
+        public slots:
+            // Called when the search clearbutton is pressed
+            void clearSearchLine(void);
+
+            // Called when the search string changes
+            void searchLineTextChanged(QString text);
 
         signals:
             // TODO
@@ -186,35 +252,53 @@ namespace Magus
 
             // Emitted when a group is removed (deleted) from the sceneView tree
             void groupDeleted(QTreeWidget* sceneView, int groupId);
+            void groupDeleted(int sceneId, int groupId);
 
             // Emitted when an asset is removed (deleted) from a group in the sceneView tree
             void assetDeleted(QTreeWidget* sceneView, int groupId, int assetId);
+            void assetDeleted(int sceneId, int groupId, int assetId);
 
             // Emitted when the visibility column of a group in the sceneView tree is toggled
-            //void groupVisibiltyChanged(QTreeWidget* sceneView, int groupId);
+            void groupVisibiltyChanged(QTreeWidget* sceneView, int groupId);
 
             // Emitted when the visibility column of an asset in the sceneView tree is toggled
-            //void assetVisibiltyChanged(QTreeWidget* sceneView, int groupId, int assetId);
+            void assetVisibiltyChanged(QTreeWidget* sceneView, int groupId, int assetId);
 
             // Emitted when a group in the sceneView tree is selected
-            //void groupSelected(QTreeWidget* sceneView, int groupId);
+            void groupSelected(QTreeWidget* sceneView, int groupId);
 
             // Emitted when an asset in the sceneView tree is selected
-            //void assetSelected(QTreeWidget* sceneView, int groupId, int assetId);
+            void assetSelected(QTreeWidget* sceneView, int groupId, int assetId);
 
         protected:
             void mouseClickHandler(QMouseEvent* event);
-            void toggleVisibility(QTreeWidgetItem* item);
-            void handleDeletion(QTreeWidget* sceneView, QTreeWidgetItem* item, int col);
+            void toggleVisibilityOfGroup(QTreeWidgetItem* groupItem);
+            void toggleVisibilityOfAsset(QTreeWidgetItem* assetItem);
+            void handleDeletionOfGroup(QTreeWidget* sceneView, QTreeWidgetItem* groupItem);
+            void handleDeletionOfAsset(QTreeWidget* sceneView, QTreeWidgetItem* assetItem);
+            void handleDeletionOfItem(QTreeWidget* sceneView, QTreeWidgetItem* item);
+            void checkHeader(void);
+            void setVisibilitySearchWidgets(bool visible);
+            void addGroupToMap (int groupId, const QString& iconName, const QString& groupName);
+            void findAndShowItems(QTreeWidget* sceneView, const QString& searchPattern);
+            void resetSearch(void);
 
         private:
             QString mIconDir;
             QVBoxLayout* mTreeLayout;
+            QHBoxLayout* mSearchLayout;
+            QLineEdit* mSearchLine;
+            QLabel* mSearchLabel;
+            QPushButton* mSearchClearButton;
             QMap<int, QTreeWidget*> mSceneViewMap; // Multiple scenes (QTreeWidget) are possible
             QMap<int, QtAssetGroup*> mAssetGroupMap; // The groups
             QVector<QTreeWidgetItem*> mResultItemVec;
             QtAssetGroup mResultAssetGroupInfo;
             QString mResultText;
+            bool mVisibilityIconVisibleForGroups;
+            bool mVisibilityIconVisibleForAssets;
+            bool mDeletionIconVisibleForGroups;
+            bool mDeletionIconVisibleForAssets;
     };
 }
 

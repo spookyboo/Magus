@@ -633,10 +633,7 @@ QTableView
 	background: #808080;
 	selection-background-color: #cc7800;
 	selection-color: #f5f5f5;
-	padding-left: 5px;
-	padding-right: 5px;
 	color: #000000;
-	margin: 5px;
 }
 
 QTreeView
