@@ -186,6 +186,20 @@ Qt::DropActions QtTextureModel::supportedDropActions() const
 }
 
 //****************************************************************************/
+void QtTextureModel::addTexture(const QPixmap& pixmap, const QString& name, QSize size)
+{
+    int row = mPixmaps.size();
+    beginInsertRows(QModelIndex(), row, row);
+    pixmap.scaled(size.width(),
+                  size.height(),
+                  Qt::KeepAspectRatio,
+                  Qt::SmoothTransformation);
+    mPixmaps.insert(row, pixmap);
+    mNames.insert(row, name);
+    endInsertRows();
+}
+
+//****************************************************************************/
 void QtTextureModel::addTexture(const QString& fileName, QSize size)
 {
     int row = mPixmaps.size();

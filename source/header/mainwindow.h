@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014
+** Copyright (C) 2015
 **
 ** This file is part of the Magus toolkit
 **
@@ -78,6 +78,7 @@ class MainWindow : public QMainWindow
         void openProject(void);
         void saveProject(void);
         void build(void);
+        void config(void);
         void about(void);
 
     private:
@@ -92,15 +93,17 @@ class MainWindow : public QMainWindow
         WxWidgetsBuilder mWxWidgetsBuilder;
 
         QTabWidget* mTabWidget;
-        QMenu *fileMenu;
-        QMenu *helpMenu;
-        QAction *newAct;
-        QAction *openAct;
-        QAction *saveAct;
-        QAction *buildAct;
-        QAction *exitAct;
-        QAction *aboutAct;
-        QLabel *infoLabel;
+        QMenu* fileMenu;
+        QMenu* toolMenu;
+        QMenu* helpMenu;
+        QAction* newAct;
+        QAction* openAct;
+        QAction* saveAct;
+        QAction* buildAct;
+        QAction* exitAct;
+        QAction* configAct;
+        QAction* aboutAct;
+        QLabel* infoLabel;
 
         QString mTemplateDir;
         QString mIconDir;

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014
+** Copyright (C) 2015
 **
 ** This file is part of the Magus toolkit
 **
@@ -34,6 +34,8 @@ class WxWidgetsBuilder : public Builder
         virtual ~WxWidgetsBuilder(){};
 
         const QString getType(void) const {return BUILDER_TYPE_WXWIDGETS;};
+        void setOutputDir (const QString& outputDir){};
+        void setOgre (const QString& ogreRootEnv, const QString& ogreRoot){};
         bool isMenuAvailable(){return true;};
         bool isHorizontalToolbarAvailable(){return false;};
         bool isVerticalToolbarAvailable(){return false;};

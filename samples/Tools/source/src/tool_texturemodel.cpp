@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014
+** Copyright (C) 2015
 **
 ** This file is part of the Magus toolkit
 **
@@ -183,6 +183,20 @@ bool QtTextureModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
 Qt::DropActions QtTextureModel::supportedDropActions() const
 {
     return Qt::CopyAction | Qt::MoveAction;
+}
+
+//****************************************************************************/
+void QtTextureModel::addTexture(const QPixmap& pixmap, const QString& name, QSize size)
+{
+    int row = mPixmaps.size();
+    beginInsertRows(QModelIndex(), row, row);
+    pixmap.scaled(size.width(),
+                  size.height(),
+                  Qt::KeepAspectRatio,
+                  Qt::SmoothTransformation);
+    mPixmaps.insert(row, pixmap);
+    mNames.insert(row, name);
+    endInsertRows();
 }
 
 //****************************************************************************/

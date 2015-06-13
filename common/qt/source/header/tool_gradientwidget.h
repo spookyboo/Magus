@@ -40,7 +40,7 @@ QT_END_NAMESPACE
 
 /*
  * TODO:
- * - Bug: Add new alphamarker => all alpha becomes 0% unless another alpha marker has been selected
+ * - Bug: Add new alphamarker => all alpha becomes 0% unless another alpha marker has been selected?
  */
 
 namespace Magus

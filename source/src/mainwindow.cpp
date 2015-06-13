@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014
+** Copyright (C) 2015
 **
 ** This file is part of the Magus toolkit
 **
@@ -31,6 +31,8 @@
 #include "templatewriter.h"
 #include "templatedialog.h"
 #include "customtabwidget.h"
+#include "configdialog.h"
+#include "pages.h"
 
 //****************************************************************************/
 MainWindow::MainWindow(MainApplication* app)
@@ -38,12 +40,14 @@ MainWindow::MainWindow(MainApplication* app)
     mApplicationTemplate = new ApplicationTemplate(); // Begin with an empty template
     mTabWidget = 0;
     fileMenu = 0;
+    toolMenu = 0;
     helpMenu = 0;
     newAct = 0;
     openAct = 0;
     saveAct = 0;
     buildAct = 0;
     exitAct = 0;
+    configAct = 0;
     aboutAct = 0;
     infoLabel = 0;
     mApp = app;
@@ -56,7 +60,7 @@ MainWindow::MainWindow(MainApplication* app)
     QSettings globalSettings (GLOBAL_CONFIG_FILE,  QSettings::IniFormat);
     mTemplateDir = globalSettings.value(CONFIG_KEY_TEMPLATE_DIR).toString();
     mIconDir = globalSettings.value(CONFIG_KEY_ICON_DIR).toString();;
-    mLayoutDir = globalSettings.value(CONFIG_KEY_LAYOUT_DIR).toString();
+    mLayoutDir = globalSettings.value(CONFIG_KEY_LAYOUT_DIR).toString(); // TODO: Crashes the application after change + restore
     mQtDir = globalSettings.value(CONFIG_KEY_QT_DIR).toString();
 
     // Set the stylesheet of the application
@@ -318,6 +322,38 @@ void MainWindow::build(void)
 }
 
 //****************************************************************************/
+void MainWindow::config(void)
+{
+    ConfigDialog dialog(this);
+    dialog.setMinimumWidth(800);
+    if (dialog.exec())
+    {
+        QString iconDir = dialog.mGeneralPage->getIconDir();
+        //QString layoutDir = dialog.mGeneralPage->getLayoutDir();
+        //QString templateDir = dialog.mGeneralPage->getTemplateDir();
+        QString outputDir = dialog.mBuildPage->getOutputDir();
+        QString ogreRootEnv = dialog.mOgrePage->getOgreRootEnv();
+        QString ogreRoot = dialog.mOgrePage->getOgreRoot();
+
+        // Update the configuration file
+        QSettings globalSettings (GLOBAL_CONFIG_FILE,  QSettings::IniFormat);
+        globalSettings.setValue(CONFIG_KEY_ICON_DIR, iconDir);
+        //globalSettings.setValue(CONFIG_KEY_LAYOUT_DIR, layoutDir);
+        //globalSettings.setValue(CONFIG_KEY_TEMPLATE_DIR, templateDir);
+        globalSettings.setValue(CONFIG_KEY_OUTPUT_DIR, outputDir);
+        globalSettings.setValue(CONFIG_KEY_OGRE_ROOT_ENV, ogreRootEnv);
+        globalSettings.setValue(CONFIG_KEY_OGRE_ROOT, ogreRoot);
+
+        // Activate the new settings
+        mIconDir = iconDir;
+        //mLayoutDir = layoutDir;
+        //mTemplateDir = templateDir;
+        getCurrentBuilder()->setOutputDir(outputDir);
+        getCurrentBuilder()->setOgre(ogreRootEnv, ogreRoot);
+    }
+}
+
+//****************************************************************************/
 void MainWindow::about(void)
 {
     infoLabel->setText(tr("Invoked <b>Help|About</b>"));
@@ -347,6 +383,10 @@ void MainWindow::createActions(void)
     buildAct->setStatusTip(tr("Build a Gui"));
     connect(buildAct, SIGNAL(triggered()), this, SLOT(build()));
 
+    configAct = new QAction(tr("&Config"), this);
+    configAct->setStatusTip(tr("Configure the Magus application"));
+    connect(configAct, SIGNAL(triggered()), this, SLOT(config()));
+
     exitAct = new QAction(tr("E&xit"), this);
     exitAct->setShortcuts(QKeySequence::Quit);
     exitAct->setStatusTip(tr("Close the application"));
@@ -360,6 +400,7 @@ void MainWindow::createActions(void)
 //****************************************************************************/
 void MainWindow::createMenus(void)
 {
+    // File
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(newAct);
     fileMenu->addAction(openAct);
@@ -368,6 +409,11 @@ void MainWindow::createMenus(void)
     fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
 
+    // Tools
+    toolMenu = menuBar()->addMenu(tr("&Tools"));
+    toolMenu->addAction(configAct);
+
+    // Help
     helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(aboutAct);
 }

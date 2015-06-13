@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014
+** Copyright (C) 2015
 **
 ** This file is part of the Magus toolkit
 **
@@ -53,17 +53,18 @@ QtBuilder::QtBuilder()
     mOgreDir = globalSettings.value(CONFIG_KEY_OGRE_DIR).toString();
     mOutputOgreDir = globalSettings.value(CONFIG_KEY_OUTPUT_OGRE_DIR).toString();
     QString ogreRootEnv = globalSettings.value(CONFIG_KEY_OGRE_ROOT_ENV).toString();
-    if (!ogreRootEnv.isEmpty())
-    {
-        QByteArray value = qgetenv(ogreRootEnv.toUtf8().constData());
-        mOgreRoot = QString (value.constData()).toUtf8();
-    }
-    else
-    {
-        mOgreRoot = globalSettings.value(CONFIG_KEY_OGRE_ROOT).toString();
-    }
-    mOgreRoot.remove(QRegExp(QString::fromUtf8("\""))); // Strip from double quotes
-    mOgreRoot.replace(QChar('\\'), QChar('/')); // Change backslash into forward slash
+    setOgre(ogreRootEnv, QString(""));
+//    if (!ogreRootEnv.isEmpty())
+//    {
+//        QByteArray value = qgetenv(ogreRootEnv.toUtf8().constData());
+//        mOgreRoot = QString (value.constData()).toUtf8();
+//    }
+//    else
+//    {
+//        mOgreRoot = globalSettings.value(CONFIG_KEY_OGRE_ROOT).toString();
+//    }
+//    mOgreRoot.remove(QRegExp(QString::fromUtf8("\""))); // Strip from double quotes
+//    mOgreRoot.replace(QChar('\\'), QChar('/')); // Change backslash into forward slash
     mCurrentProject = QString("");
     mCurrentProjectSlash = QString("");
 }
@@ -71,6 +72,36 @@ QtBuilder::QtBuilder()
 //****************************************************************************/
 QtBuilder::~QtBuilder()
 {
+}
+
+//****************************************************************************/
+void QtBuilder::setOutputDir (const QString& outputDir)
+{
+    mOutputDir = outputDir;
+}
+
+//****************************************************************************/
+void QtBuilder::setOgre (const QString& ogreRootEnv, const QString& ogreRoot)
+{
+    if (!ogreRootEnv.isEmpty())
+    {
+        // Use the environment variable
+        QByteArray value = qgetenv(ogreRootEnv.toUtf8().constData());
+        mOgreRoot = QString (value.constData()).toUtf8();
+    }
+    else if (ogreRoot.isEmpty())
+    {
+        // The second argument was empty, so get the ogre root from the global settings
+        QSettings globalSettings (GLOBAL_CONFIG_FILE,  QSettings::IniFormat);
+        mOgreRoot = globalSettings.value(CONFIG_KEY_OGRE_ROOT).toString();
+    }
+    else
+    {
+        // Use the second argument, since the environment variable was empty
+        mOgreRoot = ogreRoot;
+    }
+    mOgreRoot.remove(QRegExp(QString::fromUtf8("\""))); // Strip from double quotes
+    mOgreRoot.replace(QChar('\\'), QChar('/')); // Change backslash into forward slash
 }
 
 //****************************************************************************/
@@ -128,6 +159,8 @@ void QtBuilder::build(ApplicationTemplate* applicationTemplate)
     QString dockWidgetHeaderAdditionalInclude; // Used to add additional #includes to <window>_dockwidget.h files
     QString dockWidgetHeaderAdditionalPrivate; // Used to add additional private members to <window>_dockwidget.h files
     QString dockWidgetHeaderPrivateSlots; // Used to add additional private slots to <window>_dockwidget.h files
+    QString projectModules = QString("QT += widgets"); // Default modules used
+    QString projectModuleOpenGL = QString(" opengl"); // OpenGL module (preceeded by a space)
     QString projectOgreRoot;// Used to set the root directory in the .pro file
     QString ogreInclude; // Used for additional includes in the .pro file
     QString ogreLib; // Used for additional libs in the .pro file
@@ -188,6 +221,7 @@ void QtBuilder::build(ApplicationTemplate* applicationTemplate)
     if (applicationTemplate->mUseTools)
     {
         useTools = true; // Tool items
+        projectModules += projectModuleOpenGL; // Add OpenGL module
     }
 
     // --------------------------------------------------------------------------------------------------------------------
@@ -544,6 +578,7 @@ void QtBuilder::build(ApplicationTemplate* applicationTemplate)
 
     // --------------------------------------------------------------------------------------------------------------------
     // Step 13: Create the project file (update the references in the .ptp file)
+    project.replace(PROJECT_MODULES, projectModules);
     project.replace(PROJECT_OGRE_ROOT, projectOgreRoot);
     project.replace(PROJECT_HEADER, mOutputHeaderDir);
     project.replace(PROJECT_ADDITIONAL_HEADER, projectAdditionalHeader);
@@ -1099,12 +1134,15 @@ QString QtBuilder::createToolHeaderForPro(const QString& additionalHeader)
     fileUtil.copy(mQtHeader + FILE_TOOL_SCENE_WIDGET_H, mFullOutputHeaderDir + FILE_TOOL_SCENE_WIDGET_H);
     fileUtil.copy(mQtHeader + FILE_TOOL_LAYERED_SCENE_WIDGET_H, mFullOutputHeaderDir + FILE_TOOL_LAYERED_SCENE_WIDGET_H);
     fileUtil.copy(mQtHeader + FILE_TOOL_LAYER_WIDGET_H, mFullOutputHeaderDir + FILE_TOOL_LAYER_WIDGET_H);
+    fileUtil.copy(mQtHeader + FILE_TOOL_GL_SPHERE_WIDGET_H, mFullOutputHeaderDir + FILE_TOOL_GL_SPHERE_WIDGET_H);
+    fileUtil.copy(mQtHeader + FILE_TOOL_FILEREADER_H, mFullOutputHeaderDir + FILE_TOOL_FILEREADER_H);
 
     // Also copy the icons
     fileUtil.copy(mIconDir + ICON_CLOSE_BOLD, mFullOutputIconDir + ICON_CLOSE_BOLD);
     fileUtil.copy(mIconDir + ICON_LAYER_BOLD, mFullOutputIconDir + ICON_LAYER_BOLD);
     fileUtil.copy(mIconDir + ICON_VISIBLE_BOLD, mFullOutputIconDir + ICON_VISIBLE_BOLD);
     fileUtil.copy(mIconDir + ICON_INVISIBLE_BOLD, mFullOutputIconDir + ICON_INVISIBLE_BOLD);
+    fileUtil.copy(mIconDir + ICON_SEARCH_BOLD, mFullOutputIconDir + ICON_SEARCH_BOLD);
 
     // Add to the project file
     // Headers
@@ -1156,7 +1194,18 @@ QString QtBuilder::createToolHeaderForPro(const QString& additionalHeader)
         FILE_TOOL_LAYER_WIDGET_H +
         QString(" \\ ") +
         QString("\n");
-
+    str = str +
+        TAB +
+        mOutputHeaderDir +
+        FILE_TOOL_GL_SPHERE_WIDGET_H +
+        QString(" \\ ") +
+        QString("\n");
+    str = str +
+        TAB +
+        mOutputHeaderDir +
+        FILE_TOOL_FILEREADER_H +
+        QString(" \\ ") +
+        QString("\n");
 
     return str;
 }
@@ -1177,6 +1226,8 @@ QString QtBuilder::createToolSrcForPro(const QString& additionalSrc)
     fileUtil.copy(mQtSrc + FILE_TOOL_SCENE_WIDGET_CPP, mFullOutputSrcDir + FILE_TOOL_SCENE_WIDGET_CPP);
     fileUtil.copy(mQtSrc + FILE_TOOL_LAYERED_SCENE_WIDGET_CPP, mFullOutputSrcDir + FILE_TOOL_LAYERED_SCENE_WIDGET_CPP);
     fileUtil.copy(mQtSrc + FILE_TOOL_LAYER_WIDGET_CPP, mFullOutputSrcDir + FILE_TOOL_LAYER_WIDGET_CPP);
+    fileUtil.copy(mQtSrc + FILE_TOOL_GL_SPHERE_WIDGET_CPP, mFullOutputSrcDir + FILE_TOOL_GL_SPHERE_WIDGET_CPP);
+    fileUtil.copy(mQtSrc + FILE_TOOL_FILEREADER_CPP, mFullOutputSrcDir + FILE_TOOL_FILEREADER_CPP);
 
     // Add to the project file
     // Src
@@ -1226,6 +1277,18 @@ QString QtBuilder::createToolSrcForPro(const QString& additionalSrc)
         TAB +
         mOutputSrcDir +
         FILE_TOOL_LAYER_WIDGET_CPP +
+        QString(" \\ ") +
+        QString("\n");
+    str = str +
+        TAB +
+        mOutputSrcDir +
+        FILE_TOOL_GL_SPHERE_WIDGET_CPP +
+        QString(" \\ ") +
+        QString("\n");
+    str = str +
+        TAB +
+        mOutputSrcDir +
+        FILE_TOOL_FILEREADER_CPP +
         QString(" \\ ") +
         QString("\n");
 

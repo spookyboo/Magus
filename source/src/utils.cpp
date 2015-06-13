@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014
+** Copyright (C) 2015
 **
 ** This file is part of the Magus toolkit
 **
@@ -64,6 +64,7 @@ QString Utils::getFileAsString(const QString &fileName)
     }
     f.close();
 
+    return s;
 }
 
 

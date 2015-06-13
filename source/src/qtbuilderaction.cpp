@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014
+** Copyright (C) 2015
 **
 ** This file is part of the Magus toolkit
 **
@@ -546,7 +546,7 @@ QString QtActionBuilder::createDoActionsForMenu(ApplicationTemplate* application
                     // Display an About messagebox
                     str = str +
                         TAB +
-                        QString("QMessageBox::about(this, QString(\"About\"), QString(\"Copyright 2014\"));") +
+                        QString("QMessageBox::about(this, QString(\"About\"), QString(\"Copyright 2015\"));") +
                         QString("\n");
                 }
                 else if (windowProperties->mUseDefaultActionResetWindows &&

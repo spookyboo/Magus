@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014
+** Copyright (C) 2015
 **
 ** This file is part of the Magus toolkit
 **
@@ -144,9 +144,14 @@ static const QString FILE_TOOL_LAYERED_SCENE_WIDGET_H = QString("tool_layered_sc
 static const QString FILE_TOOL_LAYERED_SCENE_WIDGET_CPP = QString("tool_layered_sceneviewwidget.cpp");
 static const QString FILE_TOOL_LAYER_WIDGET_H = QString("tool_layerwidget.h");
 static const QString FILE_TOOL_LAYER_WIDGET_CPP = QString("tool_layerwidget.cpp");
+static const QString FILE_TOOL_GL_SPHERE_WIDGET_H = QString("tool_glspherewidget.h");
+static const QString FILE_TOOL_GL_SPHERE_WIDGET_CPP = QString("tool_glspherewidget.cpp");
+static const QString FILE_TOOL_FILEREADER_H = QString("tool_filereader.h");
+static const QString FILE_TOOL_FILEREADER_CPP = QString("tool_filereader.cpp");
 
 //****************************************************************************/
 // References for project.ptp
+static const QString PROJECT_MODULES = QString("${modules}");
 static const QString PROJECT_OGRE_ROOT = QString("${ogre_root}");
 static const QString PROJECT_OGRE_INCLUDE = QString("${include_ogre}");
 static const QString PROJECT_OGRE_LIB = QString("${lib_ogre}");
@@ -216,6 +221,8 @@ class QtBuilder : public Builder
         virtual ~QtBuilder();
 
         const QString getType(void) const {return BUILDER_TYPE_QT;};
+        void setOutputDir (const QString& outputDir);
+        void setOgre (const QString& ogreRootEnv, const QString& ogreRoot);
         bool isMenuAvailable(){return true;};
         bool isHorizontalToolbarAvailable(){return true;};
         bool isVerticalToolbarAvailable(){return true;};

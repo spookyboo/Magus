@@ -42,18 +42,23 @@ namespace Magus
             QtTextureWidget(QWidget* parent = 0);
             virtual ~QtTextureWidget(void);
 
-            // fill the widget with all texture found in the searchPath
-            // The searchPath is scanned recursively and all texture files are read
-            // Note, that it can take a while to scane the whole directorytree
-            void fillTextures(const QString& searchPath);
+            // Add a pixmap to this widget. The name is a (fully qualified) filename for example.
+            // E.g. name = "c:/temp/Tools/common/icons/info.png"
+            void addTexture(const QPixmap& pixmap, const QString name);
 
-            // Return the fully qualified filename of the selected texture
+            // If a texture is originated from a file, setOriginIsFile must be set to 'true'
+            void setOriginIsFile(bool originIsFile);
+
+            // Clear the content of the widget
+            void clearContent(void);
+
+            // Return the name of the selected texture
             // E.g. "c:/temp/Tools/common/icons/info.png"
-            const QString& getTextureFileName(void);
+            const QString& getNameTexture(void);
 
-            // Return the base filename of the selected texture
-            // E.g. "info.png"
-            const QString& getTextureBaseFileName(void);
+            // Return the base name of the selected texture
+            // E.g. "info.png" in case the name of the texture is a full qualified filename.
+            const QString& getBaseNameTexture(void);
 
             // Define the width and height of a texture in the selection box
             void setTextureSize (QSize size);
@@ -63,7 +68,7 @@ namespace Magus
 
         signals:
             // Emitted when a texture is selected (via the mouse)
-            void textureSelected(const QString& fileName);
+            void textureSelected(const QString& name);
 
         protected slots:
             void mouseClicked(void);
@@ -73,8 +78,9 @@ namespace Magus
             QListView *mSelectionList;
             QtTextureModel* mSelectionModel;
             QSize mTextureSize;
-            QString mFileNameTexture; // Fully qualified filename (path + filename)
-            QString mBaseFileNameTexture; // Filename without path
+            QString mNameTexture; // In case of a filename, this is the fully qualified filename (path + filename)
+            QString mBaseNameTexture; // If mNameTexture is a filename, this is the basename.
+            bool mOriginIsFile;
     };
 }
 

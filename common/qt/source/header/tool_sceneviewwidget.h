@@ -243,7 +243,6 @@ namespace Magus
             void searchLineTextChanged(QString text);
 
         signals:
-            // TODO
             // Emitted when a group is added to the sceneView tree
             void groupCreatedOrAdded(QTreeWidget* sceneView, int groupId);
 

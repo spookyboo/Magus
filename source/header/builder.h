@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014
+** Copyright (C) 2015
 **
 ** This file is part of the Magus toolkit
 **
@@ -40,6 +40,12 @@ class Builder
 
         // Get the type of the builder
         virtual const QString getType(void) const = 0;
+
+        // Set the directory where the files are written
+        virtual void setOutputDir (const QString& outputDir) = 0;
+
+        // Set Ogre location
+        virtual void setOgre (const QString& ogreRootEnv, const QString& ogreRoot) = 0;
 
         // Define which gui items are available
         virtual bool isMenuAvailable() = 0;

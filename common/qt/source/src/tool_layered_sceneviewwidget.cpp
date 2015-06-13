@@ -63,6 +63,7 @@ namespace Magus
     {
         return mLayerWidget;
     }
+
     //****************************************************************************/
     void QtLayeredSceneViewWidget::handleLayerAdded(int layerId, const QString& name)
     {

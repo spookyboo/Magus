@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014
+** Copyright (C) 2015
 **
 ** This file is part of the Magus toolkit
 **
@@ -47,6 +47,7 @@ static const int FIXED_SMALL_EDIT_SIZE = 64;
 static const int FIXED_MEDIUM_EDIT_SIZE = 120;
 static const int FIXED_LARGE_EDIT_SIZE = 240;
 static const QString GLOBAL_CONFIG_FILE = QString("global.cfg");
+static const QString GLOBAL_ORIGINAL_CONFIG_FILE = QString("global_original.cfg");
 static const QString ICONS_CONFIG_FILE = QString("icons.cfg");
 static const QString GLOBAL_TEMPLATES_FILE = QString("templates.cfg");
 static const QString TEMPLATES_GROUP = QString("TEMPLATES");
@@ -151,6 +152,7 @@ static const QString ICON_CLOSE_BOLD = QString("close_bold.png");
 static const QString ICON_LAYER_BOLD = QString("layer_bold.png");
 static const QString ICON_VISIBLE_BOLD = QString("view_visible_bold.png");
 static const QString ICON_INVISIBLE_BOLD = QString("view_invisible_bold.png");
+static const QString ICON_SEARCH_BOLD = QString("search_bold.png");
 
 // The separator names must match the names in tbicons.cfg to be recognized as a separator
 static const QString ICON_HSEPARATOR = QString("separator_horizontal.png");

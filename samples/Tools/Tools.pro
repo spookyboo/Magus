@@ -1,6 +1,7 @@
-QT += widgets
+#QT += widgets
+QT += widgets opengl
 
-
+# TODO: Change topline to: QT += opengl widgets
 
 HEADERS       = \
     source/header/constants.h \
@@ -13,7 +14,9 @@ HEADERS       = \
     source/header/tool_gradient.h \
     source/header/tool_layerwidget.h \
     source/header/tool_sceneviewwidget.h \
-    source/header/tool_layered_sceneviewwidget.h
+    source/header/tool_layered_sceneviewwidget.h \
+    source/header/tool_filereader.h \
+    source/header/tool_glspherewidget.h
 
 
 SOURCES       = \
@@ -26,13 +29,12 @@ SOURCES       = \
     source/src/tool_gradient.cpp \
     source/src/tool_layerwidget.cpp \
     source/src/tool_sceneviewwidget.cpp \
-    source/src/tool_layered_sceneviewwidget.cpp
+    source/src/tool_layered_sceneviewwidget.cpp \
+    source/src/tool_filereader.cpp \
+    source/src/tool_glspherewidget.cpp
 
 
 INCLUDEPATH += "../Tools/source/header/"
-
-
-
 
 Release:DESTDIR = ../Tools/bin
 Debug:DESTDIR = ../Tools/bin

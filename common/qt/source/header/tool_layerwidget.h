@@ -33,11 +33,6 @@ QT_BEGIN_NAMESPACE
 
 QT_END_NAMESPACE
 
-// TODO
-// - mListenToVisibilityEvents: If the visibility in a group/asset in mListenToSceneViewWidget is toggled, the QtLayerWidget
-//   handles it.
-// - Implement find
-
 namespace Magus
 {
     static const int TOOL_LAYER_ICON_WIDTH = 24;

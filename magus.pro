@@ -24,11 +24,12 @@ HEADERS       = \
     source/header/icondialog.h \
     source/header/namedicon.h \
     source/header/qtbuildermenu.h \
-    source/header/qtbuildermenu.h \
     source/header/qtbuilderaction.h \
     source/header/qtbuildertoolbar.h \
     source/header/qtbuildertab.h \
-    source/header/qtbuilderogre.h
+    source/header/qtbuilderogre.h \
+    source/header/configdialog.h \
+    source/header/pages.h
 
 SOURCES       = \
     source/src/customtreeitem.cpp \
@@ -51,11 +52,12 @@ SOURCES       = \
     source/src/icondialog.cpp \
     source/src/templatewriter.cpp \
     source/src/qtbuildermenu.cpp \
-    source/src/qtbuildermenu.cpp \
     source/src/qtbuilderaction.cpp \
     source/src/qtbuildertoolbar.cpp \
     source/src/qtbuildertab.cpp \
-    source/src/qtbuilderogre.cpp
+    source/src/qtbuilderogre.cpp \
+    source/src/configdialog.cpp \
+    source/src/pages.cpp
 
 Release:DESTDIR = ../magus/bin
 Debug:DESTDIR = ../magus/bin
