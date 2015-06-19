@@ -29,6 +29,7 @@
 #include <QMessageBox>
 #include <QToolBar>
 #include "tool_texturewidget.h"
+#include "tool_texturewidget_ext.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -49,11 +50,13 @@ class MainWindow : public QMainWindow
 
 	private slots:
         void doGradientMenuAction(void);
+        void doGlSphereMenuAction(void);
         void doTextureMenuAction(void);
-        void doAdvancedTextureMenuAction(void);
+        void doExtendedTextureMenuAction(void);
         void doLayerAndSceneViewMenuAction(void);
         void textureSelected(const QString& fileName);
-        void textureRead(QPixmap pixMap, QString fileName);
+        void textureRead(QPixmap pixMap, const QString& fileName, const QString& baseName);
+        void textureReadExt(QPixmap pixMap, const QString& fileName, const QString& baseName);
 
 	private:
 		void createActions(void);
@@ -65,10 +68,12 @@ class MainWindow : public QMainWindow
 
         QMenu* mToolsMenu;
         QAction* mGradientMenuAction;
+        QAction* mGlSphereMenuAction;
         QAction* mTextureMenuAction;
-        QAction* mAdvancedTextureMenuAction;
+        QAction* mExtendedTextureMenuAction;
         QAction* mLayerAndSceneViewMenuAction;
         Magus::QtTextureWidget* mTextureSelection;
+        Magus::QtTextureWidgetExt* mTextureSelectionExt;
 };
 
 #endif

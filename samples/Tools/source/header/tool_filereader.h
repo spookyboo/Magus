@@ -53,10 +53,10 @@ namespace Magus
             const QString& readFileName(const QString& text, const QString& path);
 
         signals:
-            // Emitted when an image file has been read. Both the image file and the filename are passed as an argument
-            void textureRead(const QPixmap& pixmap, const QString& fileName);
+            // Emitted when an image file has been read. Both the image file and the filename/basename are passed as an argument
+            void textureRead(const QPixmap& pixmap, const QString& fileName, const QString& baseName);
 
-            // Emitted when a file has been read. The filename is passed as an argument
+            // Emitted when a file has been read. The filename, basename and path are passed as an argument
             void fileRead(const QString& fileName, const QString& path);
 
         private:

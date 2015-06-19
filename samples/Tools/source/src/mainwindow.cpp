@@ -29,12 +29,13 @@
 #include "tool_gradientwidget.h"
 #include "tool_sceneviewwidget.h"
 #include "tool_layered_sceneviewwidget.h"
-#include "tool_glspherewidget.h" // TEST
+#include "tool_glspherewidget.h"
 
 //****************************************************************************/
 MainWindow::MainWindow(void) : mIsClosing(false)
 {
     mTextureSelection = 0;
+    mTextureSelectionExt = 0;
 
 	// Perform standard functions
     createActions();
@@ -70,12 +71,14 @@ void MainWindow::closeEvent(QCloseEvent* event)
 void MainWindow::createActions(void)
 {
     mGradientMenuAction = new QAction(QString("Gradient"), this);
+    mGlSphereMenuAction = new QAction(QString("GL Sphere"), this);
     mTextureMenuAction = new QAction(QString("Texture selection"), this);
-    mAdvancedTextureMenuAction = new QAction(QString("Advanced texture selection"), this);
+    mExtendedTextureMenuAction = new QAction(QString("Extended texture selection"), this);
     mLayerAndSceneViewMenuAction = new QAction(QString("Layer and Scene view"), this);
     connect(mGradientMenuAction, SIGNAL(triggered()), this, SLOT(doGradientMenuAction()));
+    connect(mGlSphereMenuAction, SIGNAL(triggered()), this, SLOT(doGlSphereMenuAction()));
     connect(mTextureMenuAction, SIGNAL(triggered()), this, SLOT(doTextureMenuAction()));
-    connect(mAdvancedTextureMenuAction, SIGNAL(triggered()), this, SLOT(doAdvancedTextureMenuAction()));
+    connect(mExtendedTextureMenuAction, SIGNAL(triggered()), this, SLOT(doExtendedTextureMenuAction()));
     connect(mLayerAndSceneViewMenuAction, SIGNAL(triggered()), this, SLOT(doLayerAndSceneViewMenuAction()));
 }
 
@@ -84,8 +87,9 @@ void MainWindow::createMenus(void)
 {
     mToolsMenu = menuBar()->addMenu(QString("Tools"));
     mToolsMenu->addAction(mGradientMenuAction);
+    mToolsMenu->addAction(mGlSphereMenuAction);
     mToolsMenu->addAction(mTextureMenuAction);
-    mToolsMenu->addAction(mAdvancedTextureMenuAction);
+    mToolsMenu->addAction(mExtendedTextureMenuAction);
     mToolsMenu->addAction(mLayerAndSceneViewMenuAction);
 }
 
@@ -125,6 +129,22 @@ void MainWindow::doGradientMenuAction(void)
 }
 
 //****************************************************************************/
+void MainWindow::doGlSphereMenuAction(void)
+{
+    QDialog dialog(this);
+    dialog.setWindowTitle(QString("GL Sphere"));
+    dialog.setMinimumWidth(436);
+    dialog.setMinimumHeight(408);
+    QHBoxLayout mainLayout;
+    QPixmap texture = QPixmap(QString("../common/textures/BeachStones.jpg"));
+    Magus::QtGLSphereWidget* glWidget = new Magus::QtGLSphereWidget(0, 0);
+    glWidget->setPixmap(texture, QString("../common/textures/BeachStones.jpg"), QString("BeachStones.jpg"));
+    mainLayout.addWidget(glWidget);
+    dialog.setLayout(&mainLayout);
+    dialog.exec();
+}
+
+//****************************************************************************/
 void MainWindow::doTextureMenuAction(void)
 {
     // This example shows a dialog with a texture widget (QtTextureWidget). The textures are read separately from the filesystem by means of a
@@ -134,41 +154,51 @@ void MainWindow::doTextureMenuAction(void)
     // Create dialog with texture widget
     QDialog dialog(this);
     dialog.setWindowTitle(QString("Texture"));
-    dialog.setMinimumWidth(436);
+    dialog.setMinimumWidth(432);
     dialog.setMinimumHeight(408);
     QHBoxLayout mainLayout;
     Magus::QtTextureWidget textureSelection;
     mTextureSelection = &textureSelection;
-    textureSelection.setTextureSize(QSize(32, 32));
-    textureSelection.setContentsMargins(-12, -12, -12, -12);
+    textureSelection.setContentsMargins(-8, -8, -8, -8);
+    textureSelection.setTextureSize(QSize(122, 122));
     connect(&textureSelection, SIGNAL(textureSelected(QString)), this, SLOT(textureSelected(QString)));
     mainLayout.addWidget(&textureSelection);
     dialog.setLayout(&mainLayout);
 
     // Create filereader and read the images from the filesystem
     Magus::QtFileReader fileReader;
-    connect(&fileReader, SIGNAL(textureRead(QPixmap,QString)), this, SLOT(textureRead(QPixmap,QString)));
-    fileReader.readTexturesRecursively(QString("../common"));
+    connect(&fileReader, SIGNAL(textureRead(QPixmap, QString, QString)), this, SLOT(textureRead(QPixmap, QString, QString)));
+    fileReader.readTexturesRecursively(QString("../common/textures"));
 
     setCursor(Qt::ArrowCursor);
     dialog.exec();
 }
 
 //****************************************************************************/
-void MainWindow::doAdvancedTextureMenuAction(void)
+void MainWindow::doExtendedTextureMenuAction(void)
 {
-    // TODO
+    // This example shows a dialog with a extended texture widget (QtTextureWidgetEx). The textures are read separately
+    // from the filesystem by means of a filereader (QtFileReader) and added as pixmaps to the texture widget.
     setCursor(Qt::WaitCursor);
+
+    // Create dialog with texture widget
     QDialog dialog(this);
-    dialog.setWindowTitle(QString("Advanced texture"));
-    dialog.setMinimumWidth(436);
-    dialog.setMinimumHeight(408);
+    dialog.setWindowTitle(QString("Texture"));
+    dialog.setMinimumWidth(432);
+    dialog.setMinimumHeight(412);
     QHBoxLayout mainLayout;
-    QPixmap texture = QPixmap(QString("../common/icons/BeachStones.jpg"));
-    Magus::QtGLSphereWidget* glWidget = new Magus::QtGLSphereWidget(0, 0);
-    glWidget->setPixmap(texture, QString("../common/icons/BeachStones.jpg"), QString("BeachStones.jpg"));
-    mainLayout.addWidget(glWidget);
+    Magus::QtTextureWidgetExt textureSelection;
+    mTextureSelectionExt = &textureSelection;
+    textureSelection.setContentsMargins(-8, -8, -8, -8);
+    connect(&textureSelection, SIGNAL(textureSelected(QString)), this, SLOT(textureSelected(QString)));
+    mainLayout.addWidget(&textureSelection);
     dialog.setLayout(&mainLayout);
+
+    // Create filereader and read the images from the filesystem
+    Magus::QtFileReader fileReader;
+    connect(&fileReader, SIGNAL(textureRead(QPixmap, QString, QString)), this, SLOT(textureReadExt(QPixmap, QString, QString)));
+    fileReader.readTexturesRecursively(QString("../common/textures"));
+
     setCursor(Qt::ArrowCursor);
     dialog.exec();
 }
@@ -176,6 +206,8 @@ void MainWindow::doAdvancedTextureMenuAction(void)
 //****************************************************************************/
 void MainWindow::doLayerAndSceneViewMenuAction(void)
 {
+    // Remark: Hoover over the 'layeredSceneViewWidget' and use the right mouse button to show the context menu. Create a new
+    // layer and drag and drop the items from the 'overallSceneViewWidget' to the new layer.
     QDialog dialog(this);
     dialog.setWindowTitle(QString("Layer and Scene view"));
     dialog.setMinimumWidth(840);
@@ -236,8 +268,14 @@ void MainWindow::textureSelected(const QString& fileName)
 }
 
 //****************************************************************************/
-void MainWindow::textureRead(QPixmap pixMap, QString fileName)
+void MainWindow::textureRead(QPixmap pixMap, const QString& fileName, const QString& baseName)
 {
     mTextureSelection->addTexture(pixMap, fileName);
+}
+
+//****************************************************************************/
+void MainWindow::textureReadExt(QPixmap pixMap, const QString& fileName, const QString& baseName)
+{
+    mTextureSelectionExt->addTexture(pixMap, fileName, baseName);
 }
 

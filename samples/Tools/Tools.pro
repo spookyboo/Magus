@@ -16,7 +16,8 @@ HEADERS       = \
     source/header/tool_sceneviewwidget.h \
     source/header/tool_layered_sceneviewwidget.h \
     source/header/tool_filereader.h \
-    source/header/tool_glspherewidget.h
+    source/header/tool_glspherewidget.h \
+    source/header/tool_texturewidget_ext.h
 
 
 SOURCES       = \
@@ -31,7 +32,8 @@ SOURCES       = \
     source/src/tool_sceneviewwidget.cpp \
     source/src/tool_layered_sceneviewwidget.cpp \
     source/src/tool_filereader.cpp \
-    source/src/tool_glspherewidget.cpp
+    source/src/tool_glspherewidget.cpp \
+    source/src/tool_texturewidget_ext.cpp
 
 
 INCLUDEPATH += "../Tools/source/header/"

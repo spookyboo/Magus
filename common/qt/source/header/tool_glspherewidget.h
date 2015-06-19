@@ -99,6 +99,7 @@ namespace Magus
         int zRot;
         GLuint texture;
         QVector<QVector3D> vertices;
+        QVector<QVector3D> normals; // They are not used in the shader but still calculated for future use
         QVector<QVector2D> texCoords;
         QGLShaderProgram *program;
     };

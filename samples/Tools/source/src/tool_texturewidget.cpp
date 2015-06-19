@@ -43,7 +43,7 @@ namespace Magus
         mSelectionList = new QListView(this);
         mSelectionList->setViewMode(QListView::IconMode);
         mSelectionList->setIconSize(mTextureSize);
-        mSelectionList->setSpacing(2);
+        mSelectionList->setSpacing(0);
         mSelectionList->setMovement(QListView::Snap);
         mSelectionList->setFlow(QListView::LeftToRight);
         mSelectionList->setWrapping(true);

@@ -61,7 +61,7 @@ namespace Magus
                         // It is an image
                         QPixmap texturePixmap = QPixmap(info.absoluteFilePath());
                         mPixmapVec.append(texturePixmap);
-                        emit textureRead(texturePixmap, info.absoluteFilePath());
+                        emit textureRead(texturePixmap, info.absoluteFilePath(), info.fileName());
                         emit fileRead(info.absoluteFilePath(), info.absolutePath());
                     }
                 }
