@@ -68,10 +68,10 @@ namespace Magus
 
         signals:
             // Emitted when a texture is selected (via the mouse)
-            void textureSelected(const QString& name);
+            void selected(const QString& name);
 
         protected slots:
-            void mouseClicked(void);
+            void handleSelected(void);
             void mouseOver(QModelIndex index);
 
         private:

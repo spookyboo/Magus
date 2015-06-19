@@ -47,13 +47,13 @@ namespace Magus
         mSelectionList->setMovement(QListView::Snap);
         mSelectionList->setFlow(QListView::LeftToRight);
         mSelectionList->setWrapping(true);
-        mSelectionList->setDragEnabled(false);
+        mSelectionList->setDragEnabled(true);
         mSelectionList->setAcceptDrops(false);
         mSelectionList->setDropIndicatorShown(false);
         mSelectionList->setMouseTracking(true);
         mSelectionModel = new QtTextureModel();
         mSelectionList->setModel(mSelectionModel);
-        connect(mSelectionList, SIGNAL(clicked(QModelIndex)), this, SLOT(mouseClicked(void)));
+        connect(mSelectionList, SIGNAL(clicked(QModelIndex)), this, SLOT(handleSelected(void)));
         connect(mSelectionList, SIGNAL(entered(QModelIndex)), this, SLOT(mouseOver(QModelIndex)));
 
         // Layout
@@ -98,7 +98,7 @@ namespace Magus
     }
 
     //****************************************************************************/
-    void QtTextureWidget::mouseClicked(void)
+    void QtTextureWidget::handleSelected(void)
     {
         QModelIndex selectedTexture = mSelectionList->currentIndex();
         QString name = mSelectionModel->getName(selectedTexture);
@@ -113,7 +113,7 @@ namespace Magus
             }
 
             mBaseNameTexture = name;
-            emit textureSelected(mNameTexture);
+            emit selected(mNameTexture);
         }
     }
 

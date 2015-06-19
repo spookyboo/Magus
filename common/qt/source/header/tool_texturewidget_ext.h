@@ -46,6 +46,13 @@ namespace Magus
                              QWidget* parent = 0);
             virtual ~QtTextureAndText(void);
 
+        signals:
+            // Emitted when a texture is selected (via the mouse)
+            void selected(const QString& name, const QString& baseName);
+
+        protected slots:
+            void handleSelected(const QString& name, const QString& baseName);
+
         private:
             QtGLSphereWidget* mSphereWidget;
             QString mBaseName;
@@ -88,16 +95,12 @@ namespace Magus
             // Define the width and height of a texture in the selection box
             void setTextureSize (QSize size);
 
-            // If set to 'true', the sleected texture can also be dragged (and dropped) to another widget
-            void setDragEnabled (bool enabled);
-
         signals:
             // Emitted when a texture is selected (via the mouse)
-            void textureSelected(const QString& name);
+            void selected(const QString& name, const QString& baseName);
 
         protected slots:
-            void mouseClicked(void);
-            void mouseOver(QModelIndex index);
+            void handleSelected(const QString& name, const QString& baseName);
 
         private:
             QListWidget* mSelectionList;

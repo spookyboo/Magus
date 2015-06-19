@@ -44,6 +44,7 @@ namespace Magus
         mBaseNameEdit = new QLineEdit;
         mBaseNameEdit->setText(mBaseName);
         mBaseNameEdit->setEnabled(false);
+        connect(mSphereWidget, SIGNAL(selected(QString,QString)), this, SLOT(handleSelected(QString,QString)));
 
         // Layout
         sphereAndNameLayout->addWidget(mSphereWidget, 1000);
@@ -55,6 +56,12 @@ namespace Magus
     //****************************************************************************/
     QtTextureAndText::~QtTextureAndText(void)
     {
+    }
+
+    //****************************************************************************/
+    void QtTextureAndText::handleSelected(const QString& name, const QString& baseName)
+    {
+        emit selected(name, baseName);
     }
 
     //****************************************************************************/
@@ -77,14 +84,7 @@ namespace Magus
         mSelectionList->setMovement(QListView::Snap);
         mSelectionList->setFlow(QListView::LeftToRight);
         mSelectionList->setWrapping(true);
-        //mSelectionList->setDragEnabled(false);
-        //mSelectionList->setAcceptDrops(false);
-        //mSelectionList->setDropIndicatorShown(false);
-        //mSelectionList->setMouseTracking(true);
-        //mSelectionModel = new QtTextureModel();
-        //mSelectionList->setModel(mSelectionModel);
-        //connect(mSelectionList, SIGNAL(clicked(QModelIndex)), this, SLOT(mouseClicked(void)));
-        //connect(mSelectionList, SIGNAL(entered(QModelIndex)), this, SLOT(mouseOver(QModelIndex)));
+        mSelectionList->setMouseTracking(true);
 
         // Layout
         textureSelectionLayout->addWidget(mSelectionList);
@@ -108,6 +108,7 @@ namespace Magus
         item->setSizeHint(mTextureSize); // Must be present, otherwise the widget is not shown
         mSelectionList->addItem(item);
         mSelectionList->setItemWidget(item, textureAndText);
+        connect(textureAndText, SIGNAL(selected(QString,QString)), this, SLOT(handleSelected(QString,QString)));
     }
 
     //****************************************************************************/
@@ -119,7 +120,7 @@ namespace Magus
     //****************************************************************************/
     void QtTextureWidgetExt::clearContent(void)
     {
-        // TODO
+        mSelectionList->clear();
     }
 
     //****************************************************************************/
@@ -135,27 +136,15 @@ namespace Magus
     }
 
     //****************************************************************************/
-    void QtTextureWidgetExt::mouseClicked(void)
+    void QtTextureWidgetExt::handleSelected(const QString& name, const QString& baseName)
     {
-        // TODO
-    }
-
-    //****************************************************************************/
-    void QtTextureWidgetExt::mouseOver(QModelIndex index)
-    {
-        // TODO
+        emit selected(name, baseName);
     }
 
     //****************************************************************************/
     void QtTextureWidgetExt::setTextureSize (QSize size)
     {
         mTextureSize = size;
-        // TODO
     }
 
-    //****************************************************************************/
-    void QtTextureWidgetExt::setDragEnabled (bool enabled)
-    {
-        // TODO
-    }
 }

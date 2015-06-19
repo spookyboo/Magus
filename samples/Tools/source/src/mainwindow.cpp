@@ -161,7 +161,7 @@ void MainWindow::doTextureMenuAction(void)
     mTextureSelection = &textureSelection;
     textureSelection.setContentsMargins(-8, -8, -8, -8);
     textureSelection.setTextureSize(QSize(122, 122));
-    connect(&textureSelection, SIGNAL(textureSelected(QString)), this, SLOT(textureSelected(QString)));
+    connect(&textureSelection, SIGNAL(selected(QString)), this, SLOT(textureSelected(QString)));
     mainLayout.addWidget(&textureSelection);
     dialog.setLayout(&mainLayout);
 
@@ -190,7 +190,6 @@ void MainWindow::doExtendedTextureMenuAction(void)
     Magus::QtTextureWidgetExt textureSelection;
     mTextureSelectionExt = &textureSelection;
     textureSelection.setContentsMargins(-8, -8, -8, -8);
-    connect(&textureSelection, SIGNAL(textureSelected(QString)), this, SLOT(textureSelected(QString)));
     mainLayout.addWidget(&textureSelection);
     dialog.setLayout(&mainLayout);
 
