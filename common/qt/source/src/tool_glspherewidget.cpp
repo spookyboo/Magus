@@ -263,6 +263,7 @@ namespace Magus
                 pz = cz + TOOL_SPHERE_RADIUS * ez;
 
                 vertices.append(QVector3D(px, py, pz));
+                normals.append(QVector3D(ex, ey, ez));
                 texCoords.append (QVector2D( -(j/(float)TOOL_SPHERE_PRECISION), 2*(i+1)/(float)TOOL_SPHERE_PRECISION));
 
                 ex = cosf(theta1) * cosf(theta3);
@@ -273,6 +274,7 @@ namespace Magus
                 pz = cz + TOOL_SPHERE_RADIUS * ez;
 
                 vertices.append(QVector3D(px, py, pz));
+                normals.append(QVector3D(ex, ey, ez));
                 texCoords.append (QVector2D(-(j/(float)TOOL_SPHERE_PRECISION), 2*i/(float)TOOL_SPHERE_PRECISION));
             }
         }

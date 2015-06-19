@@ -148,6 +148,8 @@ static const QString FILE_TOOL_GL_SPHERE_WIDGET_H = QString("tool_glspherewidget
 static const QString FILE_TOOL_GL_SPHERE_WIDGET_CPP = QString("tool_glspherewidget.cpp");
 static const QString FILE_TOOL_FILEREADER_H = QString("tool_filereader.h");
 static const QString FILE_TOOL_FILEREADER_CPP = QString("tool_filereader.cpp");
+static const QString FILE_TOOL_TEXTURE_WIDGET_EXT_H = QString("tool_texturewidget_ext.h");
+static const QString FILE_TOOL_TEXTURE_WIDGET_EXT_CPP = QString("tool_texturewidget_ext.cpp");
 
 //****************************************************************************/
 // References for project.ptp
