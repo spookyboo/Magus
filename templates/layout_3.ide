@@ -5,7 +5,7 @@ project = "Layout3"
 
 # Properties for displaying in the Magus selection dialog
 icon = Layout3.png
-description = "Layout 3 - Main window with plain menu and 3 dockable widgets"
+description = "Layout 3 - Main window with plain menu and 3 docking windows"
 
 # Determine the type of gui; each gui (qt, wxwidgets, wpf, ...) will get its own builder class in the Magus application to generate the project files
 type = qt

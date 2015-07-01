@@ -2,7 +2,7 @@
 
 project = "Layout4"
 icon = Layout4.png
-description = "Layout 4 - Main window with several dockable widgets and menu in a dockwidget"
+description = "Layout 4 - Main window with several docking windows and menu in a docking window"
 type = qt
 style = dark
 

@@ -25,7 +25,7 @@
 #include <QDir>
 #include <QImageReader>
 #include <QListWidgetItem>
-#include "tool_texturewidget_ext.h"
+#include "tool_extended_texturewidget.h"
 
 namespace Magus
 {
@@ -67,7 +67,7 @@ namespace Magus
     //****************************************************************************/
     //****************************************************************************/
     //****************************************************************************/
-    QtTextureWidgetExt::QtTextureWidgetExt(QWidget* parent) : QWidget(parent)
+    QtExtendedTextureWidget::QtExtendedTextureWidget(QWidget* parent) : QWidget(parent)
     {
         setWindowTitle(QString("Texture selection"));
         mNameTexture = QString("");
@@ -93,12 +93,12 @@ namespace Magus
     }
 
     //****************************************************************************/
-    QtTextureWidgetExt::~QtTextureWidgetExt(void)
+    QtExtendedTextureWidget::~QtExtendedTextureWidget(void)
     {
     }
 
     //****************************************************************************/
-    void QtTextureWidgetExt::addTexture(const QPixmap& pixmap, const QString name, const QString baseName)
+    void QtExtendedTextureWidget::addTexture(const QPixmap& pixmap, const QString name, const QString baseName)
     {
         QtTextureAndText* textureAndText = new QtTextureAndText(pixmap, name, baseName, this);
         textureAndText->setContentsMargins(-8, -8, -8, -8);
@@ -112,37 +112,37 @@ namespace Magus
     }
 
     //****************************************************************************/
-    void QtTextureWidgetExt::setOriginIsFile(bool originIsFile)
+    void QtExtendedTextureWidget::setOriginIsFile(bool originIsFile)
     {
         mOriginIsFile = originIsFile;
     }
 
     //****************************************************************************/
-    void QtTextureWidgetExt::clearContent(void)
+    void QtExtendedTextureWidget::clearContent(void)
     {
         mSelectionList->clear();
     }
 
     //****************************************************************************/
-    const QString& QtTextureWidgetExt::getNameTexture(void)
+    const QString& QtExtendedTextureWidget::getNameTexture(void)
     {
         return mNameTexture;
     }
 
     //****************************************************************************/
-    const QString& QtTextureWidgetExt::getBaseNameTexture(void)
+    const QString& QtExtendedTextureWidget::getBaseNameTexture(void)
     {
         return mBaseNameTexture;
     }
 
     //****************************************************************************/
-    void QtTextureWidgetExt::handleSelected(const QString& name, const QString& baseName)
+    void QtExtendedTextureWidget::handleSelected(const QString& name, const QString& baseName)
     {
         emit selected(name, baseName);
     }
 
     //****************************************************************************/
-    void QtTextureWidgetExt::setTextureSize (QSize size)
+    void QtExtendedTextureWidget::setTextureSize (QSize size)
     {
         mTextureSize = size;
     }

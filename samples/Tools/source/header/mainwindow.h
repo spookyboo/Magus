@@ -28,8 +28,8 @@
 #include <QAction>
 #include <QMessageBox>
 #include <QToolBar>
-#include "tool_texturewidget.h"
-#include "tool_texturewidget_ext.h"
+#include "tool_simple_texturewidget.h"
+#include "tool_extended_texturewidget.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -72,8 +72,8 @@ class MainWindow : public QMainWindow
         QAction* mTextureMenuAction;
         QAction* mExtendedTextureMenuAction;
         QAction* mLayerAndSceneViewMenuAction;
-        Magus::QtTextureWidget* mTextureSelection;
-        Magus::QtTextureWidgetExt* mTextureSelectionExt;
+        Magus::QtSimpleTextureWidget* mTextureSelection;
+        Magus::QtExtendedTextureWidget* mTextureSelectionExt;
 };
 
 #endif

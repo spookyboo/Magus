@@ -2,7 +2,7 @@
 
 project = "Layout5"
 icon = Layout5.png
-description = "Layout 5 - Main window with menu, three dockable widgets with tabs"
+description = "Layout 5 - Main window with menu, three docking windows with tabs"
 type = qt
 style = dark
 

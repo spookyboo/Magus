@@ -21,21 +21,21 @@
 #include <QIcon>
 #include <QMimeData>
 #include <QMessageBox>
-#include "tool_texturemodel.h"
+#include "tool_simple_texturemodel.h"
 
 //****************************************************************************/
-QtTextureModel::QtTextureModel(QObject *parent) : QAbstractListModel(parent)
+QtSimpleTextureModel::QtSimpleTextureModel(QObject *parent) : QAbstractListModel(parent)
 {
     mMimeType = QString("texture/selection");
 }
 
 //****************************************************************************/
-QtTextureModel::~QtTextureModel()
+QtSimpleTextureModel::~QtSimpleTextureModel()
 {
 }
 
 //****************************************************************************/
-Qt::ItemFlags QtTextureModel::flags(const QModelIndex &index) const
+Qt::ItemFlags QtSimpleTextureModel::flags(const QModelIndex &index) const
 {
     if (index.isValid())
         return QAbstractListModel::flags(index) | Qt::ItemIsDragEnabled;
@@ -44,7 +44,7 @@ Qt::ItemFlags QtTextureModel::flags(const QModelIndex &index) const
 }
 
 //****************************************************************************/
-int QtTextureModel::rowCount(const QModelIndex &parent) const
+int QtSimpleTextureModel::rowCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
         return 0;
@@ -53,7 +53,7 @@ int QtTextureModel::rowCount(const QModelIndex &parent) const
 }
 
 //****************************************************************************/
-QVariant QtTextureModel::data(const QModelIndex &index, int role) const
+QVariant QtSimpleTextureModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
         return QVariant();
@@ -75,7 +75,7 @@ QVariant QtTextureModel::data(const QModelIndex &index, int role) const
 }
 
 //****************************************************************************/
-void QtTextureModel::clear()
+void QtSimpleTextureModel::clear()
 {
     beginResetModel();
     mPixmaps.clear();
@@ -84,7 +84,7 @@ void QtTextureModel::clear()
 }
 
 //****************************************************************************/
-bool QtTextureModel::removeRows(int row, int count, const QModelIndex &parent)
+bool QtSimpleTextureModel::removeRows(int row, int count, const QModelIndex &parent)
 {
     if (parent.isValid())
         return false;
@@ -109,7 +109,7 @@ bool QtTextureModel::removeRows(int row, int count, const QModelIndex &parent)
 }
 
 //****************************************************************************/
-QStringList QtTextureModel::mimeTypes() const
+QStringList QtSimpleTextureModel::mimeTypes() const
 {
     QStringList types;
     types << mMimeType;
@@ -117,7 +117,7 @@ QStringList QtTextureModel::mimeTypes() const
 }
 
 //****************************************************************************/
-QMimeData* QtTextureModel::mimeData(const QModelIndexList &indexes) const
+QMimeData* QtSimpleTextureModel::mimeData(const QModelIndexList &indexes) const
 {
     QMimeData* mimeData = new QMimeData();
     QByteArray encodedData;
@@ -137,7 +137,7 @@ QMimeData* QtTextureModel::mimeData(const QModelIndexList &indexes) const
 }
 
 //****************************************************************************/
-bool QtTextureModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
+bool QtSimpleTextureModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
                                int row, int column, const QModelIndex &parent)
 {
     if (action == Qt::IgnoreAction)
@@ -180,13 +180,13 @@ bool QtTextureModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
 }
 
 //****************************************************************************/
-Qt::DropActions QtTextureModel::supportedDropActions() const
+Qt::DropActions QtSimpleTextureModel::supportedDropActions() const
 {
     return Qt::CopyAction | Qt::MoveAction;
 }
 
 //****************************************************************************/
-void QtTextureModel::addTexture(const QPixmap& pixmap, const QString& name, QSize size)
+void QtSimpleTextureModel::addTexture(const QPixmap& pixmap, const QString& name, QSize size)
 {
     int row = mPixmaps.size();
     beginInsertRows(QModelIndex(), row, row);
@@ -200,7 +200,7 @@ void QtTextureModel::addTexture(const QPixmap& pixmap, const QString& name, QSiz
 }
 
 //****************************************************************************/
-void QtTextureModel::addTexture(const QString& fileName, QSize size)
+void QtSimpleTextureModel::addTexture(const QString& fileName, QSize size)
 {
     int row = mPixmaps.size();
     beginInsertRows(QModelIndex(), row, row);
@@ -216,7 +216,7 @@ void QtTextureModel::addTexture(const QString& fileName, QSize size)
 }
 
 //****************************************************************************/
-const QString QtTextureModel::getName(const QModelIndex &index) const
+const QString QtSimpleTextureModel::getName(const QModelIndex &index) const
 {
     return mNames.value(index.row());
 }

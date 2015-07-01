@@ -24,12 +24,12 @@
 #include <QMessageBox>
 #include <QDir>
 #include <QImageReader>
-#include "tool_texturewidget.h"
+#include "tool_simple_texturewidget.h"
 
 namespace Magus
 {
     //****************************************************************************/
-    QtTextureWidget::QtTextureWidget(QWidget* parent) : QWidget(parent)
+    QtSimpleTextureWidget::QtSimpleTextureWidget(QWidget* parent) : QWidget(parent)
     {
         setWindowTitle(QString("Texture selection"));
         mNameTexture = QString("");
@@ -51,7 +51,7 @@ namespace Magus
         mSelectionList->setAcceptDrops(false);
         mSelectionList->setDropIndicatorShown(false);
         mSelectionList->setMouseTracking(true);
-        mSelectionModel = new QtTextureModel();
+        mSelectionModel = new QtSimpleTextureModel();
         mSelectionList->setModel(mSelectionModel);
         connect(mSelectionList, SIGNAL(clicked(QModelIndex)), this, SLOT(handleSelected(void)));
         connect(mSelectionList, SIGNAL(entered(QModelIndex)), this, SLOT(mouseOver(QModelIndex)));
@@ -63,42 +63,42 @@ namespace Magus
     }
 
     //****************************************************************************/
-    QtTextureWidget::~QtTextureWidget(void)
+    QtSimpleTextureWidget::~QtSimpleTextureWidget(void)
     {
     }
 
     //****************************************************************************/
-    void QtTextureWidget::addTexture(const QPixmap& pixmap, const QString name)
+    void QtSimpleTextureWidget::addTexture(const QPixmap& pixmap, const QString name)
     {
         mSelectionModel->addTexture(pixmap, name, mTextureSize);
     }
 
     //****************************************************************************/
-    void QtTextureWidget::setOriginIsFile(bool originIsFile)
+    void QtSimpleTextureWidget::setOriginIsFile(bool originIsFile)
     {
         mOriginIsFile = originIsFile;
     }
 
     //****************************************************************************/
-    void QtTextureWidget::clearContent(void)
+    void QtSimpleTextureWidget::clearContent(void)
     {
         mSelectionModel->clear();
     }
 
     //****************************************************************************/
-    const QString& QtTextureWidget::getNameTexture(void)
+    const QString& QtSimpleTextureWidget::getNameTexture(void)
     {
         return mNameTexture;
     }
 
     //****************************************************************************/
-    const QString& QtTextureWidget::getBaseNameTexture(void)
+    const QString& QtSimpleTextureWidget::getBaseNameTexture(void)
     {
         return mBaseNameTexture;
     }
 
     //****************************************************************************/
-    void QtTextureWidget::handleSelected(void)
+    void QtSimpleTextureWidget::handleSelected(void)
     {
         QModelIndex selectedTexture = mSelectionList->currentIndex();
         QString name = mSelectionModel->getName(selectedTexture);
@@ -118,7 +118,7 @@ namespace Magus
     }
 
     //****************************************************************************/
-    void QtTextureWidget::mouseOver(QModelIndex index)
+    void QtSimpleTextureWidget::mouseOver(QModelIndex index)
     {
         QString name = index.data(Qt::UserRole + 1).toString();
         if (mOriginIsFile)
@@ -130,14 +130,14 @@ namespace Magus
     }
 
     //****************************************************************************/
-    void QtTextureWidget::setTextureSize (QSize size)
+    void QtSimpleTextureWidget::setTextureSize (QSize size)
     {
         mTextureSize = size;
         mSelectionList->setIconSize(mTextureSize);
     }
 
     //****************************************************************************/
-    void QtTextureWidget::setDragEnabled (bool enabled)
+    void QtSimpleTextureWidget::setDragEnabled (bool enabled)
     {
         mSelectionList->setDragEnabled(enabled);
     }

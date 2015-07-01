@@ -18,13 +18,12 @@
 **
 ****************************************************************************/
 
-#ifndef MAGUS_TOOL_TEXTURE_WIDGET_EX_H
-#define MAGUS_TOOL_TEXTURE_WIDGET_EX_H
+#ifndef MAGUS_TOOL_TEXTURE_WIDGET_H
+#define MAGUS_TOOL_TEXTURE_WIDGET_H
 
 #include <QWidget>
-#include <QListWidget>
-#include <QLineEdit>
-#include "tool_glspherewidget.h"
+#include <QListView>
+#include "tool_simple_texturemodel.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -33,50 +32,19 @@ QT_END_NAMESPACE
 namespace Magus
 {
     /****************************************************************************
-    Helper class to combine the texture name and the texture
+    Main class for texture selection widget
     ***************************************************************************/
-    class QtTextureAndText : public QWidget
+    class QtSimpleTextureWidget : public QWidget
     {
         Q_OBJECT
 
         public:
-            QtTextureAndText(const QPixmap& pixmap,
-                             const QString& name,
-                             const QString& baseName,
-                             QWidget* parent = 0);
-            virtual ~QtTextureAndText(void);
-
-        signals:
-            // Emitted when a texture is selected (via the mouse)
-            void selected(const QString& name, const QString& baseName);
-
-        protected slots:
-            void handleSelected(const QString& name, const QString& baseName);
-
-        private:
-            QtGLSphereWidget* mSphereWidget;
-            QString mBaseName;
-            QString mName;
-            QLineEdit* mBaseNameEdit;
-    };
-
-    //****************************************************************************/
-    //****************************************************************************/
-    /****************************************************************************
-    Main class for extended texture selection widget
-    ***************************************************************************/
-    class QtTextureWidgetExt : public QWidget
-    {
-        Q_OBJECT
-
-        public:
-            QtTextureWidgetExt(QWidget* parent = 0);
-            virtual ~QtTextureWidgetExt(void);
+            QtSimpleTextureWidget(QWidget* parent = 0);
+            virtual ~QtSimpleTextureWidget(void);
 
             // Add a pixmap to this widget. The name is a (fully qualified) filename for example.
             // E.g. name = "c:/temp/Tools/common/icons/info.png"
-            // E.g. baseName = "info.png"
-            void addTexture(const QPixmap& pixmap, const QString name, const QString baseName);
+            void addTexture(const QPixmap& pixmap, const QString name);
 
             // If a texture is originated from a file, setOriginIsFile must be set to 'true'
             void setOriginIsFile(bool originIsFile);
@@ -95,15 +63,20 @@ namespace Magus
             // Define the width and height of a texture in the selection box
             void setTextureSize (QSize size);
 
+            // If set to 'true', the sleected texture can also be dragged (and dropped) to another widget
+            void setDragEnabled (bool enabled);
+
         signals:
             // Emitted when a texture is selected (via the mouse)
-            void selected(const QString& name, const QString& baseName);
+            void selected(const QString& name);
 
         protected slots:
-            void handleSelected(const QString& name, const QString& baseName);
+            void handleSelected(void);
+            void mouseOver(QModelIndex index);
 
         private:
-            QListWidget* mSelectionList;
+            QListView *mSelectionList;
+            QtSimpleTextureModel* mSelectionModel;
             QSize mTextureSize;
             QString mNameTexture; // In case of a filename, this is the fully qualified filename (path + filename)
             QString mBaseNameTexture; // If mNameTexture is a filename, this is the basename.

@@ -41,9 +41,12 @@ TemplateDialog::TemplateDialog(MainWindow* parent) : QDialog(parent)
 
     setWindowTitle(tr("Create new project - select a template"));
     resize(TEMPLATE_DIALOG_WIDTH, TEMPLATE_DIALOG_HEIGHT);
+    setMinimumWidth(TEMPLATE_DIALOG_WIDTH);
     mTable = new QTableView(this);
     mTable->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     mTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    mTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+
     QVBoxLayout* layout = new QVBoxLayout;
     layout->addWidget(buttonBox);
     layout->addWidget(mTable);

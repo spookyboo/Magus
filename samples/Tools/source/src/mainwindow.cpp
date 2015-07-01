@@ -147,7 +147,7 @@ void MainWindow::doGlSphereMenuAction(void)
 //****************************************************************************/
 void MainWindow::doTextureMenuAction(void)
 {
-    // This example shows a dialog with a texture widget (QtTextureWidget). The textures are read separately from the filesystem by means of a
+    // This example shows a dialog with a texture widget (QtSimpleTextureWidget). The textures are read separately from the filesystem by means of a
     // filereader (QtFileReader) and added as pixmaps to the texture widget.
     setCursor(Qt::WaitCursor);
 
@@ -157,7 +157,7 @@ void MainWindow::doTextureMenuAction(void)
     dialog.setMinimumWidth(432);
     dialog.setMinimumHeight(408);
     QHBoxLayout mainLayout;
-    Magus::QtTextureWidget textureSelection;
+    Magus::QtSimpleTextureWidget textureSelection;
     mTextureSelection = &textureSelection;
     textureSelection.setContentsMargins(-8, -8, -8, -8);
     textureSelection.setTextureSize(QSize(122, 122));
@@ -187,7 +187,7 @@ void MainWindow::doExtendedTextureMenuAction(void)
     dialog.setMinimumWidth(432);
     dialog.setMinimumHeight(412);
     QHBoxLayout mainLayout;
-    Magus::QtTextureWidgetExt textureSelection;
+    Magus::QtExtendedTextureWidget textureSelection;
     mTextureSelectionExt = &textureSelection;
     textureSelection.setContentsMargins(-8, -8, -8, -8);
     mainLayout.addWidget(&textureSelection);

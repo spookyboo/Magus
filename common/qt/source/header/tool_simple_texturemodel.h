@@ -18,8 +18,8 @@
 **
 ****************************************************************************/
 
-#ifndef MAGUS_TOOL_TEXTURE_MODEL_H
-#define MAGUS_TOOL_TEXTURE_MODEL_H
+#ifndef MAGUS_TOOL_SMPL_TEXTURE_MODEL_H
+#define MAGUS_TOOL_SMPL_TEXTURE_MODEL_H
 
 #include <QAbstractListModel>
 #include <QModelIndex>
@@ -27,15 +27,15 @@
 #include <QPixmap>
 
 /****************************************************************************
- This model represents the model for the texture selection widget
+ This model represents the model for the simple texture selection widget
 ****************************************************************************/
-class QtTextureModel : public QAbstractListModel
+class QtSimpleTextureModel : public QAbstractListModel
 {
     Q_OBJECT
 
     public:
-        QtTextureModel(QObject *parent = 0);
-        ~QtTextureModel();
+        QtSimpleTextureModel(QObject *parent = 0);
+        ~QtSimpleTextureModel();
 
         Qt::ItemFlags flags(const QModelIndex &index) const;
         int rowCount(const QModelIndex &parent) const;

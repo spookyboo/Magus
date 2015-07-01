@@ -1,9 +1,16 @@
 [GENERAL]
-project = "Layout6"
-icon = Layout6.png
-description = "Layout 6 - Main window with menu, three docking windows and Ogre3d widget"
+project = "Layout9"
+icon = Layout9.png
+description = "Layout 9 - Main window with plain menu and 3 docking windows"
 type = qt
 style = dark
+
+use_asset_widget = false
+
+ogre_asset = false
+use_node_editor = false
+
+use_tools = false
 
 [WINDOWS]
 window[0] = MAIN
@@ -14,13 +21,13 @@ window[3] = DOCK3
 
 ################################################################
 [MAIN]
-title = "Layout 6"
+title = "Layout 9"
 display_title = true
 order = 0
 use_action_quit = true
 use_action_exit = false
 use_action_about = false
-use_action_reset_windows = true
+use_action_reset_windows = false
 transformation_widget = false
 ogre_control = false
 ogre_target = 0
@@ -30,18 +37,10 @@ menu_group = MAIN.MENU
 #--------------------------------------------------------------#
 [MAIN.MENU]
 menu[0] = MAIN.MENU.FILE
-menu[1] = MAIN.MENU.WINDOW
 
 [MAIN.MENU.FILE]
 item = "&File"
-subitem[0] = "New"
-subitem[1] = "Open"
-subitem[2] = "Save"
-subitem[3] = "Quit"
-
-[MAIN.MENU.WINDOW]
-item = "Window"
-subitem[0] = "Reset Window Layout"
+subitem[0] = "Quit"
 
 
 ################################################################
@@ -77,7 +76,7 @@ ogre_control_visuals = false
 ################################################################
 [DOCK3]
 title = "Dock3"
-display_title = false
+display_title = true
 order = 3
 use_action_quit = false
 use_action_exit = false
@@ -85,6 +84,6 @@ use_action_about = false
 use_action_reset_windows = false
 transformation_widget = false
 area = center
-ogre_control = true
+ogre_control = false
 ogre_target = 0
 ogre_control_visuals = false
