@@ -43,6 +43,7 @@ namespace Magus
             QtTextureAndText(const QPixmap& pixmap,
                              const QString& name,
                              const QString& baseName,
+                             const QSize& size,
                              QWidget* parent = 0);
             virtual ~QtTextureAndText(void);
 

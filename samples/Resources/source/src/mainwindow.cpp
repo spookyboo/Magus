@@ -23,15 +23,12 @@
 #include <QFile>
 #include <QMenuBar>
 #include "mainwindow.h"
-#include "node_node.h"
-#include "node_port.h"
-#include "node_porttype.h"
+
 
 //****************************************************************************/
 MainWindow::MainWindow(void) : mIsClosing(false)
 {
 	// Perform standard functions
-    mCount = 1;
     createActions();
     createMenus();
     createToolBars();
@@ -39,18 +36,14 @@ MainWindow::MainWindow(void) : mIsClosing(false)
     createDockWindows();
 
     // Set the title
-    setWindowTitle(QString("NodeEditor"));
+    setWindowTitle(QString("Resources"));
 
     // Set the stylesheet of the application
     QFile File(QString("dark.qss"));
     File.open(QFile::ReadOnly);
     QString styleSheet = QLatin1String(File.readAll());
     setStyleSheet(styleSheet);
-
-    // Create the node editor widget
-    mNodeEditor = new Magus::QtNodeEditor(this);
-    setCentralWidget(mNodeEditor);
-    showMaximized();
+	showMaximized();
 }
 
 //****************************************************************************/
@@ -68,18 +61,17 @@ void MainWindow::closeEvent(QCloseEvent* event)
 //****************************************************************************/
 void MainWindow::createActions(void)
 {
-    mAddnodeMenuAction = new QAction(QString("Add node"), this);
-    connect(mAddnodeMenuAction, SIGNAL(triggered()), this, SLOT(doAddnodeMenuAction()));
     mQuitMenuAction = new QAction(QString("Quit"), this);
     connect(mQuitMenuAction, SIGNAL(triggered()), this, SLOT(doQuitMenuAction()));
+
 }
 
 //****************************************************************************/
 void MainWindow::createMenus(void)
 {
-    mNodeMenu = menuBar()->addMenu(QString("Node"));
-    mNodeMenu->addAction(mAddnodeMenuAction);
-    mNodeMenu->addAction(mQuitMenuAction);
+    mFileMenu = menuBar()->addMenu(QString("&File"));
+    mFileMenu->addAction(mQuitMenuAction);
+
 }
 
 //****************************************************************************/
@@ -97,40 +89,13 @@ void MainWindow::createStatusBar(void)
 //****************************************************************************/
 void MainWindow::createDockWindows(void)
 {
+    mDock1DockWidget = new Dock1DockWidget("Dock1", this);
+    addDockWidget(Qt::LeftDockWidgetArea, mDock1DockWidget);
+    mDock2DockWidget = new Dock2DockWidget("Dock2", this);
+    addDockWidget(Qt::RightDockWidgetArea, mDock2DockWidget);
+    mDock3DockWidget = new Dock3DockWidget("Dock3", this);
+    addDockWidget(Qt::RightDockWidgetArea, mDock3DockWidget);
 
-}
-
-//****************************************************************************/
-void MainWindow::doAddnodeMenuAction(void)
-{
-    // Create a node, configure it and add it to the editor
-    Magus::QtInputPortType inputPortType;
-    Magus::QtOutputPortType outputPortType;
-
-    Magus::QtNode* node = new Magus::QtNode(QString("Test node"));
-    node->setTitleColor(Qt::white);
-    node->setHeaderTitleIcon("../common/icons/cube_bold.png");
-    node->setAction1Icon("../../common/minmax.png");
-    node->setAction2Icon("../../common/close.png");
-    node->alignTitle(Magus::ALIGNED_LEFT);
-    QColor color(rand() % 255, rand() % 255, rand() % 255);
-    node->setHeaderColor(color);
-    node->createPort(1,
-                     QString("input ") + QVariant(mCount).toString(),
-                     inputPortType,
-                     Qt::red,
-                     Magus::PORT_SHAPE_CIRCLE,
-                     Magus::ALIGNED_LEFT, Qt::red);
-    node->createPort(2,
-                     QString("output ") + QVariant(mCount).toString(),
-                     outputPortType,
-                     Qt::green,
-                     Magus::PORT_SHAPE_SQUARE,
-                     Magus::ALIGNED_RIGHT,
-                     Qt::green);
-    ++mCount;
-    node->setPortNameColor(Qt::white);
-    mNodeEditor->addNode(node);
 }
 
 //****************************************************************************/

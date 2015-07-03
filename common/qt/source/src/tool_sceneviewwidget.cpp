@@ -1114,22 +1114,24 @@ namespace Magus
         if (!sceneView)
             return;
 
+        QString pattern = searchPattern.toLower();
         resetSearch();
         QTreeWidgetItem* item;
         QTreeWidgetItemIterator it(sceneView);
         QString assetName;
-        sceneView->expandAll();
         while (*it)
         {
             if (itemIsAsset(*it))
             {
                 assetName =(*it)->text(TOOL_SCENEVIEW_COLUMN_ASSET_NAME);
-                if (!assetName.contains(searchPattern))
+                assetName = assetName.toLower();
+                if (!assetName.contains(pattern))
                     (*it)->setHidden(true);
             }
 
             ++it;
         }
+        sceneView->expandAll();
     }
 
 }

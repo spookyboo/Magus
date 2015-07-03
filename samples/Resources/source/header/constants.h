@@ -18,24 +18,13 @@
 **
 ****************************************************************************/
 
-#ifndef MAGUS_ASSET_CONSTANTS_H
-#define MAGUS_ASSET_CONSTANTS_H
+#ifndef CONSTANTS_H
+#define CONSTANTS_H
 
 #include <QString>
 
-QT_BEGIN_NAMESPACE
-
-QT_END_NAMESPACE
-
-namespace Magus
-{
-    /****************************************************************************
-    Constants, used in QtAssetWidget and all related classes.
-    ***************************************************************************/
-    static const int ASSET_HEADER_HEIGHT = 48;
-    static const int DEFAULT_ICON_DIMENSION = 32;
-    static const int CONTAINER_HEADER_HEIGHT = 16;
-    static const int CONTAINER_DEFAULT_ICON_DIMENSION = 16;
-}
+//****************************************************************************/
+// Default screen settings
+static const int TB_ICON_AND_SPACING = 32;
 
 #endif

@@ -23,55 +23,52 @@
 #include <QVBoxLayout>
 #include <QMessageBox>
 #include <QDir>
+#include <QLabel>
 #include <QImageReader>
 #include <QListWidgetItem>
-#include "tool_extended_texturewidget.h"
+#include "tool_default_texturewidget.h"
 
 namespace Magus
 {
     //****************************************************************************/
-    QtTextureAndText::QtTextureAndText(const QPixmap& pixmap,
-                                       const QString& name,
-                                       const QString& baseName,
-                                       const QSize& size,
-                                       QWidget* parent) : QWidget(parent)
+    QtDefaultTextureAndText::QtDefaultTextureAndText(const QPixmap& pixmap,
+                                                     const QString& name,
+                                                     const QString& baseName,
+                                                     const QSize& size,
+                                                     QWidget* parent) : QWidget(parent)
     {
         setContentsMargins(-8, -8, -8, -8);
+        setMinimumSize(size);
+        setMaximumSize(size);
         QHBoxLayout* mainLayout = new QHBoxLayout;
-        QVBoxLayout* sphereAndNameLayout = new QVBoxLayout;
+        QVBoxLayout* textureAndNameLayout = new QVBoxLayout;
+
         mName = name;
         mBaseName = baseName;
-        mSphereWidget = new QtGLSphereWidget(this);
-        mSphereWidget->setPixmap(pixmap, name, baseName);
         mBaseNameEdit = new QLineEdit;
         mBaseNameEdit->setText(mBaseName);
         mBaseNameEdit->setEnabled(false);
-        connect(mSphereWidget, SIGNAL(selected(QString,QString)), this, SLOT(handleSelected(QString,QString)));
+
+        mTextureLabel = new QLabel();
+        mTextureLabel->setPixmap(pixmap);
+        mTextureLabel->setScaledContents(true);
 
         // Layout
-        sphereAndNameLayout->addWidget(mSphereWidget, 1000);
-        sphereAndNameLayout->addWidget(mBaseNameEdit, 1);
-        mainLayout->addLayout(sphereAndNameLayout);
+        textureAndNameLayout->addWidget(mTextureLabel, 1000);
+        textureAndNameLayout->addWidget(mBaseNameEdit, 1);
+        mainLayout->addLayout(textureAndNameLayout);
         setLayout(mainLayout);
-        setMinimumSize(size);
-        setMaximumSize(size);
     }
 
     //****************************************************************************/
-    QtTextureAndText::~QtTextureAndText(void)
+    QtDefaultTextureAndText::~QtDefaultTextureAndText(void)
     {
     }
 
     //****************************************************************************/
-    void QtTextureAndText::handleSelected(const QString& name, const QString& baseName)
-    {
-        emit selected(name, baseName);
-    }
-
     //****************************************************************************/
     //****************************************************************************/
-    //****************************************************************************/
-    QtExtendedTextureWidget::QtExtendedTextureWidget(QWidget* parent) : QWidget(parent)
+    QtDefaultTextureWidget::QtDefaultTextureWidget(QWidget* parent) : QWidget(parent)
     {
         setWindowTitle(QString("Texture selection"));
         mNameTexture = QString("");
@@ -82,13 +79,14 @@ namespace Magus
         QVBoxLayout* textureSelectionLayout = new QVBoxLayout;
 
         // Define selection widget (QListWidget)
-        mSelectionList = new QListWidget(this);
+        mSelectionList = new QListWidget();
         mSelectionList->setViewMode(QListView::ListMode);
-        mSelectionList->setSpacing(0);
-        mSelectionList->setMovement(QListView::Snap);
-        mSelectionList->setFlow(QListView::LeftToRight);
         mSelectionList->setWrapping(true);
         mSelectionList->setWordWrap(true);
+        mSelectionList->setSpacing(0);
+        mSelectionList->setUniformItemSizes(true);
+        mSelectionList->setMovement(QListView::Snap);
+        mSelectionList->setFlow(QListView::LeftToRight);
         mSelectionList->setAcceptDrops(false);
         mSelectionList->setDropIndicatorShown(false);
         mSelectionList->setMouseTracking(true);
@@ -100,55 +98,58 @@ namespace Magus
     }
 
     //****************************************************************************/
-    QtExtendedTextureWidget::~QtExtendedTextureWidget(void)
+    QtDefaultTextureWidget::~QtDefaultTextureWidget(void)
     {
     }
 
     //****************************************************************************/
-    void QtExtendedTextureWidget::addTexture(const QPixmap& pixmap, const QString name, const QString baseName)
+    void QtDefaultTextureWidget::addTexture(const QPixmap& pixmap, const QString name, const QString baseName)
     {
-        QtTextureAndText* textureAndText = new QtTextureAndText(pixmap, name, baseName, mTextureSize, this);
-        //textureAndText->setMinimumSize(mTextureSize);
-        //textureAndText->setMaximumSize(mTextureSize);
+        QtDefaultTextureAndText* textureAndText = new QtDefaultTextureAndText(pixmap, name, baseName, mTextureSize, this);
         QListWidgetItem* item = new QListWidgetItem();
         item->setSizeHint(mTextureSize); // Must be present, otherwise the widget is not shown
         mSelectionList->addItem(item);
         mSelectionList->setItemWidget(item, textureAndText);
-        connect(textureAndText, SIGNAL(selected(QString,QString)), this, SLOT(handleSelected(QString,QString)));
+        connect(mSelectionList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(handleSelected(QListWidgetItem*)));
     }
 
     //****************************************************************************/
-    void QtExtendedTextureWidget::setOriginIsFile(bool originIsFile)
+    void QtDefaultTextureWidget::setOriginIsFile(bool originIsFile)
     {
         mOriginIsFile = originIsFile;
     }
 
     //****************************************************************************/
-    void QtExtendedTextureWidget::clearContent(void)
+    void QtDefaultTextureWidget::clearContent(void)
     {
         mSelectionList->clear();
     }
 
     //****************************************************************************/
-    const QString& QtExtendedTextureWidget::getNameTexture(void)
+    const QString& QtDefaultTextureWidget::getNameTexture(void)
     {
         return mNameTexture;
     }
 
     //****************************************************************************/
-    const QString& QtExtendedTextureWidget::getBaseNameTexture(void)
+    const QString& QtDefaultTextureWidget::getBaseNameTexture(void)
     {
         return mBaseNameTexture;
     }
 
     //****************************************************************************/
-    void QtExtendedTextureWidget::handleSelected(const QString& name, const QString& baseName)
+    void QtDefaultTextureWidget::handleSelected(QListWidgetItem* item)
     {
-        emit selected(name, baseName);
+        QWidget* widget = mSelectionList->itemWidget(item);
+        if (widget)
+        {
+            QtDefaultTextureAndText* textureAndText = static_cast<QtDefaultTextureAndText*>(widget);
+            emit selected(textureAndText->mName, textureAndText->mBaseName);
+        }
     }
 
     //****************************************************************************/
-    void QtExtendedTextureWidget::setTextureSize (QSize size)
+    void QtDefaultTextureWidget::setTextureSize (QSize size)
     {
         mTextureSize = size;
     }

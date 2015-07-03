@@ -18,24 +18,46 @@
 **
 ****************************************************************************/
 
-#ifndef MAGUS_ASSET_CONSTANTS_H
-#define MAGUS_ASSET_CONSTANTS_H
+#ifndef Dock2DOCWIDGET_H
+#define Dock2DOCWIDGET_H
 
-#include <QString>
+#include <QtWidgets>
+#include "constants.h"
+#include <QMenu>
+#include <QAction>
+#include <QMessageBox>
+#include <QToolBar>
+#include <QTabWidget>
+#include "tool_default_texturewidget.h"
 
 QT_BEGIN_NAMESPACE
-
+class QDockWidget;
 QT_END_NAMESPACE
 
-namespace Magus
+class MainWindow;
+
+/****************************************************************************
+ This class represents a DockWidget
+ ***************************************************************************/
+class Dock2DockWidget : public QDockWidget
 {
-    /****************************************************************************
-    Constants, used in QtAssetWidget and all related classes.
-    ***************************************************************************/
-    static const int ASSET_HEADER_HEIGHT = 48;
-    static const int DEFAULT_ICON_DIMENSION = 32;
-    static const int CONTAINER_HEADER_HEIGHT = 16;
-    static const int CONTAINER_DEFAULT_ICON_DIMENSION = 16;
-}
+	Q_OBJECT
+
+	public:
+		Dock2DockWidget(QString title, MainWindow* parent, Qt::WindowFlags flags = 0);
+		~Dock2DockWidget(void);
+		void createActions(void);
+		void createMenus(void);
+		void createToolBars(void);
+
+	private slots:
+        void textureRead(QPixmap pixMap, const QString& fileName, const QString& baseName);
+
+	private:
+		MainWindow* mParent;
+        QMainWindow* mInnerMain;
+        Magus::QtDefaultTextureWidget* mTextureSelection;
+};
 
 #endif
+

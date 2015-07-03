@@ -17,25 +17,20 @@
 ** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
 **
 ****************************************************************************/
+#include <QApplication>
+#include <QThread>
+#include "mainwindow.h"
 
-#ifndef MAGUS_ASSET_CONSTANTS_H
-#define MAGUS_ASSET_CONSTANTS_H
-
-#include <QString>
-
-QT_BEGIN_NAMESPACE
-
-QT_END_NAMESPACE
-
-namespace Magus
+int main(int argc, char *argv[])
 {
-    /****************************************************************************
-    Constants, used in QtAssetWidget and all related classes.
-    ***************************************************************************/
-    static const int ASSET_HEADER_HEIGHT = 48;
-    static const int DEFAULT_ICON_DIMENSION = 32;
-    static const int CONTAINER_HEADER_HEIGHT = 16;
-    static const int CONTAINER_DEFAULT_ICON_DIMENSION = 16;
+    QApplication app(argc, argv);
+    MainWindow mainWin;
+    mainWin.show();
+    while (!mainWin.mIsClosing)
+    {
+        app.processEvents();
+        mainWin.update();
+        QThread::msleep(10);
+    }
+	return 0;
 }
-
-#endif

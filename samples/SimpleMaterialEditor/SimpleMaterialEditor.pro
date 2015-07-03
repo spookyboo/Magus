@@ -29,9 +29,6 @@ HEADERS       = \
     source/header/asset_propertywidget_decimal.h \ 
     source/header/asset_propertywidget_color.h \ 
     source/header/asset_propertywidget_texture.h \ 
-    source/header/asset_texture_dialog.h \ 
-    source/header/asset_texture_dialog_model.h \ 
-    source/header/asset_dirtree.h \ 
     source/header/asset_propertywidget_curve.h \ 
     source/header/asset_curve_grid.h \ 
     source/header/asset_curve_dialog.h \ 
@@ -52,7 +49,8 @@ HEADERS       = \
     source/header/sme_asset_pass.h \
     source/header/sme_asset_texture_unit.h \
     source/header/node_compound.h \
-    source/header/node_scene.h
+    source/header/node_scene.h \
+    source/header/generic_funtions.h
 
 
 SOURCES       = \
@@ -74,9 +72,6 @@ SOURCES       = \
     source/src/asset_propertywidget_decimal.cpp \ 
     source/src/asset_propertywidget_color.cpp \ 
     source/src/asset_propertywidget_texture.cpp \ 
-    source/src/asset_texture_dialog.cpp \ 
-    source/src/asset_texture_dialog_model.cpp \ 
-    source/src/asset_dirtree.cpp \ 
     source/src/asset_propertywidget_curve.cpp \ 
     source/src/asset_curve_grid.cpp \ 
     source/src/asset_curve_dialog.cpp \ 

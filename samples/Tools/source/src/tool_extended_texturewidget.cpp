@@ -33,8 +33,10 @@ namespace Magus
     QtTextureAndText::QtTextureAndText(const QPixmap& pixmap,
                                        const QString& name,
                                        const QString& baseName,
+                                       const QSize& size,
                                        QWidget* parent) : QWidget(parent)
     {
+        setContentsMargins(-8, -8, -8, -8);
         QHBoxLayout* mainLayout = new QHBoxLayout;
         QVBoxLayout* sphereAndNameLayout = new QVBoxLayout;
         mName = name;
@@ -51,6 +53,8 @@ namespace Magus
         sphereAndNameLayout->addWidget(mBaseNameEdit, 1);
         mainLayout->addLayout(sphereAndNameLayout);
         setLayout(mainLayout);
+        setMinimumSize(size);
+        setMaximumSize(size);
     }
 
     //****************************************************************************/
@@ -79,11 +83,14 @@ namespace Magus
 
         // Define selection widget (QListWidget)
         mSelectionList = new QListWidget(this);
-        mSelectionList->setViewMode(QListView::IconMode);
+        mSelectionList->setViewMode(QListView::ListMode);
         mSelectionList->setSpacing(0);
         mSelectionList->setMovement(QListView::Snap);
         mSelectionList->setFlow(QListView::LeftToRight);
         mSelectionList->setWrapping(true);
+        mSelectionList->setWordWrap(true);
+        mSelectionList->setAcceptDrops(false);
+        mSelectionList->setDropIndicatorShown(false);
         mSelectionList->setMouseTracking(true);
 
         // Layout
@@ -100,10 +107,9 @@ namespace Magus
     //****************************************************************************/
     void QtExtendedTextureWidget::addTexture(const QPixmap& pixmap, const QString name, const QString baseName)
     {
-        QtTextureAndText* textureAndText = new QtTextureAndText(pixmap, name, baseName, this);
-        textureAndText->setContentsMargins(-8, -8, -8, -8);
-        textureAndText->setMinimumSize(mTextureSize);
-        textureAndText->setMaximumSize(mTextureSize);
+        QtTextureAndText* textureAndText = new QtTextureAndText(pixmap, name, baseName, mTextureSize, this);
+        //textureAndText->setMinimumSize(mTextureSize);
+        //textureAndText->setMaximumSize(mTextureSize);
         QListWidgetItem* item = new QListWidgetItem();
         item->setSizeHint(mTextureSize); // Must be present, otherwise the widget is not shown
         mSelectionList->addItem(item);

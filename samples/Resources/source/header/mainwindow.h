@@ -18,24 +18,58 @@
 **
 ****************************************************************************/
 
-#ifndef MAGUS_ASSET_CONSTANTS_H
-#define MAGUS_ASSET_CONSTANTS_H
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
 
-#include <QString>
+#include <QCloseEvent>
+#include <QMainWindow>
+#include "constants.h"
+#include <QMenu>
+#include <QAction>
+#include <QMessageBox>
+#include <QToolBar>
+#include "dock1_dockwidget.h"
+#include "dock2_dockwidget.h"
+#include "dock3_dockwidget.h"
+
 
 QT_BEGIN_NAMESPACE
 
 QT_END_NAMESPACE
 
-namespace Magus
+/****************************************************************************
+ MainWindow is the main container window
+ ***************************************************************************/
+class MainWindow : public QMainWindow
 {
-    /****************************************************************************
-    Constants, used in QtAssetWidget and all related classes.
-    ***************************************************************************/
-    static const int ASSET_HEADER_HEIGHT = 48;
-    static const int DEFAULT_ICON_DIMENSION = 32;
-    static const int CONTAINER_HEADER_HEIGHT = 16;
-    static const int CONTAINER_DEFAULT_ICON_DIMENSION = 16;
-}
+	Q_OBJECT
+
+	public:
+		MainWindow(void);
+		~MainWindow(void);
+		void update(void);
+		bool mIsClosing;
+
+
+	private slots:
+        void doQuitMenuAction(void);
+
+
+	private:
+		void createActions(void);
+		void createMenus(void);
+		void createToolBars(void);
+		void createStatusBar(void);
+		void createDockWindows(void);
+		void closeEvent(QCloseEvent* event);
+
+        QMenu* mFileMenu;
+        QAction* mQuitMenuAction;
+        Dock1DockWidget* mDock1DockWidget;
+        Dock2DockWidget* mDock2DockWidget;
+        Dock3DockWidget* mDock3DockWidget;
+
+};
 
 #endif
+
