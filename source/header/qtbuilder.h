@@ -53,6 +53,8 @@ static const QString FILE_PROJECT_PTP = QString("project.ptp");
 static const QString FILE_DOCKWIDGET_HTP = QString("dockwidget.htp");
 static const QString FILE_DOCKWIDGET_CTP = QString("dockwidget.ctp");
 static const QString FILE_GENERIC_FUNCTIONS_H = QString("generic_funtions.h");
+static const QString FILE_MAGUS_TREE_WIDGET_H = QString("magus_treewidget.h");
+static const QString FILE_MAGUS_TREE_WIDGET_CPP = QString("magus_treewidget.cpp");
 static const QString FILE_TRANSFORMATION_WIDGET_H = QString("tb_transformationwidget.h");
 static const QString FILE_TRANSFORMATION_WIDGET_CPP = QString("tb_transformationwidget.cpp");
 
@@ -135,10 +137,6 @@ static const QString FILE_TOOL_GRADIENT_MARKER_H = QString("tool_gradientmarker.
 static const QString FILE_TOOL_GRADIENT_MARKER_CPP = QString("tool_gradientmarker.cpp");
 static const QString FILE_TOOL_GRADIENT_WIDGET_H = QString("tool_gradientwidget.h");
 static const QString FILE_TOOL_GRADIENT_WIDGET_CPP = QString("tool_gradientwidget.cpp");
-static const QString FILE_TOOL_SIMPLE_TEXTURE_MODEL_H = QString("tool_simple_texturemodel.h");
-static const QString FILE_TOOL_SIMPLE_TEXTURE_MODEL_CPP = QString("tool_simple_texturemodel.cpp");
-static const QString FILE_TOOL_SIMPLE_TEXTURE_WIDGET_H = QString("tool_simple_texturewidget.h");
-static const QString FILE_TOOL_SIMPLE_TEXTURE_WIDGET_CPP = QString("tool_simple_texturewidget.cpp");
 static const QString FILE_TOOL_SCENE_WIDGET_H = QString("tool_sceneviewwidget.h");
 static const QString FILE_TOOL_SCENE_WIDGET_CPP = QString("tool_sceneviewwidget.cpp");
 static const QString FILE_TOOL_LAYERED_SCENE_WIDGET_H = QString("tool_layered_sceneviewwidget.h");
@@ -147,12 +145,18 @@ static const QString FILE_TOOL_LAYER_WIDGET_H = QString("tool_layerwidget.h");
 static const QString FILE_TOOL_LAYER_WIDGET_CPP = QString("tool_layerwidget.cpp");
 static const QString FILE_TOOL_GL_SPHERE_WIDGET_H = QString("tool_glspherewidget.h");
 static const QString FILE_TOOL_GL_SPHERE_WIDGET_CPP = QString("tool_glspherewidget.cpp");
-static const QString FILE_TOOL_FILEREADER_H = QString("tool_filereader.h");
-static const QString FILE_TOOL_FILEREADER_CPP = QString("tool_filereader.cpp");
-static const QString FILE_TOOL_EXTENDED_TEXTURE_WIDGET_H = QString("tool_extended_texturewidget.h");
-static const QString FILE_TOOL_EXTENDED_TEXTURE_WIDGET_CPP = QString("tool_extended_texturewidget.cpp");
 static const QString FILE_TOOL_RESOURCETREE_WIDGET_H = QString("tool_resourcetree_widget.h");
 static const QString FILE_TOOL_RESOURCETREE_WIDGET_CPP = QString("tool_resourcetree_widget.cpp");
+static const QString FILE_TOOL_FILEREADER_H = QString("tool_filereader.h");
+static const QString FILE_TOOL_FILEREADER_CPP = QString("tool_filereader.cpp");
+static const QString FILE_TOOL_SIMPLE_TEXTURE_MODEL_H = QString("tool_simple_texturemodel.h");
+static const QString FILE_TOOL_SIMPLE_TEXTURE_MODEL_CPP = QString("tool_simple_texturemodel.cpp");
+static const QString FILE_TOOL_SIMPLE_TEXTURE_WIDGET_H = QString("tool_simple_texturewidget.h");
+static const QString FILE_TOOL_SIMPLE_TEXTURE_WIDGET_CPP = QString("tool_simple_texturewidget.cpp");
+static const QString FILE_TOOL_DEFAULT_TEXTURE_WIDGET_H = QString("tool_default_texturewidget.h");
+static const QString FILE_TOOL_DEFAULT_TEXTURE_WIDGET_CPP = QString("tool_default_texturewidget.cpp");
+static const QString FILE_TOOL_EXTENDED_TEXTURE_WIDGET_H = QString("tool_extended_texturewidget.h");
+static const QString FILE_TOOL_EXTENDED_TEXTURE_WIDGET_CPP = QString("tool_extended_texturewidget.cpp");
 
 //****************************************************************************/
 // References for project.ptp

@@ -193,7 +193,9 @@ void QtBuilder::build(ApplicationTemplate* applicationTemplate)
     // Step 3: Copy the base files (that do not need to be changed)
     fileUtil.copy(mQtHeader + FILE_CONSTANTS_HTP, mFullOutputHeaderDir + FILE_CONSTANTS_H);
     fileUtil.copy(mQtHeader + FILE_GENERIC_FUNCTIONS_H, mFullOutputHeaderDir + FILE_GENERIC_FUNCTIONS_H);
+    fileUtil.copy(mQtHeader + FILE_MAGUS_TREE_WIDGET_H, mFullOutputHeaderDir + FILE_MAGUS_TREE_WIDGET_H);
     fileUtil.copy(mQtSrc + FILE_MAIN_CTP, mFullOutputSrcDir + FILE_MAIN_CPP);
+    fileUtil.copy(mQtSrc + FILE_MAGUS_TREE_WIDGET_CPP, mFullOutputSrcDir + FILE_MAGUS_TREE_WIDGET_CPP);
     fileUtil.copy(mQtDir + STYLE_DARK, mFullOutputBinDir + STYLE_DARK);
 
     fileUtil.copy(FILE_QT_DLL_CORE, mFullOutputBinDir + FILE_QT_DLL_CORE);
@@ -1134,6 +1136,7 @@ QString QtBuilder::createToolHeaderForPro(const QString& additionalHeader)
     fileUtil.copy(mQtHeader + FILE_TOOL_GRADIENT_WIDGET_H, mFullOutputHeaderDir + FILE_TOOL_GRADIENT_WIDGET_H);
     fileUtil.copy(mQtHeader + FILE_TOOL_SIMPLE_TEXTURE_MODEL_H, mFullOutputHeaderDir + FILE_TOOL_SIMPLE_TEXTURE_MODEL_H);
     fileUtil.copy(mQtHeader + FILE_TOOL_SIMPLE_TEXTURE_WIDGET_H, mFullOutputHeaderDir + FILE_TOOL_SIMPLE_TEXTURE_WIDGET_H);
+    fileUtil.copy(mQtHeader + FILE_TOOL_DEFAULT_TEXTURE_WIDGET_H, mFullOutputHeaderDir + FILE_TOOL_DEFAULT_TEXTURE_WIDGET_H);
     fileUtil.copy(mQtHeader + FILE_TOOL_EXTENDED_TEXTURE_WIDGET_H, mFullOutputHeaderDir + FILE_TOOL_EXTENDED_TEXTURE_WIDGET_H);
     fileUtil.copy(mQtHeader + FILE_TOOL_RESOURCETREE_WIDGET_H, mFullOutputHeaderDir + FILE_TOOL_RESOURCETREE_WIDGET_H);
     fileUtil.copy(mQtHeader + FILE_TOOL_SCENE_WIDGET_H, mFullOutputHeaderDir + FILE_TOOL_SCENE_WIDGET_H);
@@ -1179,6 +1182,12 @@ QString QtBuilder::createToolHeaderForPro(const QString& additionalHeader)
         TAB +
         mOutputHeaderDir +
         FILE_TOOL_SIMPLE_TEXTURE_WIDGET_H +
+        QString(" \\ ") +
+        QString("\n");
+    str = str +
+        TAB +
+        mOutputHeaderDir +
+        FILE_TOOL_DEFAULT_TEXTURE_WIDGET_H +
         QString(" \\ ") +
         QString("\n");
     str = str +
@@ -1240,6 +1249,7 @@ QString QtBuilder::createToolSrcForPro(const QString& additionalSrc)
     fileUtil.copy(mQtSrc + FILE_TOOL_GRADIENT_WIDGET_CPP, mFullOutputSrcDir + FILE_TOOL_GRADIENT_WIDGET_CPP);
     fileUtil.copy(mQtSrc + FILE_TOOL_SIMPLE_TEXTURE_MODEL_CPP, mFullOutputSrcDir + FILE_TOOL_SIMPLE_TEXTURE_MODEL_CPP);
     fileUtil.copy(mQtSrc + FILE_TOOL_SIMPLE_TEXTURE_WIDGET_CPP, mFullOutputSrcDir + FILE_TOOL_SIMPLE_TEXTURE_WIDGET_CPP);
+    fileUtil.copy(mQtSrc + FILE_TOOL_DEFAULT_TEXTURE_WIDGET_CPP, mFullOutputSrcDir + FILE_TOOL_DEFAULT_TEXTURE_WIDGET_CPP);
     fileUtil.copy(mQtSrc + FILE_TOOL_EXTENDED_TEXTURE_WIDGET_CPP, mFullOutputSrcDir + FILE_TOOL_EXTENDED_TEXTURE_WIDGET_CPP);
     fileUtil.copy(mQtSrc + FILE_TOOL_RESOURCETREE_WIDGET_CPP, mFullOutputSrcDir + FILE_TOOL_RESOURCETREE_WIDGET_CPP);
     fileUtil.copy(mQtSrc + FILE_TOOL_SCENE_WIDGET_CPP, mFullOutputSrcDir + FILE_TOOL_SCENE_WIDGET_CPP);
@@ -1278,6 +1288,12 @@ QString QtBuilder::createToolSrcForPro(const QString& additionalSrc)
         TAB +
         mOutputSrcDir +
         FILE_TOOL_SIMPLE_TEXTURE_WIDGET_CPP +
+        QString(" \\ ") +
+        QString("\n");
+    str = str +
+        TAB +
+        mOutputSrcDir +
+        FILE_TOOL_DEFAULT_TEXTURE_WIDGET_CPP +
         QString(" \\ ") +
         QString("\n");
     str = str +
