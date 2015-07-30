@@ -21,6 +21,7 @@
 // Include
 #include <QDir>
 #include <QFileDialog>
+#include <QMessageBox>
 #include "tool_filereader.h"
 #include "generic_funtions.h"
 
@@ -62,7 +63,7 @@ namespace Magus
                         QPixmap texturePixmap = QPixmap(info.absoluteFilePath());
                         mPixmapVec.append(texturePixmap);
                         emit textureRead(texturePixmap, info.absoluteFilePath(), info.fileName());
-                        emit fileRead(info.absoluteFilePath(), info.absolutePath());
+                        emit fileRead(info.path(), info.absoluteFilePath(), info.fileName());
                     }
                 }
             }
@@ -72,15 +73,66 @@ namespace Magus
     }
 
     //****************************************************************************/
-    const QString& QtFileReader::readFileName(const QString& title, const QString& path)
+    const QVector<QString>& QtFileReader::readFileNamesRecursively(const QString& searchPath, QString& mask)
     {
-        mFileName = QFileDialog::getOpenFileName(0, title, path);
+        mStringVec.clear();
+
+        // Get all filenames from all dirs/subdirs with the specified mask
+        QDir dir(searchPath);
+        dir.makeAbsolute();
+
+        if (dir.exists())
+        {
+            Q_FOREACH(QFileInfo info, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files, QDir::DirsFirst))
+            {
+                if (info.isDir())
+                {
+                    readFileNamesRecursively(info.absoluteFilePath(), mask);
+                }
+                else
+                {
+                    QString fileName = info.absoluteFilePath();
+                    //QMessageBox::information(0, "test", fileName); // Test
+                    // TODO: Filter by mask
+                    emit fileRead(info.path(), info.absoluteFilePath(), info.fileName());
+                }
+            }
+        }
+
+        return mStringVec;
+    }
+
+    //****************************************************************************/
+    const QString& QtFileReader::readFileName(const QString& title, const QString& path, const QString& filter)
+    {
+        QFileDialog fileDialog;
+        mFileName = fileDialog.getOpenFileName(0, title, path, filter);
         if (!mFileName.isEmpty())
         {
-            emit fileRead(mFileName, path);
+            QFileInfo info(mFileName);
+            emit fileRead(path, mFileName, info.fileName());
         }
 
         return mFileName;
     }
 
+    //****************************************************************************/
+    const QMap<QString, QFileInfo>& QtFileReader::readFileNames(const QString& title, const QString& path, const QString& filter)
+    {
+        QFileDialog fileDialog;
+        mFileInfoMap.clear();
+        mFileNames = fileDialog.getOpenFileNames(0, title, path, filter);
+        foreach(QString fileName, mFileNames)
+        {
+            if (!fileName.isEmpty())
+            {
+                QFileInfo info(fileName);
+                mFileInfoMap[fileName] = info;
+                emit fileRead(path, fileName, info.fileName());
+                //QMessageBox::information(0, "test", info.fileName()); // Test
+            }
+        }
+
+        return mFileInfoMap;
+    }
 }

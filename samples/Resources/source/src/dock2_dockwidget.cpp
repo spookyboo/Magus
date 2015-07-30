@@ -22,28 +22,28 @@
 #include "mainwindow.h"
 #include "Dock2_dockwidget.h"
 #include "tool_filereader.h"
+#include "magus_core.h"
 
 //****************************************************************************/
 Dock2DockWidget::Dock2DockWidget(QString title, MainWindow* parent, Qt::WindowFlags flags) : 
 	QDockWidget (title, parent, flags), 
 	mParent(parent)
 {
-    setCursor(Qt::WaitCursor);
-    mTextureSelection = new Magus::QtDefaultTextureWidget(this);
-    mTextureSelection->setTextureSize(QSize(112, 120));
+    /*
+    //setCursor(Qt::WaitCursor);
+    mAudioSelection = new Magus::QtAudioWidget(QString("../common/icons/"), this);
+    mAudioSelection->setTextureSize(QSize(112, 120));
 
     // Create filereader and read the images from the filesystem
     Magus::QtFileReader fileReader;
-    connect(&fileReader, SIGNAL(textureRead(QPixmap, QString, QString)), this, SLOT(textureRead(QPixmap, QString, QString)));
-    fileReader.readTexturesRecursively(QString("../../media/textures"));
+    connect(&fileReader, SIGNAL(fileRead(QString,QString,QString)), this, SLOT(fileRead(QString,QString,QString)));
+    fileReader.readFileNamesRecursively(QString("../../assets/audio"), QString(""));
     setCursor(Qt::ArrowCursor);
+    */
 
     mInnerMain = new QMainWindow();
-    mInnerMain->setCentralWidget(mTextureSelection);
+    //mInnerMain->setCentralWidget(mAudioSelection);
     setWidget(mInnerMain);
-    QWidget* oldTitleBar = titleBarWidget();
-    setTitleBarWidget(new QWidget());
-    delete oldTitleBar;
 
     // Perform standard functions
     createActions();
@@ -75,9 +75,9 @@ void Dock2DockWidget::createToolBars(void)
 }
 
 //****************************************************************************/
-void Dock2DockWidget::textureRead(QPixmap pixMap, const QString& fileName, const QString& baseName)
+void Dock2DockWidget::fileRead(const QString& path, const QString& fileName, const QString& baseName)
 {
-    mTextureSelection->addTexture(pixMap, fileName, baseName);
+    mAudioSelection->addAudio(Magus::SOURCE_FILE, fileName, baseName);
 }
 
 

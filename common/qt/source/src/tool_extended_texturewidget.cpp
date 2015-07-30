@@ -108,13 +108,34 @@ namespace Magus
     void QtExtendedTextureWidget::addTexture(const QPixmap& pixmap, const QString name, const QString baseName)
     {
         QtTextureAndText* textureAndText = new QtTextureAndText(pixmap, name, baseName, mTextureSize, this);
-        //textureAndText->setMinimumSize(mTextureSize);
-        //textureAndText->setMaximumSize(mTextureSize);
         QListWidgetItem* item = new QListWidgetItem();
         item->setSizeHint(mTextureSize); // Must be present, otherwise the widget is not shown
         mSelectionList->addItem(item);
         mSelectionList->setItemWidget(item, textureAndText);
         connect(textureAndText, SIGNAL(selected(QString,QString)), this, SLOT(handleSelected(QString,QString)));
+    }
+
+    //****************************************************************************/
+    void QtExtendedTextureWidget::deleteTexture(const QString name)
+    {
+        QtTextureAndText* textureAndText;
+        QWidget* widget;
+        int row;
+        QList<QListWidgetItem*> list = mSelectionList->findItems(QString("*"), Qt::MatchWildcard);
+        foreach (QListWidgetItem* item, list)
+        {
+            widget = mSelectionList->itemWidget(item);
+            if (widget)
+            {
+                textureAndText = static_cast<QtTextureAndText*>(widget);
+                if (textureAndText->mName == name)
+                {
+                    row = mSelectionList->row(item);
+                    mSelectionList->removeItemWidget(item);
+                    mSelectionList->takeItem(row);
+                }
+            }
+        }
     }
 
     //****************************************************************************/

@@ -531,6 +531,14 @@ namespace Magus
     }
 
     //****************************************************************************/
+    int QtResourceTreeWidget::addResource (int parentId, const QString& resourceName, const QString& iconName, bool isAsset)
+    {
+        int resourceId = generateUniqueResourceId();
+        addResource (resourceId, parentId, resourceName, iconName, isAsset);
+        return resourceId;
+    }
+
+    //****************************************************************************/
     QVector<QtResourceInfo*>& QtResourceTreeWidget::getResources (void)
     {
         clearResourceInfoVec();
@@ -800,6 +808,13 @@ namespace Magus
     }
 
     //****************************************************************************/
+    int QtResourceTreeWidget::getToplevelParentId (int resourceId)
+    {
+        QTreeWidgetItem* item = getResourceItem(resourceId);
+        return getToplevelParentIdFromItem(item);
+    }
+
+    //****************************************************************************/
     QTreeWidgetItem* QtResourceTreeWidget::getToplevelParentItemFromItem (QTreeWidgetItem* item)
     {
         int toplevelParentId = getToplevelParentIdFromItem(item);
@@ -824,6 +839,23 @@ namespace Magus
             mTempString = item->data(TOOL_RESOURCETREE_KEY_ICONNAME, Qt::UserRole).toString();
 
         return mTempString;
+    }
+
+    //****************************************************************************/
+    const QString& QtResourceTreeWidget::getResourceNameFromItem(QTreeWidgetItem* item)
+    {
+        mTempString = QString("");
+        if (item)
+            mTempString = item->text(0);
+
+        return mTempString;
+    }
+
+    //****************************************************************************/
+    const QString& QtResourceTreeWidget::getResourceName(int resourceId)
+    {
+        QTreeWidgetItem* item = getResourceItem(resourceId);
+        return getResourceNameFromItem(item);
     }
 
     //****************************************************************************/

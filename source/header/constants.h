@@ -153,6 +153,9 @@ static const QString ICON_LAYER_BOLD = QString("layer_bold.png");
 static const QString ICON_VISIBLE_BOLD = QString("view_visible_bold.png");
 static const QString ICON_INVISIBLE_BOLD = QString("view_invisible_bold.png");
 static const QString ICON_SEARCH_BOLD = QString("search_bold.png");
+static const QString ICON_AUDIO_PLAY = QString("audio_play.png");
+static const QString ICON_AUDIO_PAUSE = QString("audio_pause.png");
+static const QString ICON_AUDIO_STOP = QString("audio_stop.png");
 
 // The separator names must match the names in tbicons.cfg to be recognized as a separator
 static const QString ICON_HSEPARATOR = QString("separator_horizontal.png");

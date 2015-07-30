@@ -29,6 +29,11 @@ QT_BEGIN_NAMESPACE
 
 QT_END_NAMESPACE
 
+/*
+ * TODO:
+ * - Implement double mouse click
+*/
+
 namespace Magus
 {
     /****************************************************************************
@@ -45,6 +50,9 @@ namespace Magus
             // Add a pixmap to this widget. The name is a (fully qualified) filename for example.
             // E.g. name = "c:/temp/Tools/common/icons/info.png"
             void addTexture(const QPixmap& pixmap, const QString name);
+
+            // Delete an item from the QtSimpleTextureWidget. Use the full qualified name as search criterium.
+            void deleteTexture(const QString name);
 
             // If a texture is originated from a file, setOriginIsFile must be set to 'true'
             void setOriginIsFile(bool originIsFile);

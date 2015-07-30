@@ -28,7 +28,7 @@
 #include <QMessageBox>
 #include <QToolBar>
 #include <QTabWidget>
-#include "tool_default_texturewidget.h"
+#include "tool_audiowidget.h"
 
 QT_BEGIN_NAMESPACE
 class QDockWidget;
@@ -51,12 +51,12 @@ class Dock2DockWidget : public QDockWidget
 		void createToolBars(void);
 
 	private slots:
-        void textureRead(QPixmap pixMap, const QString& fileName, const QString& baseName);
+        void fileRead(const QString& path, const QString& fileName, const QString& baseName);
 
 	private:
 		MainWindow* mParent;
         QMainWindow* mInnerMain;
-        Magus::QtDefaultTextureWidget* mTextureSelection;
+        Magus::QtAudioWidget* mAudioSelection;
 };
 
 #endif

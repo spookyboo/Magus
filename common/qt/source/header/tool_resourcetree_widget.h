@@ -30,6 +30,18 @@
 #include <QLabel>
 #include "magus_treewidget.h"
 
+/*
+ * TODO:
+ * - emits resourceRenamed, when a resource is renamed
+ * - Add to contextmenu: Duplicate asset (create new entry and emit signal with existing resourceId and new resourceId)
+ * - Save asset (emits signal only)
+ * - Edit asset (emits signal only)
+ * - getAssets (returns only the assets of all groups and subgroups, but not the groups themselves)
+ * - getGroups (returns only the groups/subgroups, but not the assets)
+ * - getResources (returns all groups, subgroups and assets)
+ * - Show warning when a resource is deleted (through the context menu)
+*/
+
 QT_BEGIN_NAMESPACE
 
 QT_END_NAMESPACE
@@ -50,7 +62,7 @@ namespace Magus
     static const QString TOOL_RESOURCETREE_ACTION_CREATE_TOPLEVEL_GROUP = QString("Create a toplevel group");
     static const QString TOOL_RESOURCETREE_ACTION_CREATE_SUBGROUP = QString("Create a subgroup");
     static const QString TOOL_RESOURCETREE_ACTION_CREATE_ASSET = QString("Create an asset");
-    static const QString TOOL_RESOURCETREE_ACTION_IMPORT_ASSET = QString("Import an asset");
+    static const QString TOOL_RESOURCETREE_ACTION_IMPORT_ASSET = QString("Import asset(s)");
     static const QString TOOL_RESOURCETREE_ACTION_DELETE_RESOURCE = QString("Delete selected item");
     static const QString TOOL_RESOURCETREE_WARNING_1 = QString("Toplevel groups may not be moved");
     static const QString TOOL_RESOURCETREE_WARNING_2 = QString("Attaching a subgroup to an asset is not allowed");
@@ -148,6 +160,9 @@ namespace Magus
             // If isAsset is false, the resource is a toplevel group or a subgroup
             void addResource (int resourceId, int parentId, const QString& resourceName, const QString& iconName, bool isAsset = false);
 
+            // Add a resource to the resource tree, but automatically determine the resourceId (and return it)
+            int addResource (int parentId, const QString& resourceName, const QString& iconName, bool isAsset = false);
+
             // Returns a list of all resources in the resource tree
             QVector<QtResourceInfo*>& getResources (void);
 
@@ -217,6 +232,9 @@ namespace Magus
             // Return the resourceId of the toplevel parent of a QTreeWidgetItem
             int getToplevelParentIdFromItem (QTreeWidgetItem* item);
 
+            // Return the resourceId of the toplevel parent of a child resourceId
+            int getToplevelParentId (int resourceId);
+
             // Return the QTreeWidgetItem* of the toplevel parent of a QTreeWidgetItem
             QTreeWidgetItem* getToplevelParentItemFromItem (QTreeWidgetItem* item);
 
@@ -225,6 +243,10 @@ namespace Magus
 
             // Return the iconName of a QTreeWidgetItem
             const QString& getIconNameFromItem (QTreeWidgetItem* item);
+
+            // Return the resource name of a QTreeWidgetItem
+            const QString& getResourceNameFromItem(QTreeWidgetItem* item);
+            const QString& getResourceName(int resourceId);
 
             // Return the type Name of a QTreeWidgetItem. It returns:
             // 0                                         : type is undetermined

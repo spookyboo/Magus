@@ -30,8 +30,6 @@
 #include <QToolBar>
 #include "dock1_dockwidget.h"
 #include "dock2_dockwidget.h"
-#include "dock3_dockwidget.h"
-
 
 QT_BEGIN_NAMESPACE
 
@@ -67,8 +65,6 @@ class MainWindow : public QMainWindow
         QAction* mQuitMenuAction;
         Dock1DockWidget* mDock1DockWidget;
         Dock2DockWidget* mDock2DockWidget;
-        Dock3DockWidget* mDock3DockWidget;
-
 };
 
 #endif

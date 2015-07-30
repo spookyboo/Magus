@@ -1,0 +1,130 @@
+[GENERAL]
+project = "ContentBrowser"
+icon = NoImage.png
+description = "ContentBrowser"
+type = qt
+style = dark
+
+use_asset_widget = false
+
+ogre_asset = false
+use_node_editor = false
+
+use_tools = false
+
+[WINDOWS]
+window[0] = MAIN
+window[1] = DOCK1
+window[2] = DOCK2
+window[3] = DOCK3
+
+
+################################################################
+[MAIN]
+title = "ContentBrowser"
+display_title = true
+order = 0
+use_action_quit = true
+use_action_exit = false
+use_action_about = false
+use_action_reset_windows = true
+transformation_widget = false
+ogre_control = false
+ogre_target = 0
+ogre_control_visuals = false
+htoolbar_group = MAIN.HTOOLBAR
+
+#--------------------------------------------------------------#
+[MAIN.HTOOLBAR]
+icon[0] = MAIN.HTOOLBAR.NEW
+icon[1] = MAIN.HTOOLBAR.OPEN
+icon[2] = MAIN.HTOOLBAR.SAVE
+icon[3] = MAIN.HTOOLBAR.COLOR
+
+[MAIN.HTOOLBAR.NEW]
+icon = new.png
+
+[MAIN.HTOOLBAR.OPEN]
+icon = open.png
+
+[MAIN.HTOOLBAR.SAVE]
+icon = save.png
+
+[MAIN.HTOOLBAR.COLOR]
+icon = color.png
+
+
+################################################################
+[DOCK1]
+title = "Sources"
+display_title = true
+order = 1
+use_action_quit = false
+use_action_exit = false
+use_action_about = false
+use_action_reset_windows = false
+transformation_widget = false
+area = left
+ogre_control = false
+ogre_target = 0
+ogre_control_visuals = false
+
+################################################################
+[DOCK2]
+title = "Assets"
+display_title = true
+order = 2
+use_action_quit = false
+use_action_exit = false
+use_action_about = false
+use_action_reset_windows = false
+transformation_widget = false
+area = right
+ogre_control = false
+ogre_target = 0
+ogre_control_visuals = false
+tab_group = DOCK2.TAB
+
+#--------------------------------------------------------------#
+[DOCK2.TAB]
+tab[0] = DOCK2.TAB.AUDIO
+tab[1] = DOCK2.TAB.MATERIALS
+tab[2] = DOCK2.TAB.MESHES
+tab[3] = DOCK2.TAB.SCRIPTS
+tab[4] = DOCK2.TAB.TEXTURES
+
+[DOCK2.TAB.AUDIO]
+name = "Audio"
+icon = audio.png
+
+[DOCK2.TAB.MATERIALS]
+name = "materials"
+icon = material.png
+
+[DOCK2.TAB.MESHES]
+name = "meshes"
+icon = npc.png
+
+[DOCK2.TAB.SCRIPTS]
+name = "scripts"
+icon = cog.png
+
+[DOCK2.TAB.TEXTURES]
+name = "textures"
+icon = texture.png
+
+
+################################################################
+[DOCK3]
+title = "Collections"
+display_title = true
+order = 3
+use_action_quit = false
+use_action_exit = false
+use_action_about = false
+use_action_reset_windows = false
+transformation_widget = false
+area = left
+ogre_control = false
+ogre_target = 0
+ogre_control_visuals = false

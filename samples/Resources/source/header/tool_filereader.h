@@ -22,6 +22,8 @@
 #define MAGUS_TOOL_FILEREADER_H
 
 #include <QPixmap>
+#include <QFileInfo>
+#include <QMap>
 
 QT_BEGIN_NAMESPACE
 
@@ -43,25 +45,39 @@ namespace Magus
             QtFileReader(void);
             virtual ~QtFileReader(void);
 
-            // Read texture files and emit a signal for each texture read. The texture files are also return as a
+
+            // Read files and emit a signal for each file detected. The filenames are also returned as a
+            // vector. Only files that match the 'mask' are taken into account.
+            // The searchPath is scanned recursively and all files are read
+            // Note, that it can take a while to scane the whole directorytree
+            const QVector<QString>& readFileNamesRecursively(const QString& searchPath, QString& mask);
+
+            // Read texture files and emit a signal for each texture read. The texture files are also returned as a
             // vector, containing pixmaps.
             // The searchPath is scanned recursively and all texture files are read
             // Note, that it can take a while to scane the whole directorytree
             const QVector<QPixmap>& readTexturesRecursively(const QString& searchPath);
 
             // Opens a file dialog. The selected filename is returned, but also emitted.
-            const QString& readFileName(const QString& text, const QString& path);
+            const QString& readFileName(const QString& text, const QString& path, const QString& filter);
+
+            // Opens a file dialog. The selected filenames are returned as a map, but also emitted.
+            const QMap<QString, QFileInfo>& readFileNames(const QString& title, const QString& path, const QString& filter);
 
         signals:
             // Emitted when an image file has been read. Both the image file and the filename/basename are passed as an argument
             void textureRead(const QPixmap& pixmap, const QString& fileName, const QString& baseName);
 
             // Emitted when a file has been read. The filename, basename and path are passed as an argument
-            void fileRead(const QString& fileName, const QString& path);
+            void fileRead(const QString& path, const QString& fileName, const QString& baseName);
 
-        private:
+    private:
+            QVector<QString> mStringVec;
             QVector<QPixmap> mPixmapVec;
+            QFileInfo mFileInfo;
+            QMap<QString, QFileInfo> mFileInfoMap;
             QString mFileName;
+            QStringList mFileNames;
 
     };
 }

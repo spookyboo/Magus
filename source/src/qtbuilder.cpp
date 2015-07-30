@@ -161,6 +161,7 @@ void QtBuilder::build(ApplicationTemplate* applicationTemplate)
     QString dockWidgetHeaderPrivateSlots; // Used to add additional private slots to <window>_dockwidget.h files
     QString projectModules = QString("QT += widgets"); // Default modules used
     QString projectModuleOpenGL = QString(" opengl"); // OpenGL module (preceeded by a space)
+    QString projectModuleMedia = QString(" multimedia"); // Multimedia module (preceeded by a space)
     QString projectOgreRoot;// Used to set the root directory in the .pro file
     QString ogreInclude; // Used for additional includes in the .pro file
     QString ogreLib; // Used for additional libs in the .pro file
@@ -191,6 +192,7 @@ void QtBuilder::build(ApplicationTemplate* applicationTemplate)
 
     // --------------------------------------------------------------------------------------------------------------------
     // Step 3: Copy the base files (that do not need to be changed)
+    fileUtil.copy(mQtHeader + FILE_MAGUS_CORE_H, mFullOutputHeaderDir + FILE_MAGUS_CORE_H);
     fileUtil.copy(mQtHeader + FILE_CONSTANTS_HTP, mFullOutputHeaderDir + FILE_CONSTANTS_H);
     fileUtil.copy(mQtHeader + FILE_GENERIC_FUNCTIONS_H, mFullOutputHeaderDir + FILE_GENERIC_FUNCTIONS_H);
     fileUtil.copy(mQtHeader + FILE_MAGUS_TREE_WIDGET_H, mFullOutputHeaderDir + FILE_MAGUS_TREE_WIDGET_H);
@@ -224,6 +226,7 @@ void QtBuilder::build(ApplicationTemplate* applicationTemplate)
     {
         useTools = true; // Tool items
         projectModules += projectModuleOpenGL; // Add OpenGL module
+        projectModules += projectModuleMedia; // Add Multimedia module
     }
 
     // --------------------------------------------------------------------------------------------------------------------
@@ -579,6 +582,10 @@ void QtBuilder::build(ApplicationTemplate* applicationTemplate)
 
         // Copy the DLL, only if GL stuff is used
         fileUtil.copy(FILE_QT_DLL_OPENGL, mFullOutputBinDir + FILE_QT_DLL_OPENGL);
+
+        // Copy the multimedia and network DLLs, if the tools are used
+        fileUtil.copy(FILE_QT_DLL_MULTIMEDIA, mFullOutputBinDir + FILE_QT_DLL_MULTIMEDIA);
+        fileUtil.copy(FILE_QT_DLL_NETWORK, mFullOutputBinDir + FILE_QT_DLL_NETWORK);
     }
 
     // --------------------------------------------------------------------------------------------------------------------
@@ -1144,6 +1151,12 @@ QString QtBuilder::createToolHeaderForPro(const QString& additionalHeader)
     fileUtil.copy(mQtHeader + FILE_TOOL_LAYER_WIDGET_H, mFullOutputHeaderDir + FILE_TOOL_LAYER_WIDGET_H);
     fileUtil.copy(mQtHeader + FILE_TOOL_GL_SPHERE_WIDGET_H, mFullOutputHeaderDir + FILE_TOOL_GL_SPHERE_WIDGET_H);
     fileUtil.copy(mQtHeader + FILE_TOOL_FILEREADER_H, mFullOutputHeaderDir + FILE_TOOL_FILEREADER_H);
+    fileUtil.copy(mQtHeader + FILE_TOOL_AUDIO_WIDGET_H, mFullOutputHeaderDir + FILE_TOOL_AUDIO_WIDGET_H);
+    fileUtil.copy(mQtHeader + FILE_TOOL_RESOURCE_WIDGET_H, mFullOutputHeaderDir + FILE_TOOL_RESOURCE_WIDGET_H);
+    fileUtil.copy(mQtHeader + FILE_TOOL_RESOURCE_ASSETS_H, mFullOutputHeaderDir + FILE_TOOL_RESOURCE_ASSETS_H);
+    fileUtil.copy(mQtHeader + FILE_TOOL_RESOURCE_COLLECTIONS_H, mFullOutputHeaderDir + FILE_TOOL_RESOURCE_COLLECTIONS_H);
+    fileUtil.copy(mQtHeader + FILE_TOOL_RESOURCE_MAIN_H, mFullOutputHeaderDir + FILE_TOOL_RESOURCE_MAIN_H);
+    fileUtil.copy(mQtHeader + FILE_TOOL_RESOURCE_SOURCES_H, mFullOutputHeaderDir + FILE_TOOL_RESOURCE_SOURCES_H);
 
     // Also copy the icons
     fileUtil.copy(mIconDir + ICON_CLOSE_BOLD, mFullOutputIconDir + ICON_CLOSE_BOLD);
@@ -1151,6 +1164,9 @@ QString QtBuilder::createToolHeaderForPro(const QString& additionalHeader)
     fileUtil.copy(mIconDir + ICON_VISIBLE_BOLD, mFullOutputIconDir + ICON_VISIBLE_BOLD);
     fileUtil.copy(mIconDir + ICON_INVISIBLE_BOLD, mFullOutputIconDir + ICON_INVISIBLE_BOLD);
     fileUtil.copy(mIconDir + ICON_SEARCH_BOLD, mFullOutputIconDir + ICON_SEARCH_BOLD);
+    fileUtil.copy(mIconDir + ICON_AUDIO_PLAY, mFullOutputIconDir + ICON_AUDIO_PLAY);
+    fileUtil.copy(mIconDir + ICON_AUDIO_PAUSE, mFullOutputIconDir + ICON_AUDIO_PAUSE);
+    fileUtil.copy(mIconDir + ICON_AUDIO_STOP, mFullOutputIconDir + ICON_AUDIO_STOP);
 
     // Add to the project file
     // Headers
@@ -1232,6 +1248,42 @@ QString QtBuilder::createToolHeaderForPro(const QString& additionalHeader)
         FILE_TOOL_FILEREADER_H +
         QString(" \\ ") +
         QString("\n");
+    str = str +
+        TAB +
+        mOutputHeaderDir +
+        FILE_TOOL_AUDIO_WIDGET_H +
+        QString(" \\ ") +
+        QString("\n");
+    str = str +
+        TAB +
+        mOutputHeaderDir +
+        FILE_TOOL_RESOURCE_WIDGET_H +
+        QString(" \\ ") +
+        QString("\n");
+    str = str +
+        TAB +
+        mOutputHeaderDir +
+        FILE_TOOL_RESOURCE_ASSETS_H +
+        QString(" \\ ") +
+        QString("\n");
+    str = str +
+        TAB +
+        mOutputHeaderDir +
+        FILE_TOOL_RESOURCE_COLLECTIONS_H +
+        QString(" \\ ") +
+        QString("\n");
+    str = str +
+        TAB +
+        mOutputHeaderDir +
+        FILE_TOOL_RESOURCE_MAIN_H +
+        QString(" \\ ") +
+        QString("\n");
+    str = str +
+        TAB +
+        mOutputHeaderDir +
+        FILE_TOOL_RESOURCE_SOURCES_H +
+        QString(" \\ ") +
+        QString("\n");
 
     return str;
 }
@@ -1257,6 +1309,12 @@ QString QtBuilder::createToolSrcForPro(const QString& additionalSrc)
     fileUtil.copy(mQtSrc + FILE_TOOL_LAYER_WIDGET_CPP, mFullOutputSrcDir + FILE_TOOL_LAYER_WIDGET_CPP);
     fileUtil.copy(mQtSrc + FILE_TOOL_GL_SPHERE_WIDGET_CPP, mFullOutputSrcDir + FILE_TOOL_GL_SPHERE_WIDGET_CPP);
     fileUtil.copy(mQtSrc + FILE_TOOL_FILEREADER_CPP, mFullOutputSrcDir + FILE_TOOL_FILEREADER_CPP);
+    fileUtil.copy(mQtSrc + FILE_TOOL_AUDIO_WIDGET_CPP, mFullOutputSrcDir + FILE_TOOL_AUDIO_WIDGET_CPP);
+    fileUtil.copy(mQtSrc + FILE_TOOL_RESOURCE_WIDGET_CPP, mFullOutputSrcDir + FILE_TOOL_RESOURCE_WIDGET_CPP);
+    fileUtil.copy(mQtSrc + FILE_TOOL_RESOURCE_ASSETS_CPP, mFullOutputSrcDir + FILE_TOOL_RESOURCE_ASSETS_CPP);
+    fileUtil.copy(mQtSrc + FILE_TOOL_RESOURCE_COLLECTIONS_CPP, mFullOutputSrcDir + FILE_TOOL_RESOURCE_COLLECTIONS_CPP);
+    fileUtil.copy(mQtSrc + FILE_TOOL_RESOURCE_MAIN_CPP, mFullOutputSrcDir + FILE_TOOL_RESOURCE_MAIN_CPP);
+    fileUtil.copy(mQtSrc + FILE_TOOL_RESOURCE_SOURCES_CPP, mFullOutputSrcDir + FILE_TOOL_RESOURCE_SOURCES_CPP);
 
     // Add to the project file
     // Src
@@ -1336,6 +1394,42 @@ QString QtBuilder::createToolSrcForPro(const QString& additionalSrc)
         TAB +
         mOutputSrcDir +
         FILE_TOOL_FILEREADER_CPP +
+        QString(" \\ ") +
+        QString("\n");
+    str = str +
+        TAB +
+        mOutputSrcDir +
+        FILE_TOOL_AUDIO_WIDGET_CPP +
+        QString(" \\ ") +
+        QString("\n");
+    str = str +
+        TAB +
+        mOutputSrcDir +
+        FILE_TOOL_RESOURCE_WIDGET_CPP +
+        QString(" \\ ") +
+        QString("\n");
+    str = str +
+        TAB +
+        mOutputSrcDir +
+        FILE_TOOL_RESOURCE_ASSETS_CPP +
+        QString(" \\ ") +
+        QString("\n");
+    str = str +
+        TAB +
+        mOutputSrcDir +
+        FILE_TOOL_RESOURCE_COLLECTIONS_CPP +
+        QString(" \\ ") +
+        QString("\n");
+    str = str +
+        TAB +
+        mOutputSrcDir +
+        FILE_TOOL_RESOURCE_MAIN_CPP +
+        QString(" \\ ") +
+        QString("\n");
+    str = str +
+        TAB +
+        mOutputSrcDir +
+        FILE_TOOL_RESOURCE_SOURCES_CPP +
         QString(" \\ ") +
         QString("\n");
 

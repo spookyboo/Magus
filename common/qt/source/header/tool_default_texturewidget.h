@@ -30,6 +30,11 @@ QT_BEGIN_NAMESPACE
 
 QT_END_NAMESPACE
 
+/*
+ * TODO:
+ * - Implement double mouse click
+*/
+
 namespace Magus
 {
     /****************************************************************************
@@ -72,6 +77,9 @@ namespace Magus
             // E.g. baseName = "info.png"
             void addTexture(const QPixmap& pixmap, const QString name, const QString baseName);
 
+            // Delete an item from the QtDefaultTextureWidget. Use the full qualified name as search criterium.
+            void deleteTexture(const QString name);
+
             // If a texture is originated from a file, setOriginIsFile must be set to 'true'
             void setOriginIsFile(bool originIsFile);
 
@@ -93,8 +101,12 @@ namespace Magus
             // Emitted when a texture is selected (via the mouse)
             void selected(const QString& name, const QString& baseName);
 
+            // Emitted when a texture is doubleclicked (via the mouse)
+            void doubleClicked(const QString& name, const QString& baseName);
+
         protected slots:
             void handleSelected(QListWidgetItem* item);
+            void handleDoubleClicked(QListWidgetItem* item);
 
         private:
             QListWidget* mSelectionList;

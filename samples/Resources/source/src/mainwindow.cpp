@@ -93,9 +93,6 @@ void MainWindow::createDockWindows(void)
     addDockWidget(Qt::LeftDockWidgetArea, mDock1DockWidget);
     mDock2DockWidget = new Dock2DockWidget("Dock2", this);
     addDockWidget(Qt::RightDockWidgetArea, mDock2DockWidget);
-    mDock3DockWidget = new Dock3DockWidget("Dock3", this);
-    addDockWidget(Qt::RightDockWidgetArea, mDock3DockWidget);
-
 }
 
 //****************************************************************************/

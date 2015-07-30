@@ -216,6 +216,18 @@ void QtSimpleTextureModel::addTexture(const QString& fileName, QSize size)
 }
 
 //****************************************************************************/
+void QtSimpleTextureModel::deleteTexture(const QString& name)
+{
+    int row = -1;
+    foreach(QString textureName, mNames)
+    {
+        ++row;
+        if (name == textureName)
+            removeRows(row, 1, QModelIndex());
+    }
+}
+
+//****************************************************************************/
 const QString QtSimpleTextureModel::getName(const QModelIndex &index) const
 {
     return mNames.value(index.row());

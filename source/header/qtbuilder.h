@@ -38,9 +38,12 @@ static const QString FILE_QT_DLL_ICUIN = QString("icuin52.dll");
 static const QString FILE_QT_DLL_ICUUC = QString("icuuc52.dll");
 static const QString FILE_QT_DLL_WINDOWS = QString("qwindows.dll");
 static const QString FILE_QT_DLL_OPENGL = QString("Qt5OpenGL.dll");
+static const QString FILE_QT_DLL_MULTIMEDIA = QString("Qt5Multimedia.dll");
+static const QString FILE_QT_DLL_NETWORK = QString("Qt5Network.dll");
 static const QString PATH_QT_DLL_WINDOWS = QString("platforms/");
 
 // Core source files
+static const QString FILE_MAGUS_CORE_H = QString("magus_core.h");
 static const QString FILE_MAIN_CTP = QString("main.ctp");
 static const QString FILE_MAIN_CPP = QString("main.cpp");
 static const QString FILE_CONSTANTS_HTP = QString("constants.htp");
@@ -157,6 +160,18 @@ static const QString FILE_TOOL_DEFAULT_TEXTURE_WIDGET_H = QString("tool_default_
 static const QString FILE_TOOL_DEFAULT_TEXTURE_WIDGET_CPP = QString("tool_default_texturewidget.cpp");
 static const QString FILE_TOOL_EXTENDED_TEXTURE_WIDGET_H = QString("tool_extended_texturewidget.h");
 static const QString FILE_TOOL_EXTENDED_TEXTURE_WIDGET_CPP = QString("tool_extended_texturewidget.cpp");
+static const QString FILE_TOOL_AUDIO_WIDGET_H = QString("tool_audiowidget.h");
+static const QString FILE_TOOL_RESOURCE_WIDGET_H = QString("tool_resourcewidget.h");
+static const QString FILE_TOOL_RESOURCE_ASSETS_H = QString("tool_resourcewidget_assets.h");
+static const QString FILE_TOOL_RESOURCE_COLLECTIONS_H = QString("tool_resourcewidget_collections.h");
+static const QString FILE_TOOL_RESOURCE_MAIN_H = QString("tool_resourcewidget_main.h");
+static const QString FILE_TOOL_RESOURCE_SOURCES_H = QString("tool_resourcewidget_sources.h");
+static const QString FILE_TOOL_AUDIO_WIDGET_CPP = QString("tool_audiowidget.cpp");
+static const QString FILE_TOOL_RESOURCE_WIDGET_CPP = QString("tool_resourcewidget.cpp");
+static const QString FILE_TOOL_RESOURCE_ASSETS_CPP = QString("tool_resourcewidget_assets.cpp");
+static const QString FILE_TOOL_RESOURCE_COLLECTIONS_CPP = QString("tool_resourcewidget_collections.cpp");
+static const QString FILE_TOOL_RESOURCE_MAIN_CPP = QString("tool_resourcewidget_main.cpp");
+static const QString FILE_TOOL_RESOURCE_SOURCES_CPP = QString("tool_resourcewidget_sources.cpp");
 
 //****************************************************************************/
 // References for project.ptp

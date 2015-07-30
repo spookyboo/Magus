@@ -111,6 +111,30 @@ namespace Magus
         mSelectionList->addItem(item);
         mSelectionList->setItemWidget(item, textureAndText);
         connect(mSelectionList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(handleSelected(QListWidgetItem*)));
+        connect(mSelectionList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(handleDoubleClicked(QListWidgetItem*)));
+    }
+
+    //****************************************************************************/
+    void QtDefaultTextureWidget::deleteTexture(const QString name)
+    {
+        QtDefaultTextureAndText* textureAndText;
+        QWidget* widget;
+        int row;
+        QList<QListWidgetItem*> list = mSelectionList->findItems(QString("*"), Qt::MatchWildcard);
+        foreach (QListWidgetItem* item, list)
+        {
+            widget = mSelectionList->itemWidget(item);
+            if (widget)
+            {
+                textureAndText = static_cast<QtDefaultTextureAndText*>(widget);
+                if (textureAndText->mName == name)
+                {
+                    row = mSelectionList->row(item);
+                    mSelectionList->removeItemWidget(item);
+                    mSelectionList->takeItem(row);
+                }
+            }
+        }
     }
 
     //****************************************************************************/
@@ -139,6 +163,17 @@ namespace Magus
 
     //****************************************************************************/
     void QtDefaultTextureWidget::handleSelected(QListWidgetItem* item)
+    {
+        QWidget* widget = mSelectionList->itemWidget(item);
+        if (widget)
+        {
+            QtDefaultTextureAndText* textureAndText = static_cast<QtDefaultTextureAndText*>(widget);
+            emit selected(textureAndText->mName, textureAndText->mBaseName);
+        }
+    }
+
+    //****************************************************************************/
+    void QtDefaultTextureWidget::handleDoubleClicked(QListWidgetItem* item)
     {
         QWidget* widget = mSelectionList->itemWidget(item);
         if (widget)

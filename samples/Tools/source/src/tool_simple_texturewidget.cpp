@@ -74,6 +74,12 @@ namespace Magus
     }
 
     //****************************************************************************/
+    void QtSimpleTextureWidget::deleteTexture(const QString name)
+    {
+        // TODO
+    }
+
+    //****************************************************************************/
     void QtSimpleTextureWidget::setOriginIsFile(bool originIsFile)
     {
         mOriginIsFile = originIsFile;

@@ -136,9 +136,9 @@ void MainWindow::doGlSphereMenuAction(void)
     dialog.setMinimumWidth(436);
     dialog.setMinimumHeight(408);
     QHBoxLayout mainLayout;
-    QPixmap texture = QPixmap(QString("../../media/textures/BeachStones.jpg"));
+    QPixmap texture = QPixmap(QString("../../assets/textures/BeachStones.jpg"));
     Magus::QtGLSphereWidget* glWidget = new Magus::QtGLSphereWidget(0, 0);
-    glWidget->setPixmap(texture, QString("../../media/textures/BeachStones.jpg"), QString("BeachStones.jpg"));
+    glWidget->setPixmap(texture, QString("../../assets/textures/BeachStones.jpg"), QString("BeachStones.jpg"));
     mainLayout.addWidget(glWidget);
     dialog.setLayout(&mainLayout);
     dialog.exec();
@@ -168,7 +168,7 @@ void MainWindow::doTextureMenuAction(void)
     // Create filereader and read the images from the filesystem
     Magus::QtFileReader fileReader;
     connect(&fileReader, SIGNAL(textureRead(QPixmap, QString, QString)), this, SLOT(textureRead(QPixmap, QString, QString)));
-    fileReader.readTexturesRecursively(QString("../../media/textures"));
+    fileReader.readTexturesRecursively(QString("../../assets/textures"));
 
     setCursor(Qt::ArrowCursor);
     dialog.exec();
@@ -196,7 +196,7 @@ void MainWindow::doExtendedTextureMenuAction(void)
     // Create filereader and read the images from the filesystem
     Magus::QtFileReader fileReader;
     connect(&fileReader, SIGNAL(textureRead(QPixmap, QString, QString)), this, SLOT(textureReadExt(QPixmap, QString, QString)));
-    fileReader.readTexturesRecursively(QString("../../media/textures"));
+    fileReader.readTexturesRecursively(QString("../../assets/textures"));
 
     setCursor(Qt::ArrowCursor);
     dialog.exec();
