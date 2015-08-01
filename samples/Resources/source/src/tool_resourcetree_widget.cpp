@@ -38,7 +38,9 @@ namespace Magus
         QVBoxLayout* mainLayout = new QVBoxLayout;
         mIconDir = iconDir;
         mMaxDepth = 4;
-        mTopLevelGroupItemEditable = true;
+        mTopLevelGroupItemEditable = false;
+        mSubLevelGroupItemEditable = false;
+        mAssetItemEditable = false;
         mDeleteTopLevelGroupEnabled = true;
         mResourceTree = new Magus::QtTreeWidget(this);
         mResourceTree->setObjectName(TOOL_RESOURCETREE_OBJECT_NAME); // Only items dropped from widget with this objectname allowed
@@ -120,12 +122,15 @@ namespace Magus
         {
             case QEvent::MouseButtonPress:
                 mouseClickHandler(mouseEvent);
+                emit resourceSelected();
             break;
 
             case QEvent::Drop:
                 dropHandler(object, event);
             break;
         }
+
+        event->accept();
         return QObject::eventFilter(object, event);
     }
 
@@ -136,7 +141,7 @@ namespace Magus
         {
             case Qt::LeftButton:
             {
-                // TODO
+                selectResourceFromCursor();
             }
             break;
 
@@ -349,7 +354,7 @@ namespace Magus
     //****************************************************************************/
     void QtResourceTreeWidget::setTopLevelGroupItemEditable(bool editable)
     {
-        // Don't bother to iterate through the already existing toplevel items
+        // Don't bother to iterate through the already existing toplevel items; only newly added resources are taken into account
         mTopLevelGroupItemEditable = editable;
     }
 
@@ -382,6 +387,19 @@ namespace Magus
     bool QtResourceTreeWidget::isCreateSubGroupContextMenuItemEnabled(void)
     {
         return mCreateSubGroupContextMenuItemEnabled;
+    }
+
+    //****************************************************************************/
+    void QtResourceTreeWidget::setSubLevelGroupItemEditable(bool editable)
+    {
+        // Don't bother to iterate through the already existing sublevel items; only newly added resources are taken into account
+        mSubLevelGroupItemEditable = editable;
+    }
+
+    //****************************************************************************/
+    bool QtResourceTreeWidget::isSubLevelGroupItemEditable(void)
+    {
+        return mSubLevelGroupItemEditable;
     }
 
     //****************************************************************************/
@@ -421,6 +439,19 @@ namespace Magus
     bool QtResourceTreeWidget::isDeleteResourceContextMenuItemEnabled(void)
     {
         return mDeleteResourceContextMenuItemEnabled;
+    }
+
+    //****************************************************************************/
+    void QtResourceTreeWidget::setAssetItemEditable(bool editable)
+    {
+        // Don't bother to iterate through the already existing asset items; only newly added resources are taken into account
+        mAssetItemEditable = editable;
+    }
+
+    //****************************************************************************/
+    bool QtResourceTreeWidget::isAssetItemEditable(void)
+    {
+        return mAssetItemEditable;
     }
 
     //****************************************************************************/
@@ -489,9 +520,8 @@ namespace Magus
         if (isItemAsset(parentItem))
             return;
 
+        // Create the item
         QTreeWidgetItem* resourceItem = new QTreeWidgetItem();
-        if (parentId != 0 || mTopLevelGroupItemEditable)
-            resourceItem->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled);
 
         // Set icon
         if (!iconName.isEmpty())
@@ -510,11 +540,20 @@ namespace Magus
         resourceItem->setData(TOOL_RESOURCETREE_KEY_ICONNAME, Qt::UserRole, QVariant(iconName));
         int type;
         if (isAsset)
+        {
             type = TOOL_RESOURCETREE_KEY_TYPE_ASSET;
+            setFlagsResourceItem (resourceItem, mAssetItemEditable);
+        }
         else if(parentId == 0)
+        {
             type = TOOL_RESOURCETREE_KEY_TYPE_TOPLEVEL_GROUP;
+            setFlagsResourceItem (resourceItem, mTopLevelGroupItemEditable);
+        }
         else
+        {
             type = TOOL_RESOURCETREE_KEY_TYPE_GROUP;
+            setFlagsResourceItem (resourceItem, mSubLevelGroupItemEditable);
+        }
         resourceItem->setData(TOOL_RESOURCETREE_KEY_TYPE, Qt::UserRole, QVariant(type));
 
         // Add it to the tree
@@ -528,6 +567,15 @@ namespace Magus
 
         // Emit signal
         emit resourceAdded(resourceId);
+    }
+
+    //****************************************************************************/
+    void QtResourceTreeWidget::setFlagsResourceItem(QTreeWidgetItem* resourceItem, bool editable)
+    {
+        if (editable)
+            resourceItem->setFlags(Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled);
+        else
+            resourceItem->setFlags(resourceItem->flags() & ~Qt::ItemIsEditable);
     }
 
     //****************************************************************************/
@@ -609,13 +657,29 @@ namespace Magus
     }
 
     //****************************************************************************/
-    void QtResourceTreeWidget::selectResource (int resourceId)
+    void QtResourceTreeWidget::selectResource (int resourceId, bool emitSignal)
     {
         QTreeWidgetItem* item = getResourceItem(resourceId);
         if (item)
         {
             mResourceTree->setCurrentItem(item);
-            emit resourceSelected(resourceId);
+
+            if (emitSignal)
+                emit resourceSelected(resourceId);
+        }
+    }
+
+    //****************************************************************************/
+    void QtResourceTreeWidget::selectResourceFromCursor (bool emitSignal)
+    {
+        QPoint pos = mResourceTree->mapFromGlobal(QCursor::pos());
+        QTreeWidgetItem* item = mResourceTree->itemAt(pos);
+        if (item)
+        {
+            mResourceTree->setCurrentItem(item);
+
+            if (emitSignal)
+                emit resourceSelected(getResourceIdFromItem(item));
         }
     }
 

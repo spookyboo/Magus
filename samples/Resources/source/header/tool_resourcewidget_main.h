@@ -56,9 +56,11 @@ namespace Magus
             void doOpenHToolbarAction(void);
             void doSaveHToolbarAction(void);
             void doColorHToolbarAction(void);
+            void resourceSelected(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName);
             void resourceAdded(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName);
             void resourceImported(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName);
             void resourceDeleted(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName);
+            void tabChanged(int toplevelId);
 
         private:
             void createActions(void);

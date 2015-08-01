@@ -37,9 +37,8 @@ QT_END_NAMESPACE
 
 /*
  * TODO:
- * - Context menu to play the selected audio item
- * - Double mouseclick to play the selected audio item
-*/
+ * - Display only the items based on a filter
+ /
 
 namespace Magus
 {

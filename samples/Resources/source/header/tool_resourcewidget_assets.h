@@ -61,8 +61,14 @@ namespace Magus
             // Delete an asset from a particular asset widget (eg. audio, texture, etc.)
             void deleteAsset(int toplevelId, const QString& name);
 
+            // Select the appropriate tab, based on the given arguments
+            void selectTab(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName);
+
+        signals:
+            void tabChanged(int index);
+
         private slots:
-            void tabSelected(int index);
+            void handleTabChanged(int index);
 
         private:
             QMainWindow* mParent;

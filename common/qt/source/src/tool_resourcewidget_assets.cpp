@@ -64,7 +64,7 @@ namespace Magus
         createMenus();
         createToolBars();
 
-        connect(mTabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabSelected(int)));
+        connect(mTabWidget, SIGNAL(currentChanged(int)), this, SLOT(handleTabChanged(int)));
 }
 
     //****************************************************************************/
@@ -118,6 +118,12 @@ namespace Magus
     }
 
     //****************************************************************************/
+    void QtAssetsDockWidget::selectTab(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName)
+    {
+        mTabWidget->setCurrentIndex(toplevelId-1); // Assume that toplevelId follows pattern 1, 2, 3, 4, 5
+    }
+
+    //****************************************************************************/
     void QtAssetsDockWidget::deleteAsset(int toplevelId, const QString& name)
     {
         switch (toplevelId)
@@ -141,11 +147,9 @@ namespace Magus
     }
 
     //****************************************************************************/
-    void QtAssetsDockWidget::tabSelected(int index)
+    void QtAssetsDockWidget::handleTabChanged(int index)
     {
-        // Replace the code in this function with your own code.
-        //QString message = QString("Tab with index <") + QVariant(index).toString() + QString("> selected");
-        //QMessageBox::information(this, QString("QTabWidget"), message);
+        emit tabChanged(index + 1);
     }
 
 }

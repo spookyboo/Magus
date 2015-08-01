@@ -33,6 +33,7 @@ QT_END_NAMESPACE
 /*
  * TODO:
  * - Implement double mouse click
+ * - Display only the items based on a filter
 */
 
 namespace Magus

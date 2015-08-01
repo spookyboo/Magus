@@ -34,6 +34,17 @@ namespace Magus
         mResourceTreeWidget = new Magus::QtResourceTreeWidget(iconDir);
         mResourceTreeWidget->setCreateTopLevelGroupContextMenuItemEnabled(false);
         mResourceTreeWidget->setDeleteTopLevelGroupEnabled(false);
+        mResourceTreeWidget->setCreateAssetContextMenuItemEnabled(false);
+        mResourceTreeWidget->setTopLevelGroupItemEditable(false);
+        mResourceTreeWidget->setSubLevelGroupItemEditable(true);
+        mResourceTreeWidget->setAssetItemEditable(false);
+
+        // Listen to events.
+        // Note, that although the 'create asset' context menu is disabled, the QtSourcesDockWidget must still handle the 'resourceAdded'
+        // signal, because it is also emitted when a subgroup is created in the mResourceTreeWidget; the subgroup must be added to
+        // mSourceInfo after creation, to be able to recursively delete any assets resided in subgroups (these assets must also be
+        // properly deleted from the QtAssetsDockWidget).
+        connect(mResourceTreeWidget, SIGNAL(resourceSelected(int)), this, SLOT(handleResourceSelected(int)));
         connect(mResourceTreeWidget, SIGNAL(resourceAdded(int)), this, SLOT(handleResourceAdded(int)));
         connect(mResourceTreeWidget, SIGNAL(resourceImported(int)), this, SLOT(handleResourceImported(int)));
         connect(mResourceTreeWidget, SIGNAL(resourceDeleted(int)), this, SLOT(handleResourceDeleted(int)));
@@ -50,39 +61,57 @@ namespace Magus
 
         // Audio
         mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_AUDIO, 0, QString("Audio"), QString("audio.png"));
+        info.toplevelId = TOOL_SOURCES_LEVEL_X000_AUDIO;
         info.resourceId = TOOL_SOURCES_LEVEL_X000_AUDIO;
         info.parentId = 0;
+        info.fileName = QString("Audio");
+        info.baseName = info.fileName;
         info.fileDialogTitle = QString("Audio");
         info.filter = TOOL_SOURCES_FORMAT_AUDIO;
         mSourceInfo[TOOL_SOURCES_LEVEL_X000_AUDIO] = info;
 
         // Materials
         mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_MATERIALS, 0, QString("Materials"), QString("material.png"));
+        info.toplevelId = TOOL_SOURCES_LEVEL_X000_MATERIALS;
         info.resourceId = TOOL_SOURCES_LEVEL_X000_MATERIALS;
+        info.fileName = QString("Materials");
+        info.baseName = info.fileName;
         info.fileDialogTitle = QString("Materials");
         info.filter = TOOL_SOURCES_FORMAT_MATERIALS;
         mSourceInfo[TOOL_SOURCES_LEVEL_X000_MATERIALS] = info;
 
         // Meshes
         mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_MESHES, 0, QString("Meshes"), QString("softbody.png"));
+        info.toplevelId = TOOL_SOURCES_LEVEL_X000_MESHES;
         info.resourceId = TOOL_SOURCES_LEVEL_X000_MESHES;
+        info.fileName = QString("Meshes");
+        info.baseName = info.fileName;
         info.fileDialogTitle = QString("Meshes");
         info.filter = TOOL_SOURCES_FORMAT_MESHES;
         mSourceInfo[TOOL_SOURCES_LEVEL_X000_MESHES] = info;
 
         // Scripts
         mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_SCRIPTS, 0, QString("Scripts"), QString("cog.png"));
+        info.toplevelId = TOOL_SOURCES_LEVEL_X000_SCRIPTS;
         info.resourceId = TOOL_SOURCES_LEVEL_X000_SCRIPTS;
+        info.fileName = QString("Scripts");
+        info.baseName = info.fileName;
         info.fileDialogTitle = QString("Scripts");
         info.filter = TOOL_SOURCES_FORMAT_SCRIPTS;
         mSourceInfo[TOOL_SOURCES_LEVEL_X000_SCRIPTS] = info;
 
         // Textures
         mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_TEXTURES, 0, QString("Textures"), QString("texture_bold.png"));
+        info.toplevelId = TOOL_SOURCES_LEVEL_X000_TEXTURES;
         info.resourceId = TOOL_SOURCES_LEVEL_X000_TEXTURES;
+        info.fileName = QString("Textures");
+        info.baseName = info.fileName;
         info.fileDialogTitle = QString("Textures");
         info.filter = TOOL_SOURCES_FORMAT_TEXTURES;
         mSourceInfo[TOOL_SOURCES_LEVEL_X000_TEXTURES] = info;
+
+        // Set selected to 'Audio'
+        mResourceTreeWidget->selectResource(TOOL_SOURCES_LEVEL_X000_AUDIO, false);
     }
 
     //****************************************************************************/
@@ -91,14 +120,35 @@ namespace Magus
     }
 
     //****************************************************************************/
+    void QtSourcesDockWidget::selectTopLevel(int toplevelId)
+    {
+        mResourceTreeWidget->selectResource(toplevelId, false);
+    }
+
+    //****************************************************************************/
+    void QtSourcesDockWidget::handleResourceSelected(int resourceId)
+    {
+        // Determine which type is selected
+        QMap<int, QtSourcesInfo>::iterator it = mSourceInfo.find(resourceId);
+        if (it != mSourceInfo.end())
+        {
+            QtSourcesInfo info = it.value();
+            emit resourceSelected(info.toplevelId, info.parentId, info.resourceId, info.fileName, info.baseName);
+            //QMessageBox::information(0, QString("this"), QVariant(info.toplevelId).toString()); // testtesttesttest
+        }
+    }
+
+    //****************************************************************************/
     void QtSourcesDockWidget::handleResourceAdded(int resourceId)
     {
         QtSourcesInfo info;
-        info.toplevelId = mResourceTreeWidget->getToplevelParentId(resourceId);
+        int toplevelId = mResourceTreeWidget->getToplevelParentId(resourceId);
+        QString name = mResourceTreeWidget->getResourceName(resourceId);
+        info.toplevelId = toplevelId;
         info.resourceId = resourceId;
         info.parentId = mResourceTreeWidget->getParentId(resourceId);
-        info.fileName = mResourceTreeWidget->getResourceName(resourceId);
-        info.baseName = info.fileName;
+        info.fileName = name;
+        info.baseName = name;
         mSourceInfo[resourceId] = info;
 
         // Emit file info to QtResourceMain, because the QtAssetsDockWidget must be appended with the new files
@@ -153,6 +203,10 @@ namespace Magus
     //****************************************************************************/
     void QtSourcesDockWidget::handleResourceDeleted(int resourceId)
     {
+        // Do not handle resources with resourceId = 0
+        if (resourceId == 0)
+            return;
+
         // Get all the underlying assets (filenames) + delete them from the mSourceInfo
         foreach(QtSourcesInfo info, mSourceInfo)
         {

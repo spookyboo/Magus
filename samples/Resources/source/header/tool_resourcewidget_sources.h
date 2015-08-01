@@ -79,12 +79,17 @@ namespace Magus
             QtSourcesDockWidget(const QString& iconDir, const QString& title, QMainWindow* parent, Qt::WindowFlags flags = 0);
             ~QtSourcesDockWidget(void);
 
+            // Select a toplevel resource.
+            void selectTopLevel(int toplevelId);
+
         signals:
+            void resourceSelected(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName);
             void resourceAdded(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName);
             void resourceImported(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName);
             void resourceDeleted(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName);
 
         private slots:
+            void handleResourceSelected(int resourceId);
             void handleResourceAdded(int resourceId);
             void handleResourceImported(int resourceId);
             void handleResourceDeleted(int resourceId);

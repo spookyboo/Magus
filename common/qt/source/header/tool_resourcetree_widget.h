@@ -130,6 +130,10 @@ namespace Magus
             void setCreateSubGroupContextMenuItemEnabled(bool enabled);
             bool isCreateSubGroupContextMenuItemEnabled(void);
 
+            // If true, the sublevel items can be editted (false is the default)
+            void setSubLevelGroupItemEditable(bool editable);
+            bool isSubLevelGroupItemEditable(void);
+
             // If true, a created subgroup inherits the icon from its parent
             void setInheritSubGroupIconFromParent(bool inherit);
             bool isInheritSubGroupIconFromParent(void);
@@ -147,6 +151,10 @@ namespace Magus
             // If true, the context menu is extended with an option to delete a resource
             void setDeleteResourceContextMenuItemEnabled(bool enabled);
             bool isDeleteResourceContextMenuItemEnabled(void);
+
+            // If true, the asset items can be editted (false is the default)
+            void setAssetItemEditable(bool editable);
+            bool isAssetItemEditable(void);
 
             // Add a resource to the resource tree. A resource in this context is:
             //     - a group (Meshes, Audio, Light, etc.)
@@ -178,8 +186,11 @@ namespace Magus
             // identified by means of parentId. Both resourceId and parentId must exist, of course.
             void moveResource (int resourceId, int parentId);
 
-            // Select a resource in the resource tree
-            void selectResource (int resourceId);
+            // Select a resource in the resource tree; emitSignal indicates whether a signal is emitted
+            void selectResource (int resourceId, bool emitSignal = true);
+
+            // Select a resource in the resource tree of the current mouse position
+            void selectResourceFromCursor (bool emitSignal = true);
 
             // Return the currently selected resource
             int getSelectedResource (void);
@@ -301,6 +312,9 @@ namespace Magus
             // Emitted when a resource is selected
             void resourceSelected (int resourceId);
 
+            // Emitted when a resource is selected; the (current) resource is undetermined at that moment
+            void resourceSelected (void);
+
             // Emitted when a resource is imported
             void resourceImported (int resourceId);
 
@@ -326,6 +340,7 @@ namespace Magus
             void resetSearch(void);
             void findAndShowItems(const QString& searchPattern);
             void hideParentIfChildrenAreHidden(int parentId);
+            void setFlagsResourceItem(QTreeWidgetItem* resourceItem, bool editable);
 
         private:
             void clearRegisteredResources (void);
@@ -335,10 +350,12 @@ namespace Magus
             bool mTopLevelGroupItemEditable;
             bool mDeleteTopLevelGroupEnabled;
             bool mCreateSubGroupContextMenuItemEnabled;
+            bool mSubLevelGroupItemEditable;
             bool mInheritSubGroupIconFromParent; // If true, no submenu / if false, a submenu with icons is displayed
             bool mCreateAssetContextMenuItemEnabled;
             bool mImportAssetContextMenuItemEnabled;
             bool mDeleteResourceContextMenuItemEnabled;
+            bool mAssetItemEditable;
             int mMaxDepth;
             QString mIconDir;
             Magus::QtTreeWidget* mResourceTree;

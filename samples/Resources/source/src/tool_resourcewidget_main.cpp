@@ -94,13 +94,20 @@ namespace Magus
     //****************************************************************************/
     void QtResourceMain::createDockWindows(void)
     {
+        // Sources (tree)
         mSourcesDockWidget = new QtSourcesDockWidget(mIconDir, QString("Sources"), this);
+        connect(mSourcesDockWidget, SIGNAL(resourceSelected(int,int,int,const QString&,const QString&)), this, SLOT(resourceSelected(int,int,int,const QString&,const QString&)));
         connect(mSourcesDockWidget, SIGNAL(resourceAdded(int,int,int,const QString&,const QString&)), this, SLOT(resourceAdded(int,int,int,const QString&,const QString&)));
         connect(mSourcesDockWidget, SIGNAL(resourceImported(int,int,int,const QString&,const QString&)), this, SLOT(resourceImported(int,int,int,const QString&,const QString&)));
         connect(mSourcesDockWidget, SIGNAL(resourceDeleted(int,int,int,const QString&,const QString&)), this, SLOT(resourceDeleted(int,int,int,const QString&,const QString&)));
         addDockWidget(Qt::LeftDockWidgetArea, mSourcesDockWidget);
+
+        // Assets
         mAssetsDockWidget = new QtAssetsDockWidget(mIconDir, QString("Assets"), this);
+        connect(mAssetsDockWidget, SIGNAL(tabChanged(int)), this, SLOT(tabChanged(int)));
         addDockWidget(Qt::RightDockWidgetArea, mAssetsDockWidget);
+
+        // Collections
         mCollectionsDockWidget = new QtCollectionsDockWidget(mIconDir, QString("Collections"), this);
         addDockWidget(Qt::LeftDockWidgetArea, mCollectionsDockWidget);
     }
@@ -140,6 +147,13 @@ namespace Magus
     }
 
     //****************************************************************************/
+    void QtResourceMain::resourceSelected(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName)
+    {
+        // Select the appropriate tab, based on the provided information
+        mAssetsDockWidget->selectTab(toplevelId, parentId, resourceId, name, baseName);
+    }
+
+    //****************************************************************************/
     void QtResourceMain::resourceAdded(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName)
     {
         // TODO
@@ -156,7 +170,13 @@ namespace Magus
     void QtResourceMain::resourceDeleted(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName)
     {
         // Delete name from mAssetsDockWidget
-        //QMessageBox::information(this, QString("test"), QVariant(toplevelId).toString() + ": " + name); // testtesttesttesttesttesttesttesttesttest
         mAssetsDockWidget->deleteAsset(toplevelId, name);
+    }
+
+    //****************************************************************************/
+    void QtResourceMain::tabChanged(int toplevelId)
+    {
+        // Set the correct toplevel group in mSourcesDockWidget, based on the selected tab
+        mSourcesDockWidget->selectTopLevel(toplevelId);
     }
 }
