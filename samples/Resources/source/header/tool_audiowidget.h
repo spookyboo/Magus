@@ -38,7 +38,7 @@ QT_END_NAMESPACE
 /*
  * TODO:
  * - Display only the items based on a filter
- /
+*/
 
 namespace Magus
 {
