@@ -119,6 +119,9 @@ static const QString NO_IMAGE = QString("NoImage.png");
 static const QString ICON_COLLAPSE = QString("collapse.png");
 static const QString ICON_EXPAND = QString("expand.png");
 static const QString ICON_CAMERA = QString("camera.png");
+static const QString ICON_AUDIO = QString("audio.png");
+static const QString ICON_SOFTBODY = QString("softbody.png");
+static const QString ICON_TEXTURE = QString("texture.png");
 static const QString ICON_COG = QString("cog.png");
 static const QString ICON_NPC = QString("npc.png");
 static const QString ICON_CUBE_BOLD = QString("cube_bold.png");
@@ -153,9 +156,12 @@ static const QString ICON_LAYER_BOLD = QString("layer_bold.png");
 static const QString ICON_VISIBLE_BOLD = QString("view_visible_bold.png");
 static const QString ICON_INVISIBLE_BOLD = QString("view_invisible_bold.png");
 static const QString ICON_SEARCH_BOLD = QString("search_bold.png");
-static const QString ICON_AUDIO_PLAY = QString("audio_play.png");
-static const QString ICON_AUDIO_PAUSE = QString("audio_pause.png");
-static const QString ICON_AUDIO_STOP = QString("audio_stop.png");
+static const QString ICON_ASSET_AUDIO_PLAY = QString("asset_audio_play.png");
+static const QString ICON_ASSET_AUDIO_PAUSE = QString("asset_audio_pause.png");
+static const QString ICON_ASSET_AUDIO_STOP = QString("asset_audio_stop.png");
+static const QString ICON_ASSET_MATERIAL = QString("asset_material.png");
+static const QString ICON_ASSET_MESH = QString("asset_mesh.png");
+static const QString ICON_ASSET_SCRIPT = QString("asset_script.png");
 
 // The separator names must match the names in tbicons.cfg to be recognized as a separator
 static const QString ICON_HSEPARATOR = QString("separator_horizontal.png");

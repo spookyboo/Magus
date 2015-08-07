@@ -43,20 +43,32 @@ namespace Magus
         mAudioSelection = new QtAudioWidget(mIconDir, this);
         mAudioSelection->setTextureSize(QSize(112, 120));
 
+        // Create material selection widget
+        mMaterialSelection = new QtGenericAssetWidget(true, this);
+        mMaterialSelection->setTextureSize(QSize(112, 120));
+
+        // Create mesh selection widget
+        mMeshSelection = new QtGenericAssetWidget(false, this);
+        mMeshSelection->setTextureSize(QSize(112, 120));
+
+        // Create script selection widget
+        mScriptSelection = new QtGenericAssetWidget(true, this);
+        mScriptSelection->setTextureSize(QSize(112, 120));
+
         // Create texture selection widget
         mTextureSelection = new QtDefaultTextureWidget(this);
         mTextureSelection->setTextureSize(QSize(112, 120));
 
         // -------------------------------------- Fill the assets widget --------------------------------------
-        QIcon audioIcon(mIconDir + QString("audio.png"));
-        QIcon materialIcon(mIconDir + QString("material.png"));
-        QIcon meshIcon(mIconDir + QString("npc.png"));
-        QIcon scriptIcon(mIconDir + QString("cog.png"));
-        QIcon textureIcon(mIconDir + QString("texture.png"));
+        QIcon audioIcon(mIconDir + TOOL_RESOURCE_ICON_AUDIO);
+        QIcon materialIcon(mIconDir + TOOL_RESOURCE_ICON_MATERIAL);
+        QIcon meshIcon(mIconDir + TOOL_RESOURCE_ICON_MESH);
+        QIcon scriptIcon(mIconDir + TOOL_RESOURCE_ICON_SCRIPT);
+        QIcon textureIcon(mIconDir + TOOL_RESOURCE_ICON_TEXTURE);
         addTab(mAudioSelection, audioIcon, QString("Audio"));
-        addTab(new QWidget(this), materialIcon, QString("Materials")); // TODO: Update with widget
-        addTab(new QWidget(this), meshIcon, QString("Meshes")); // TODO: Update with widget
-        addTab(new QWidget(this), scriptIcon, QString("Scripts")); // TODO: Update with widget
+        addTab(mMaterialSelection, materialIcon, QString("Materials"));
+        addTab(mMeshSelection, meshIcon, QString("Meshes"));
+        addTab(mScriptSelection, scriptIcon, QString("Scripts"));
         addTab(mTextureSelection, textureIcon, QString("Textures"));
 
         // Perform standard functions
@@ -105,7 +117,29 @@ namespace Magus
             }
             break;
 
-            // TODO: Add Materials, Meshes, Scripts
+            case TOOL_SOURCES_LEVEL_X000_MATERIALS:
+            {
+                // Add file(name) to mMaterialSelection
+                QPixmap pixmap(mIconDir + TOOL_GENERIC_ASSETWIDGET_ICON_MATERIAL);
+                mMaterialSelection->addAsset(pixmap, name, baseName);
+            }
+            break;
+
+            case TOOL_SOURCES_LEVEL_X000_MESHES:
+            {
+                // Add file(name) to mMeshSelection
+                QPixmap pixmap(mIconDir + TOOL_GENERIC_ASSETWIDGET_ICON_MESH);
+                mMeshSelection->addAsset(pixmap, name, baseName);
+            }
+            break;
+
+            case TOOL_SOURCES_LEVEL_X000_SCRIPTS:
+            {
+                // Add file(name) to mScriptSelection
+                QPixmap pixmap(mIconDir + TOOL_GENERIC_ASSETWIDGET_ICON_SCRIPT);
+                mScriptSelection->addAsset(pixmap, name, baseName);
+            }
+            break;
 
             case TOOL_SOURCES_LEVEL_X000_TEXTURES:
             {
@@ -135,7 +169,26 @@ namespace Magus
             }
             break;
 
-            // TODO: Delete Materials, Meshes, Scripts
+            case TOOL_SOURCES_LEVEL_X000_MATERIALS:
+            {
+                // Delete from mMaterialSelection
+                mMaterialSelection->deleteAsset(name);
+            }
+            break;
+
+            case TOOL_SOURCES_LEVEL_X000_MESHES:
+            {
+                // Delete from mMeshSelection
+                mMeshSelection->deleteAsset(name);
+            }
+            break;
+
+            case TOOL_SOURCES_LEVEL_X000_SCRIPTS:
+            {
+                // Delete from mScriptSelection
+                mScriptSelection->deleteAsset(name);
+            }
+            break;
 
             case TOOL_SOURCES_LEVEL_X000_TEXTURES:
             {
@@ -151,7 +204,9 @@ namespace Magus
     {
         resetFilter();
         mAudioSelection->filter(pattern);
-        // TODO: Filter Materials, Meshes, Scripts
+        mMaterialSelection->filter(pattern);
+        mMeshSelection->filter(pattern);
+        mScriptSelection->filter(pattern);
         mTextureSelection->filter(pattern);
     }
 
@@ -159,7 +214,9 @@ namespace Magus
     void QtAssetsDockWidget::resetFilter(void)
     {
         mAudioSelection->resetFilter();
-        // TODO: Reset filter Materials, Meshes, Scripts
+        mMaterialSelection->resetFilter();
+        mMeshSelection->resetFilter();
+        mScriptSelection->resetFilter();
         mTextureSelection->resetFilter();
     }
 

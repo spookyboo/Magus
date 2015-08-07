@@ -1152,6 +1152,7 @@ QString QtBuilder::createToolHeaderForPro(const QString& additionalHeader)
     fileUtil.copy(mQtHeader + FILE_TOOL_GL_SPHERE_WIDGET_H, mFullOutputHeaderDir + FILE_TOOL_GL_SPHERE_WIDGET_H);
     fileUtil.copy(mQtHeader + FILE_TOOL_FILEREADER_H, mFullOutputHeaderDir + FILE_TOOL_FILEREADER_H);
     fileUtil.copy(mQtHeader + FILE_TOOL_AUDIO_WIDGET_H, mFullOutputHeaderDir + FILE_TOOL_AUDIO_WIDGET_H);
+    fileUtil.copy(mQtHeader + FILE_TOOL_GENERIC_ASSET_WIDGET_H, mFullOutputHeaderDir + FILE_TOOL_GENERIC_ASSET_WIDGET_H);
     fileUtil.copy(mQtHeader + FILE_TOOL_RESOURCE_WIDGET_H, mFullOutputHeaderDir + FILE_TOOL_RESOURCE_WIDGET_H);
     fileUtil.copy(mQtHeader + FILE_TOOL_RESOURCE_ASSETS_H, mFullOutputHeaderDir + FILE_TOOL_RESOURCE_ASSETS_H);
     fileUtil.copy(mQtHeader + FILE_TOOL_RESOURCE_COLLECTIONS_H, mFullOutputHeaderDir + FILE_TOOL_RESOURCE_COLLECTIONS_H);
@@ -1164,9 +1165,17 @@ QString QtBuilder::createToolHeaderForPro(const QString& additionalHeader)
     fileUtil.copy(mIconDir + ICON_VISIBLE_BOLD, mFullOutputIconDir + ICON_VISIBLE_BOLD);
     fileUtil.copy(mIconDir + ICON_INVISIBLE_BOLD, mFullOutputIconDir + ICON_INVISIBLE_BOLD);
     fileUtil.copy(mIconDir + ICON_SEARCH_BOLD, mFullOutputIconDir + ICON_SEARCH_BOLD);
-    fileUtil.copy(mIconDir + ICON_AUDIO_PLAY, mFullOutputIconDir + ICON_AUDIO_PLAY);
-    fileUtil.copy(mIconDir + ICON_AUDIO_PAUSE, mFullOutputIconDir + ICON_AUDIO_PAUSE);
-    fileUtil.copy(mIconDir + ICON_AUDIO_STOP, mFullOutputIconDir + ICON_AUDIO_STOP);
+    fileUtil.copy(mIconDir + ICON_ASSET_AUDIO_PLAY, mFullOutputIconDir + ICON_ASSET_AUDIO_PLAY);
+    fileUtil.copy(mIconDir + ICON_ASSET_AUDIO_PAUSE, mFullOutputIconDir + ICON_ASSET_AUDIO_PAUSE);
+    fileUtil.copy(mIconDir + ICON_ASSET_AUDIO_STOP, mFullOutputIconDir + ICON_ASSET_AUDIO_STOP);
+    fileUtil.copy(mIconDir + ICON_ASSET_MATERIAL, mFullOutputIconDir + ICON_ASSET_MATERIAL);
+    fileUtil.copy(mIconDir + ICON_ASSET_MESH, mFullOutputIconDir + ICON_ASSET_MESH);
+    fileUtil.copy(mIconDir + ICON_ASSET_SCRIPT, mFullOutputIconDir + ICON_ASSET_SCRIPT);
+    fileUtil.copy(mIconDir + ICON_AUDIO, mFullOutputIconDir + ICON_AUDIO);
+    fileUtil.copy(mIconDir + ICON_MATERIAL, mFullOutputIconDir + ICON_MATERIAL);
+    fileUtil.copy(mIconDir + ICON_SOFTBODY, mFullOutputIconDir + ICON_SOFTBODY);
+    fileUtil.copy(mIconDir + ICON_TEXTURE, mFullOutputIconDir + ICON_TEXTURE);
+    fileUtil.copy(mIconDir + ICON_COG, mFullOutputIconDir + ICON_COG);
 
     // Add to the project file
     // Headers
@@ -1257,6 +1266,12 @@ QString QtBuilder::createToolHeaderForPro(const QString& additionalHeader)
     str = str +
         TAB +
         mOutputHeaderDir +
+        FILE_TOOL_GENERIC_ASSET_WIDGET_H +
+        QString(" \\ ") +
+        QString("\n");
+    str = str +
+        TAB +
+        mOutputHeaderDir +
         FILE_TOOL_RESOURCE_WIDGET_H +
         QString(" \\ ") +
         QString("\n");
@@ -1310,6 +1325,7 @@ QString QtBuilder::createToolSrcForPro(const QString& additionalSrc)
     fileUtil.copy(mQtSrc + FILE_TOOL_GL_SPHERE_WIDGET_CPP, mFullOutputSrcDir + FILE_TOOL_GL_SPHERE_WIDGET_CPP);
     fileUtil.copy(mQtSrc + FILE_TOOL_FILEREADER_CPP, mFullOutputSrcDir + FILE_TOOL_FILEREADER_CPP);
     fileUtil.copy(mQtSrc + FILE_TOOL_AUDIO_WIDGET_CPP, mFullOutputSrcDir + FILE_TOOL_AUDIO_WIDGET_CPP);
+    fileUtil.copy(mQtSrc + FILE_TOOL_GENERIC_ASSET_WIDGET_CPP, mFullOutputSrcDir + FILE_TOOL_GENERIC_ASSET_WIDGET_CPP);
     fileUtil.copy(mQtSrc + FILE_TOOL_RESOURCE_WIDGET_CPP, mFullOutputSrcDir + FILE_TOOL_RESOURCE_WIDGET_CPP);
     fileUtil.copy(mQtSrc + FILE_TOOL_RESOURCE_ASSETS_CPP, mFullOutputSrcDir + FILE_TOOL_RESOURCE_ASSETS_CPP);
     fileUtil.copy(mQtSrc + FILE_TOOL_RESOURCE_COLLECTIONS_CPP, mFullOutputSrcDir + FILE_TOOL_RESOURCE_COLLECTIONS_CPP);
@@ -1400,6 +1416,12 @@ QString QtBuilder::createToolSrcForPro(const QString& additionalSrc)
         TAB +
         mOutputSrcDir +
         FILE_TOOL_AUDIO_WIDGET_CPP +
+        QString(" \\ ") +
+        QString("\n");
+    str = str +
+        TAB +
+        mOutputSrcDir +
+        FILE_TOOL_GENERIC_ASSET_WIDGET_CPP +
         QString(" \\ ") +
         QString("\n");
     str = str +

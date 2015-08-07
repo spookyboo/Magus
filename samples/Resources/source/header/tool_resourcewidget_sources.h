@@ -38,7 +38,7 @@ QT_END_NAMESPACE
 namespace Magus
 {
     static const QString TOOL_SOURCES_FORMAT_AUDIO = QString("Audio (*.wav *.mp3)");
-    static const QString TOOL_SOURCES_FORMAT_MATERIALS = QString("Materials (*.mat)");
+    static const QString TOOL_SOURCES_FORMAT_MATERIALS = QString("Materials (*.mat *.material)");
     static const QString TOOL_SOURCES_FORMAT_MESHES = QString("Meshes (*.mesh *.x *.fbx *.3ds)");
     static const QString TOOL_SOURCES_FORMAT_SCRIPTS = QString("Scripts (*.lua)");
     static const QString TOOL_SOURCES_FORMAT_TEXTURES = QString("Textures (*.bmp *.jpg *.jpeg *.koa *.iff *.lbm *.mng *.pbm *.pcd *.pcx *.pgm *.pgm *.png *.ppm *.ppm *.ras *.tga *.targa *.tif *.tiff *.wap *.wbmp *.wbm *.psd *.cut *.xbm *.xpm *.gif *.hdr *.g3 *.sgi *.exr *.j2k *.j2c *.jp2 *.pfm *.pct *.pict *.pic *.dds)");

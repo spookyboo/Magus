@@ -43,7 +43,7 @@ namespace Magus
         setMinimumSize(size);
         setMaximumSize(size);
         QHBoxLayout* mainLayout = new QHBoxLayout;
-        QVBoxLayout* textureAndNameLayout = new QVBoxLayout;
+        QVBoxLayout* audioAndNameLayout = new QVBoxLayout;
         mPixmapAudioPlay = QPixmap(iconDir + TOOL_AUDIOWIDGET_ICON_PLAY);
         mPixmapAudioPause = QPixmap(iconDir + TOOL_AUDIOWIDGET_ICON_PAUSE);
         mPixmapAudioStop = QPixmap(iconDir + TOOL_AUDIOWIDGET_ICON_STOP);
@@ -60,9 +60,9 @@ namespace Magus
         mTextureLabel->setScaledContents(true);
 
         // Layout
-        textureAndNameLayout->addWidget(mTextureLabel, 1000);
-        textureAndNameLayout->addWidget(mBaseNameEdit, 1);
-        mainLayout->addLayout(textureAndNameLayout);
+        audioAndNameLayout->addWidget(mTextureLabel, 1000);
+        audioAndNameLayout->addWidget(mBaseNameEdit, 1);
+        mainLayout->addLayout(audioAndNameLayout);
         setLayout(mainLayout);
     }
 
@@ -94,7 +94,7 @@ namespace Magus
     //****************************************************************************/
     QtAudioWidget::QtAudioWidget(const QString& iconDir, QWidget* parent) : QWidget(parent)
     {
-        mLastSelectedTextureAndText = 0;
+        mLastSelectedAudioAndText = 0;
         mAudioPlayer = new QMediaPlayer();
         connect(mAudioPlayer, SIGNAL(positionChanged(qint64)), this, SLOT(handlePositionChanged(qint64)));
         mContextMenu = 0;
@@ -133,11 +133,11 @@ namespace Magus
     //****************************************************************************/
     void QtAudioWidget::addAudio(Source source, const QString& name, const QString& baseName)
     {
-        QtAudioAndText* textureAndText = new QtAudioAndText(mIconDir, source, name, baseName, mTextureSize, this);
+        QtAudioAndText* audioAndText = new QtAudioAndText(mIconDir, source, name, baseName, mTextureSize, this);
         QListWidgetItem* item = new QListWidgetItem();
         item->setSizeHint(mTextureSize); // Must be present, otherwise the widget is not shown
         mSelectionList->addItem(item);
-        mSelectionList->setItemWidget(item, textureAndText);
+        mSelectionList->setItemWidget(item, audioAndText);
         connect(mSelectionList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(handleSelected(QListWidgetItem*)));
         connect(mSelectionList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(handleDoubleClicked(QListWidgetItem*)));
         buildContextMenu();
@@ -146,7 +146,7 @@ namespace Magus
     //****************************************************************************/
     void QtAudioWidget::deleteAudio(const QString& name, bool nameIsFullName)
     {
-        QtAudioAndText* textureAndText;
+        QtAudioAndText* audioAndText;
         QWidget* widget;
         int row;
         QList<QListWidgetItem*> list = mSelectionList->findItems(QString("*"), Qt::MatchWildcard);
@@ -155,9 +155,9 @@ namespace Magus
             widget = mSelectionList->itemWidget(item);
             if (widget)
             {
-                textureAndText = static_cast<QtAudioAndText*>(widget);
-                if ((textureAndText->mName == name && nameIsFullName) ||
-                    (textureAndText->mBaseName == name && !nameIsFullName))
+                audioAndText = static_cast<QtAudioAndText*>(widget);
+                if ((audioAndText->mName == name && nameIsFullName) ||
+                    (audioAndText->mBaseName == name && !nameIsFullName))
                 {
                     row = mSelectionList->row(item);
                     mSelectionList->removeItemWidget(item);
@@ -241,15 +241,15 @@ namespace Magus
         QWidget* widget = mSelectionList->itemWidget(item);
         if (widget)
         {
-            QtAudioAndText* textureAndText = static_cast<QtAudioAndText*>(widget);
+            QtAudioAndText* audioAndText = static_cast<QtAudioAndText*>(widget);
 
             // First stop the audio of the latest one
-            if (mLastSelectedTextureAndText != textureAndText)
+            if (mLastSelectedAudioAndText != audioAndText)
             {
-                stopAudio(mLastSelectedTextureAndText);
-                mLastSelectedTextureAndText = textureAndText;
+                stopAudio(mLastSelectedAudioAndText);
+                mLastSelectedAudioAndText = audioAndText;
             }
-            emit selected(textureAndText->mName, textureAndText->mBaseName);
+            emit selected(audioAndText->mName, audioAndText->mBaseName);
         }
     }
 
@@ -259,10 +259,10 @@ namespace Magus
         QWidget* widget = mSelectionList->itemWidget(item);
         if (widget)
         {
-            QtAudioAndText* textureAndText = static_cast<QtAudioAndText*>(widget);
-            playAudio(textureAndText->mSource, textureAndText->mName, textureAndText);
-            mLastSelectedTextureAndText = textureAndText;
-            emit doubleClicked(textureAndText->mName, textureAndText->mBaseName);
+            QtAudioAndText* audioAndText = static_cast<QtAudioAndText*>(widget);
+            playAudio(audioAndText->mSource, audioAndText->mName, audioAndText);
+            mLastSelectedAudioAndText = audioAndText;
+            emit doubleClicked(audioAndText->mName, audioAndText->mBaseName);
         }
     }
 
@@ -272,13 +272,13 @@ namespace Magus
         QListWidgetItem* item = mSelectionList->currentItem();
         if (item)
         {
-            QtAudioAndText* textureAndText = static_cast<QtAudioAndText*>(mSelectionList->itemWidget(item));
+            QtAudioAndText* audioAndText = static_cast<QtAudioAndText*>(mSelectionList->itemWidget(item));
             if (action->text() == TOOL_AUDIOWIDGET_ACTION_PLAY)
-                playAudio(textureAndText->mSource, textureAndText->mName, textureAndText);
+                playAudio(audioAndText->mSource, audioAndText->mName, audioAndText);
             else if (action->text() == TOOL_AUDIOWIDGET_ACTION_PAUSE)
-                pauseAudio(textureAndText);
+                pauseAudio(audioAndText);
             else if (action->text() == TOOL_AUDIOWIDGET_ACTION_STOP)
-                stopAudio(textureAndText);
+                stopAudio(audioAndText);
         }
     }
 
@@ -288,17 +288,17 @@ namespace Magus
         qint64 size = mAudioPlayer->duration();
         if (position >= size)
         {
-            QtAudioAndText* textureAndText = 0;
+            QtAudioAndText* audioAndText = 0;
             QListWidgetItem* item = mSelectionList->currentItem();
             if (item)
-                textureAndText = static_cast<QtAudioAndText*>(mSelectionList->itemWidget(item));
+                audioAndText = static_cast<QtAudioAndText*>(mSelectionList->itemWidget(item));
 
-            stopAudio(textureAndText);
+            stopAudio(audioAndText);
         }
     }
 
     //****************************************************************************/
-    void QtAudioWidget::playAudio(Source source, QString name, QtAudioAndText* textureAndText)
+    void QtAudioWidget::playAudio(Source source, QString name, QtAudioAndText* audioAndText)
     {
         if (name != mCurrentAudioPlaying)
             if (source == SOURCE_FILE)
@@ -309,24 +309,24 @@ namespace Magus
         mAudioPlayer->setVolume(100);
         mAudioPlayer->play();
 
-        if (textureAndText)
-            textureAndText->setPlay();
+        if (audioAndText)
+            audioAndText->setPlay();
     }
 
     //****************************************************************************/
-    void QtAudioWidget::pauseAudio(QtAudioAndText* textureAndText)
+    void QtAudioWidget::pauseAudio(QtAudioAndText* audioAndText)
     {
-        if (textureAndText)
-            textureAndText->setPause();
+        if (audioAndText)
+            audioAndText->setPause();
 
         mAudioPlayer->pause();
     }
 
     //****************************************************************************/
-    void QtAudioWidget::stopAudio(QtAudioAndText* textureAndText)
+    void QtAudioWidget::stopAudio(QtAudioAndText* audioAndText)
     {
-        if (textureAndText)
-            textureAndText->setStop();
+        if (audioAndText)
+            audioAndText->setStop();
 
         mAudioPlayer->stop();
         mCurrentAudioPlaying = QString("");
@@ -341,7 +341,7 @@ namespace Magus
     //****************************************************************************/
     void QtAudioWidget::filter(const QString& pattern)
     {
-        QtAudioAndText* textureAndText;
+        QtAudioAndText* audioAndText;
         QWidget* widget;
         QString name;
         QList<QListWidgetItem*> list = mSelectionList->findItems(QString("*"), Qt::MatchWildcard);
@@ -350,8 +350,8 @@ namespace Magus
             widget = mSelectionList->itemWidget(item);
             if (widget)
             {
-                textureAndText = static_cast<QtAudioAndText*>(widget);
-                name = textureAndText->mBaseName;
+                audioAndText = static_cast<QtAudioAndText*>(widget);
+                name = audioAndText->mBaseName;
                 name = name.toLower();
                 if (!name.contains(pattern))
                     item->setHidden(true);

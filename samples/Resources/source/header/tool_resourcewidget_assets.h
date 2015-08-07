@@ -29,6 +29,7 @@
 #include <QToolBar>
 #include <QTabWidget>
 #include "tool_audiowidget.h"
+#include "tool_generic_assetwidget.h"
 #include "tool_default_texturewidget.h"
 
 QT_BEGIN_NAMESPACE
@@ -37,6 +38,15 @@ QT_END_NAMESPACE
 
 namespace Magus
 {
+    static const QString TOOL_RESOURCE_ICON_AUDIO = QString("audio.png");
+    static const QString TOOL_RESOURCE_ICON_MATERIAL = QString("material.png");
+    static const QString TOOL_RESOURCE_ICON_MESH = QString("softbody.png");
+    static const QString TOOL_RESOURCE_ICON_SCRIPT = QString("cog.png");
+    static const QString TOOL_RESOURCE_ICON_TEXTURE = QString("texture.png");
+    static const QString TOOL_GENERIC_ASSETWIDGET_ICON_MATERIAL = QString("asset_material.png");
+    static const QString TOOL_GENERIC_ASSETWIDGET_ICON_MESH = QString("asset_mesh.png");
+    static const QString TOOL_GENERIC_ASSETWIDGET_ICON_SCRIPT = QString("asset_script.png");
+
     /****************************************************************************
     This class represents a generic QtAssetsDockWidget
     ***************************************************************************/
@@ -81,8 +91,11 @@ namespace Magus
             QMainWindow* mInnerMain;
             QTabWidget* mTabWidget;
             QString mIconDir;
-            Magus::QtAudioWidget* mAudioSelection;
-            Magus::QtDefaultTextureWidget* mTextureSelection;
+            QtAudioWidget* mAudioSelection;
+            QtGenericAssetWidget* mMaterialSelection;
+            QtGenericAssetWidget* mMeshSelection;
+            QtGenericAssetWidget* mScriptSelection;
+            QtDefaultTextureWidget* mTextureSelection;
     };
 }
 

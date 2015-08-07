@@ -161,16 +161,18 @@ static const QString FILE_TOOL_DEFAULT_TEXTURE_WIDGET_CPP = QString("tool_defaul
 static const QString FILE_TOOL_EXTENDED_TEXTURE_WIDGET_H = QString("tool_extended_texturewidget.h");
 static const QString FILE_TOOL_EXTENDED_TEXTURE_WIDGET_CPP = QString("tool_extended_texturewidget.cpp");
 static const QString FILE_TOOL_AUDIO_WIDGET_H = QString("tool_audiowidget.h");
-static const QString FILE_TOOL_RESOURCE_WIDGET_H = QString("tool_resourcewidget.h");
-static const QString FILE_TOOL_RESOURCE_ASSETS_H = QString("tool_resourcewidget_assets.h");
-static const QString FILE_TOOL_RESOURCE_COLLECTIONS_H = QString("tool_resourcewidget_collections.h");
-static const QString FILE_TOOL_RESOURCE_MAIN_H = QString("tool_resourcewidget_main.h");
-static const QString FILE_TOOL_RESOURCE_SOURCES_H = QString("tool_resourcewidget_sources.h");
 static const QString FILE_TOOL_AUDIO_WIDGET_CPP = QString("tool_audiowidget.cpp");
+static const QString FILE_TOOL_GENERIC_ASSET_WIDGET_H = QString("tool_generic_assetwidget.h");
+static const QString FILE_TOOL_GENERIC_ASSET_WIDGET_CPP = QString("tool_generic_assetwidget.cpp");
+static const QString FILE_TOOL_RESOURCE_WIDGET_H = QString("tool_resourcewidget.h");
 static const QString FILE_TOOL_RESOURCE_WIDGET_CPP = QString("tool_resourcewidget.cpp");
+static const QString FILE_TOOL_RESOURCE_ASSETS_H = QString("tool_resourcewidget_assets.h");
 static const QString FILE_TOOL_RESOURCE_ASSETS_CPP = QString("tool_resourcewidget_assets.cpp");
+static const QString FILE_TOOL_RESOURCE_COLLECTIONS_H = QString("tool_resourcewidget_collections.h");
 static const QString FILE_TOOL_RESOURCE_COLLECTIONS_CPP = QString("tool_resourcewidget_collections.cpp");
+static const QString FILE_TOOL_RESOURCE_MAIN_H = QString("tool_resourcewidget_main.h");
 static const QString FILE_TOOL_RESOURCE_MAIN_CPP = QString("tool_resourcewidget_main.cpp");
+static const QString FILE_TOOL_RESOURCE_SOURCES_H = QString("tool_resourcewidget_sources.h");
 static const QString FILE_TOOL_RESOURCE_SOURCES_CPP = QString("tool_resourcewidget_sources.cpp");
 
 //****************************************************************************/

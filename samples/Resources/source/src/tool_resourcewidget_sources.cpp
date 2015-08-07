@@ -62,7 +62,7 @@ namespace Magus
         QtSourcesInfo info;
 
         // Audio
-        mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_AUDIO, 0, QString("Audio"), QString("audio.png"));
+        mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_AUDIO, 0, QString("Audio"), TOOL_RESOURCE_ICON_AUDIO);
         info.toplevelId = TOOL_SOURCES_LEVEL_X000_AUDIO;
         info.resourceId = TOOL_SOURCES_LEVEL_X000_AUDIO;
         info.parentId = 0;
@@ -73,7 +73,7 @@ namespace Magus
         mSourceInfo[TOOL_SOURCES_LEVEL_X000_AUDIO] = info;
 
         // Materials
-        mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_MATERIALS, 0, QString("Materials"), QString("material.png"));
+        mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_MATERIALS, 0, QString("Materials"), TOOL_RESOURCE_ICON_MATERIAL);
         info.toplevelId = TOOL_SOURCES_LEVEL_X000_MATERIALS;
         info.resourceId = TOOL_SOURCES_LEVEL_X000_MATERIALS;
         info.fileName = QString("Materials");
@@ -83,7 +83,7 @@ namespace Magus
         mSourceInfo[TOOL_SOURCES_LEVEL_X000_MATERIALS] = info;
 
         // Meshes
-        mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_MESHES, 0, QString("Meshes"), QString("softbody.png"));
+        mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_MESHES, 0, QString("Meshes"), TOOL_RESOURCE_ICON_MESH);
         info.toplevelId = TOOL_SOURCES_LEVEL_X000_MESHES;
         info.resourceId = TOOL_SOURCES_LEVEL_X000_MESHES;
         info.fileName = QString("Meshes");
@@ -93,7 +93,7 @@ namespace Magus
         mSourceInfo[TOOL_SOURCES_LEVEL_X000_MESHES] = info;
 
         // Scripts
-        mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_SCRIPTS, 0, QString("Scripts"), QString("cog.png"));
+        mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_SCRIPTS, 0, QString("Scripts"), TOOL_RESOURCE_ICON_SCRIPT);
         info.toplevelId = TOOL_SOURCES_LEVEL_X000_SCRIPTS;
         info.resourceId = TOOL_SOURCES_LEVEL_X000_SCRIPTS;
         info.fileName = QString("Scripts");
@@ -103,7 +103,7 @@ namespace Magus
         mSourceInfo[TOOL_SOURCES_LEVEL_X000_SCRIPTS] = info;
 
         // Textures
-        mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_TEXTURES, 0, QString("Textures"), QString("texture_bold.png"));
+        mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_TEXTURES, 0, QString("Textures"), TOOL_RESOURCE_ICON_TEXTURE);
         info.toplevelId = TOOL_SOURCES_LEVEL_X000_TEXTURES;
         info.resourceId = TOOL_SOURCES_LEVEL_X000_TEXTURES;
         info.fileName = QString("Textures");

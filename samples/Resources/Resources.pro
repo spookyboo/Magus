@@ -17,7 +17,8 @@ HEADERS       = \
     source/header/tool_resourcewidget_collections.h \
     source/header/tool_resourcewidget_assets.h \
     source/header/tool_resourcewidget_main.h \
-    source/header/generic_funtions.h
+    source/header/generic_funtions.h \
+    source/header/tool_generic_assetwidget.h
 
 
 SOURCES       = \
@@ -34,7 +35,8 @@ SOURCES       = \
     source/src/tool_resourcewidget_assets.cpp \
     source/src/tool_resourcewidget_sources.cpp \
     source/src/tool_resourcewidget_collections.cpp \
-    source/src/tool_resourcewidget_main.cpp
+    source/src/tool_resourcewidget_main.cpp \
+    source/src/tool_generic_assetwidget.cpp
 
 
 INCLUDEPATH += "../Resources/source/header/"

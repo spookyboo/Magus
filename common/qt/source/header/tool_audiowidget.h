@@ -37,9 +37,9 @@ QT_END_NAMESPACE
 
 namespace Magus
 {
-    static const QString TOOL_AUDIOWIDGET_ICON_PLAY = QString("audio_play.png");
-    static const QString TOOL_AUDIOWIDGET_ICON_PAUSE = QString("audio_pause.png");
-    static const QString TOOL_AUDIOWIDGET_ICON_STOP = QString("audio_stop.png");
+    static const QString TOOL_AUDIOWIDGET_ICON_PLAY = QString("asset_audio_play.png");
+    static const QString TOOL_AUDIOWIDGET_ICON_PAUSE = QString("asset_audio_pause.png");
+    static const QString TOOL_AUDIOWIDGET_ICON_STOP = QString("asset_audio_stop.png");
     static const QString TOOL_AUDIOWIDGET_ACTION_PLAY = QString("Play sound");
     static const QString TOOL_AUDIOWIDGET_ACTION_PAUSE = QString("Pause sound");
     static const QString TOOL_AUDIOWIDGET_ACTION_STOP = QString("Stop sound");
@@ -138,13 +138,13 @@ namespace Magus
         protected:
             void mouseClickHandler(QMouseEvent* event);
             void buildContextMenu(void);
-            void playAudio(Source source, QString name, QtAudioAndText* textureAndText = 0);
-            void pauseAudio(QtAudioAndText* textureAndText = 0);
-            void stopAudio(QtAudioAndText* textureAndText = 0);
+            void playAudio(Source source, QString name, QtAudioAndText* audioAndText = 0);
+            void pauseAudio(QtAudioAndText* audioAndText = 0);
+            void stopAudio(QtAudioAndText* audioAndText = 0);
 
         private:
             QString mCurrentAudioPlaying;
-            QtAudioAndText* mLastSelectedTextureAndText;
+            QtAudioAndText* mLastSelectedAudioAndText;
             QMediaPlayer* mAudioPlayer;
             QMenu* mContextMenu;
             QString mIconDir;
