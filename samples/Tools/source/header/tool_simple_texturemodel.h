@@ -48,6 +48,7 @@ class QtSimpleTextureModel : public QAbstractListModel
         Qt::DropActions supportedDropActions() const;
         void addTexture(const QPixmap& pixmap, const QString& name, QSize size);
         void addTexture(const QString& fileName, QSize size);
+        void deleteTexture(const QString& name);
         const QString getName(const QModelIndex &index) const;
         QList<QString>mNames;
 

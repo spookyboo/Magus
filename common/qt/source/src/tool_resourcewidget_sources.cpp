@@ -49,6 +49,8 @@ namespace Magus
         connect(mResourceTreeWidget, SIGNAL(resourceImported(int)), this, SLOT(handleResourceImported(int)));
         connect(mResourceTreeWidget, SIGNAL(resourceDeleted(int)), this, SLOT(handleResourceDeleted(int)));
         connect(mResourceTreeWidget, SIGNAL(resourceMoved(int)), this, SLOT(handleResourceMoved(int)));
+        connect(mResourceTreeWidget, SIGNAL(resourceSearched(QString)), this, SLOT(handleResourceSearched(QString)));
+        connect(mResourceTreeWidget, SIGNAL(resourceSearchReset()), this, SLOT(handleResourceSearchReset()));
         mInnerMain = new QMainWindow();
         mInnerMain->setCentralWidget(mResourceTreeWidget);
         setWidget(mInnerMain);
@@ -110,13 +112,20 @@ namespace Magus
         info.filter = TOOL_SOURCES_FORMAT_TEXTURES;
         mSourceInfo[TOOL_SOURCES_LEVEL_X000_TEXTURES] = info;
 
-        // Set selected to 'Audio'
+        // Set 'Audio' selected
         mResourceTreeWidget->selectResource(TOOL_SOURCES_LEVEL_X000_AUDIO, false);
     }
 
     //****************************************************************************/
     QtSourcesDockWidget::~QtSourcesDockWidget(void)
     {
+    }
+
+    //****************************************************************************/
+    QVector<QtResourceInfo*>& QtSourcesDockWidget::getResources (void)
+    {
+        // Delegate to mResourceTreeWidget; this is the component that actually retrieves the data
+        return mResourceTreeWidget->getResources();
     }
 
     //****************************************************************************/
@@ -224,8 +233,32 @@ namespace Magus
     //****************************************************************************/
     void QtSourcesDockWidget::handleResourceMoved(int resourceId)
     {
-        // TODO: Update the info object, because its parent is changed
+        // Search the info object
+        QtSourcesInfo info;
+        QMap<int, QtSourcesInfo>::iterator it = mSourceInfo.find(resourceId);
+        if (it == mSourceInfo.end())
+            return;
+
+        // Update the parentId and toplevelId (Although in this version it is not possible to move to a different toplevel)
         // Emitting again is not needed, because nothing changed in the assets widget
+        info = it.value();
+        info.toplevelId = mResourceTreeWidget->getToplevelParentId(resourceId);
+        info.parentId = mResourceTreeWidget->getParentId(resourceId);
+        mSourceInfo[resourceId] = info; // Overwrite existing one
+    }
+
+    //****************************************************************************/
+    void QtSourcesDockWidget::handleResourceSearched(const QString& searchPattern)
+    {
+        // Signal
+        emit resourceSearched(searchPattern);
+    }
+
+    //****************************************************************************/
+    void QtSourcesDockWidget::handleResourceSearchReset(void)
+    {
+        // Signal
+        emit resourceSearchReset();
     }
 }
 

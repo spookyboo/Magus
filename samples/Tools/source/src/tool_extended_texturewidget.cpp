@@ -116,9 +116,27 @@ namespace Magus
     }
 
     //****************************************************************************/
-    void QtExtendedTextureWidget::deleteTexture(const QString name)
+    void QtExtendedTextureWidget::deleteTexture(const QString name, bool nameIsFullName)
     {
-        // TODO
+        QtTextureAndText* textureAndText;
+        QWidget* widget;
+        int row;
+        QList<QListWidgetItem*> list = mSelectionList->findItems(QString("*"), Qt::MatchWildcard);
+        foreach (QListWidgetItem* item, list)
+        {
+            widget = mSelectionList->itemWidget(item);
+            if (widget)
+            {
+                textureAndText = static_cast<QtTextureAndText*>(widget);
+                if ((textureAndText->mName == name && nameIsFullName) ||
+                    (textureAndText->mBaseName == name && !nameIsFullName))
+                {
+                    row = mSelectionList->row(item);
+                    mSelectionList->removeItemWidget(item);
+                    mSelectionList->takeItem(row);
+                }
+            }
+        }
     }
 
     //****************************************************************************/
@@ -157,4 +175,32 @@ namespace Magus
         mTextureSize = size;
     }
 
+    //****************************************************************************/
+    void QtExtendedTextureWidget::filter(const QString& pattern)
+    {
+        QtTextureAndText* textureAndText;
+        QWidget* widget;
+        QString name;
+        QList<QListWidgetItem*> list = mSelectionList->findItems(QString("*"), Qt::MatchWildcard);
+        foreach (QListWidgetItem* item, list)
+        {
+            widget = mSelectionList->itemWidget(item);
+            if (widget)
+            {
+                textureAndText = static_cast<QtTextureAndText*>(widget);
+                name = textureAndText->mBaseName;
+                name = name.toLower();
+                if (!name.contains(pattern))
+                    item->setHidden(true);
+            }
+        }
+    }
+
+    //****************************************************************************/
+    void QtExtendedTextureWidget::resetFilter(void)
+    {
+        QList<QListWidgetItem*> list = mSelectionList->findItems(QString("*"), Qt::MatchWildcard);
+        foreach (QListWidgetItem* item, list)
+            item->setHidden(false);
+    }
 }

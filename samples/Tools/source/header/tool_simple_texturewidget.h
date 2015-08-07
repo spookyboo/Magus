@@ -74,6 +74,12 @@ namespace Magus
             // If set to 'true', the sleected texture can also be dragged (and dropped) to another widget
             void setDragEnabled (bool enabled);
 
+            // Apply filtering; only the items that meet the pattern are displayed
+            void filter(const QString& pattern);
+
+            // Reset the filtering
+            void resetFilter(void);
+
         signals:
             // Emitted when a texture is selected (via the mouse)
             void selected(const QString& name);

@@ -38,7 +38,6 @@
  * - Edit asset (emits signal only)
  * - getAssets (returns only the assets of all groups and subgroups, but not the groups themselves)
  * - getGroups (returns only the groups/subgroups, but not the assets)
- * - getResources (returns all groups, subgroups and assets)
  * - Show warning when a resource is deleted (through the context menu)
 */
 
@@ -79,6 +78,7 @@ namespace Magus
         int parentId;
         QString iconName;
         QString resourceName;
+        int resourceType; // Is TOOL_RESOURCETREE_KEY_TYPE_TOPLEVEL_GROUP, TOOL_RESOURCETREE_KEY_TYPE_GROUP or TOOL_RESOURCETREE_KEY_TYPE_ASSET
     };
 
     /****************************************************************************
@@ -171,7 +171,7 @@ namespace Magus
             // Add a resource to the resource tree, but automatically determine the resourceId (and return it)
             int addResource (int parentId, const QString& resourceName, const QString& iconName, bool isAsset = false);
 
-            // Returns a list of all resources in the resource tree
+            // Returns a list of all resources in the resource tree. This includes both groups, subgroups and assets
             QVector<QtResourceInfo*>& getResources (void);
 
             // Delete a resource from the resource tree. If the resource - identified by means of resourceId (value >= 0) - has
@@ -302,7 +302,7 @@ namespace Magus
             // Called when the search string changes
             void searchLineTextChanged(QString text);
 
-        signals:
+    signals:
             // Emitted when a resource is added to the resource tree
             void resourceAdded (int resourceId);
 
@@ -327,7 +327,13 @@ namespace Magus
             // Emitted when a resource is collapsed
             void resourceCollapsed (int resourceId);
 
-        protected:
+            // Emitted when a resource is searched
+            void resourceSearched (const QString& searchString);
+
+            // Emitted when searching is reset (searchline is cleared)
+            void resourceSearchReset (void);
+
+    protected:
             QtResourceInfo* getRegisteredResourceInfo (int resourceId);
             int getDepth(int resourceId); // Depth in the tree
             void buildContextMenu(void);

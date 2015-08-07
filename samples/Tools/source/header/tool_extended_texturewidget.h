@@ -45,6 +45,8 @@ namespace Magus
         Q_OBJECT
 
         public:
+            QString mBaseName;
+            QString mName;
             QtTextureAndText(const QPixmap& pixmap,
                              const QString& name,
                              const QString& baseName,
@@ -61,8 +63,6 @@ namespace Magus
 
         private:
             QtGLSphereWidget* mSphereWidget;
-            QString mBaseName;
-            QString mName;
             QLineEdit* mBaseNameEdit;
     };
 
@@ -84,8 +84,9 @@ namespace Magus
             // E.g. baseName = "info.png"
             void addTexture(const QPixmap& pixmap, const QString name, const QString baseName);
 
-            // Delete an item from the QtExtendedTextureWidget. Use the full qualified name as search criterium.
-            void deleteTexture(const QString name);
+            // Delete an item from the QtExtendedTextureWidget. Use the full qualified name as search criterium if nameIsFullName = true;
+            // else use the baseName as search criterium.
+            void deleteTexture(const QString name, bool nameIsFullName = true);
 
             // If a texture is originated from a file, setOriginIsFile must be set to 'true'
             void setOriginIsFile(bool originIsFile);
@@ -103,6 +104,12 @@ namespace Magus
 
             // Define the width and height of a texture in the selection box
             void setTextureSize (QSize size);
+
+            // Apply filtering; only the items that meet the pattern are displayed
+            void filter(const QString& pattern);
+
+            // Reset the filtering
+            void resetFilter(void);
 
         signals:
             // Emitted when a texture is selected (via the mouse)

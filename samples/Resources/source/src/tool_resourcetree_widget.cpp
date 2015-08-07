@@ -598,6 +598,7 @@ namespace Magus
             info->parentId = getParentIdFromItem(*it);
             info->resourceName = (*it)->text(0);
             info->iconName = getIconNameFromItem(*it);
+            info->resourceType = getTypeFromItem(*it);
             mResourceInfoVec.append(info);
             ++it;
         }
@@ -1154,6 +1155,7 @@ namespace Magus
     void QtResourceTreeWidget::findAndShowItems(const QString& searchPattern)
     {
         resetSearch();
+        emit resourceSearched(searchPattern);
 
         if (searchPattern.isEmpty())
             return;
@@ -1203,6 +1205,7 @@ namespace Magus
     {
         mSearchLine->clear();
         resetSearch();
+        emit resourceSearchReset();
     }
 
     //****************************************************************************/

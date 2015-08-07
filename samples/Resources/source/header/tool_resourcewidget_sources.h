@@ -79,6 +79,9 @@ namespace Magus
             QtSourcesDockWidget(const QString& iconDir, const QString& title, QMainWindow* parent, Qt::WindowFlags flags = 0);
             ~QtSourcesDockWidget(void);
 
+            // Returns a list of all resources in the resource tree. This includes both groups, subgroups and assets
+            QVector<QtResourceInfo*>& getResources (void);
+
             // Select a toplevel resource.
             void selectTopLevel(int toplevelId);
 
@@ -87,6 +90,8 @@ namespace Magus
             void resourceAdded(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName);
             void resourceImported(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName);
             void resourceDeleted(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName);
+            void resourceSearched(const QString& searchPattern);
+            void resourceSearchReset(void);
 
         private slots:
             void handleResourceSelected(int resourceId);
@@ -94,6 +99,8 @@ namespace Magus
             void handleResourceImported(int resourceId);
             void handleResourceDeleted(int resourceId);
             void handleResourceMoved(int resourceId);
+            void handleResourceSearched(const QString& searchPattern);
+            void handleResourceSearchReset(void);
 
         private:
             QMainWindow* mParent;

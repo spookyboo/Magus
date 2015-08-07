@@ -144,7 +144,7 @@ namespace Magus
     }
 
     //****************************************************************************/
-    void QtAudioWidget::deleteAudio(const QString& name)
+    void QtAudioWidget::deleteAudio(const QString& name, bool nameIsFullName)
     {
         QtAudioAndText* textureAndText;
         QWidget* widget;
@@ -156,7 +156,8 @@ namespace Magus
             if (widget)
             {
                 textureAndText = static_cast<QtAudioAndText*>(widget);
-                if (textureAndText->mName == name)
+                if ((textureAndText->mName == name && nameIsFullName) ||
+                    (textureAndText->mBaseName == name && !nameIsFullName))
                 {
                     row = mSelectionList->row(item);
                     mSelectionList->removeItemWidget(item);
@@ -335,6 +336,35 @@ namespace Magus
     void QtAudioWidget::setTextureSize (QSize size)
     {
         mTextureSize = size;
+    }
+
+    //****************************************************************************/
+    void QtAudioWidget::filter(const QString& pattern)
+    {
+        QtAudioAndText* textureAndText;
+        QWidget* widget;
+        QString name;
+        QList<QListWidgetItem*> list = mSelectionList->findItems(QString("*"), Qt::MatchWildcard);
+        foreach (QListWidgetItem* item, list)
+        {
+            widget = mSelectionList->itemWidget(item);
+            if (widget)
+            {
+                textureAndText = static_cast<QtAudioAndText*>(widget);
+                name = textureAndText->mBaseName;
+                name = name.toLower();
+                if (!name.contains(pattern))
+                    item->setHidden(true);
+            }
+        }
+    }
+
+    //****************************************************************************/
+    void QtAudioWidget::resetFilter(void)
+    {
+        QList<QListWidgetItem*> list = mSelectionList->findItems(QString("*"), Qt::MatchWildcard);
+        foreach (QListWidgetItem* item, list)
+            item->setHidden(false);
     }
 
 }

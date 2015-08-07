@@ -35,11 +35,6 @@ QT_BEGIN_NAMESPACE
 
 QT_END_NAMESPACE
 
-/*
- * TODO:
- * - Display only the items based on a filter
-*/
-
 namespace Magus
 {
     static const QString TOOL_AUDIOWIDGET_ICON_PLAY = QString("audio_play.png");
@@ -103,8 +98,9 @@ namespace Magus
             // E.g. baseName = "info.png"
             void addAudio(Source source, const QString& name, const QString& baseName);
 
-            // Delete an item from the QtAudioWidget. Use the full qualified name as search criterium.
-            void deleteAudio(const QString& name);
+            // Delete an item from the QtAudioWidget. Use the full qualified name as search criterium if nameIsFullName = true,
+            // else use the basename
+            void deleteAudio(const QString& name, bool nameIsFullName = true);
 
             // Clear the content of the widget
             void clearContent(void);
@@ -119,6 +115,12 @@ namespace Magus
 
             // Define the width and height of a texture in the selection box
             void setTextureSize (QSize size);
+
+            // Apply filtering; only the items that meet the pattern are displayed
+            void filter(const QString& pattern);
+
+            // Reset the filtering
+            void resetFilter(void);
 
         signals:
             // Emitted when a texture is selected (via the mouse)

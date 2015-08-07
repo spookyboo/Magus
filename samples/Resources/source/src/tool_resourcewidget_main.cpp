@@ -50,6 +50,13 @@ namespace Magus
     }
 
     //****************************************************************************/
+    QVector<QtResourceInfo*>& QtResourceMain::getResources (void)
+    {
+        // Delegate to mSourcesDockWidget
+        return mSourcesDockWidget->getResources();
+    }
+
+    //****************************************************************************/
     void QtResourceMain::closeEvent(QCloseEvent* event)
     {
         mIsClosing = true;
@@ -96,15 +103,17 @@ namespace Magus
     {
         // Sources (tree)
         mSourcesDockWidget = new QtSourcesDockWidget(mIconDir, QString("Sources"), this);
-        connect(mSourcesDockWidget, SIGNAL(resourceSelected(int,int,int,const QString&,const QString&)), this, SLOT(resourceSelected(int,int,int,const QString&,const QString&)));
-        connect(mSourcesDockWidget, SIGNAL(resourceAdded(int,int,int,const QString&,const QString&)), this, SLOT(resourceAdded(int,int,int,const QString&,const QString&)));
-        connect(mSourcesDockWidget, SIGNAL(resourceImported(int,int,int,const QString&,const QString&)), this, SLOT(resourceImported(int,int,int,const QString&,const QString&)));
-        connect(mSourcesDockWidget, SIGNAL(resourceDeleted(int,int,int,const QString&,const QString&)), this, SLOT(resourceDeleted(int,int,int,const QString&,const QString&)));
+        connect(mSourcesDockWidget, SIGNAL(resourceSelected(int,int,int,const QString&,const QString&)), this, SLOT(handleResourceSelected(int,int,int,const QString&,const QString&)));
+        connect(mSourcesDockWidget, SIGNAL(resourceAdded(int,int,int,const QString&,const QString&)), this, SLOT(handleResourceAdded(int,int,int,const QString&,const QString&)));
+        connect(mSourcesDockWidget, SIGNAL(resourceImported(int,int,int,const QString&,const QString&)), this, SLOT(handleResourceImported(int,int,int,const QString&,const QString&)));
+        connect(mSourcesDockWidget, SIGNAL(resourceDeleted(int,int,int,const QString&,const QString&)), this, SLOT(handleResourceDeleted(int,int,int,const QString&,const QString&)));
+        connect(mSourcesDockWidget, SIGNAL(resourceSearched(QString)), this, SLOT(handleResourceSearched(QString)));
+        connect(mSourcesDockWidget, SIGNAL(resourceSearchReset()), this, SLOT(handleResourceSearchReset()));
         addDockWidget(Qt::LeftDockWidgetArea, mSourcesDockWidget);
 
         // Assets
         mAssetsDockWidget = new QtAssetsDockWidget(mIconDir, QString("Assets"), this);
-        connect(mAssetsDockWidget, SIGNAL(tabChanged(int)), this, SLOT(tabChanged(int)));
+        connect(mAssetsDockWidget, SIGNAL(tabChanged(int)), this, SLOT(handleTabChanged(int)));
         addDockWidget(Qt::RightDockWidgetArea, mAssetsDockWidget);
 
         // Collections
@@ -147,34 +156,48 @@ namespace Magus
     }
 
     //****************************************************************************/
-    void QtResourceMain::resourceSelected(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName)
+    void QtResourceMain::handleResourceSelected(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName)
     {
         // Select the appropriate tab, based on the provided information
         mAssetsDockWidget->selectTab(toplevelId, parentId, resourceId, name, baseName);
     }
 
     //****************************************************************************/
-    void QtResourceMain::resourceAdded(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName)
+    void QtResourceMain::handleResourceAdded(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName)
     {
         // TODO
     }
 
     //****************************************************************************/
-    void QtResourceMain::resourceImported(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName)
+    void QtResourceMain::handleResourceImported(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName)
     {
         // Add name to the mAssetsDockWidget
         mAssetsDockWidget->addAsset(toplevelId, parentId, resourceId, name, baseName);
     }
 
     //****************************************************************************/
-    void QtResourceMain::resourceDeleted(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName)
+    void QtResourceMain::handleResourceDeleted(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName)
     {
         // Delete name from mAssetsDockWidget
         mAssetsDockWidget->deleteAsset(toplevelId, name);
     }
 
     //****************************************************************************/
-    void QtResourceMain::tabChanged(int toplevelId)
+    void QtResourceMain::handleResourceSearched(const QString& searchPattern)
+    {
+        // Apply filtering to mAssetsDockWidget
+        mAssetsDockWidget->filter(searchPattern);
+    }
+
+    //****************************************************************************/
+    void QtResourceMain::handleResourceSearchReset(void)
+    {
+        // Reset the filtering in mAssetsDockWidget
+        mAssetsDockWidget->resetFilter();
+    }
+
+    //****************************************************************************/
+    void QtResourceMain::handleTabChanged(int toplevelId)
     {
         // Set the correct toplevel group in mSourcesDockWidget, based on the selected tab
         mSourcesDockWidget->selectTopLevel(toplevelId);

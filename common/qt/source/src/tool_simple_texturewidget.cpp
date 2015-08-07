@@ -76,7 +76,7 @@ namespace Magus
     //****************************************************************************/
     void QtSimpleTextureWidget::deleteTexture(const QString name)
     {
-        mSelectionModel->deleteLater();
+        mSelectionModel->deleteTexture(name);
     }
 
     //****************************************************************************/
@@ -147,4 +147,30 @@ namespace Magus
     {
         mSelectionList->setDragEnabled(enabled);
     }
+
+    //****************************************************************************/
+    void QtSimpleTextureWidget::filter(const QString& pattern)
+    {
+        // Untested
+        QString name;
+        int count = mSelectionModel->rowCount(QModelIndex());
+        for (int i=0 ; i < count ; ++i)
+        {
+            QModelIndex index = mSelectionModel->index(i, 0);
+            name = mSelectionModel->getName(index);
+            name.toLower();
+            if (!name.contains(pattern))
+                mSelectionList->setRowHidden(i, true);
+        }
+    }
+
+    //****************************************************************************/
+    void QtSimpleTextureWidget::resetFilter(void)
+    {
+        // Untested
+        int count = mSelectionModel->rowCount(QModelIndex());
+        for (int i=0 ; i < count ; ++i)
+            mSelectionList->setRowHidden(i, false);
+    }
+
 }

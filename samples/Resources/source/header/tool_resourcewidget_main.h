@@ -48,6 +48,10 @@ namespace Magus
         public:
             QtResourceMain(const QString& iconDir, QWidget * parent = 0);
             ~QtResourceMain(void);
+
+            // Returns a list of all resources in the resource tree. This includes both groups, subgroups and assets
+            QVector<QtResourceInfo*>& getResources (void);
+
             void update(void);
             bool mIsClosing;
 
@@ -56,11 +60,13 @@ namespace Magus
             void doOpenHToolbarAction(void);
             void doSaveHToolbarAction(void);
             void doColorHToolbarAction(void);
-            void resourceSelected(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName);
-            void resourceAdded(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName);
-            void resourceImported(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName);
-            void resourceDeleted(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName);
-            void tabChanged(int toplevelId);
+            void handleResourceSelected(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName);
+            void handleResourceAdded(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName);
+            void handleResourceImported(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName);
+            void handleResourceDeleted(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName);
+            void handleResourceSearched(const QString& searchPattern);
+            void handleResourceSearchReset(void);
+            void handleTabChanged(int toplevelId);
 
         private:
             void createActions(void);

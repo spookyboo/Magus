@@ -39,4 +39,18 @@ namespace Magus
     {
     }
 
+    //****************************************************************************/
+    QVector<QtResourceInfo*>& QtResourceWidget::getResources (void)
+    {
+        // Delegate to mResourceMain
+        return mResourceMain->getResources();
+    }
+
+    //****************************************************************************/
+    void QtResourceWidget::setResources (const QVector<QtResourceInfo*>& resources)
+    {
+        // TODO
+        // Assume that 'QtResourceInfo->resourceName' is a filename, so the basename can be easily derived
+        // Delegate to mResourceMain and from there, delegate to both mSourcesDockWidget and mAssetsDockWidget
+    }
 }

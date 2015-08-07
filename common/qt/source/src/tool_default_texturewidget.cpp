@@ -115,7 +115,7 @@ namespace Magus
     }
 
     //****************************************************************************/
-    void QtDefaultTextureWidget::deleteTexture(const QString name)
+    void QtDefaultTextureWidget::deleteTexture(const QString name, bool nameIsFullName)
     {
         QtDefaultTextureAndText* textureAndText;
         QWidget* widget;
@@ -127,7 +127,8 @@ namespace Magus
             if (widget)
             {
                 textureAndText = static_cast<QtDefaultTextureAndText*>(widget);
-                if (textureAndText->mName == name)
+                if ((textureAndText->mName == name && nameIsFullName) ||
+                    (textureAndText->mBaseName == name && !nameIsFullName))
                 {
                     row = mSelectionList->row(item);
                     mSelectionList->removeItemWidget(item);
@@ -187,6 +188,35 @@ namespace Magus
     void QtDefaultTextureWidget::setTextureSize (QSize size)
     {
         mTextureSize = size;
+    }
+
+    //****************************************************************************/
+    void QtDefaultTextureWidget::filter(const QString& pattern)
+    {
+        QtDefaultTextureAndText* textureAndText;
+        QWidget* widget;
+        QString name;
+        QList<QListWidgetItem*> list = mSelectionList->findItems(QString("*"), Qt::MatchWildcard);
+        foreach (QListWidgetItem* item, list)
+        {
+            widget = mSelectionList->itemWidget(item);
+            if (widget)
+            {
+                textureAndText = static_cast<QtDefaultTextureAndText*>(widget);
+                name = textureAndText->mBaseName;
+                name = name.toLower();
+                if (!name.contains(pattern))
+                    item->setHidden(true);
+            }
+        }
+    }
+
+    //****************************************************************************/
+    void QtDefaultTextureWidget::resetFilter(void)
+    {
+        QList<QListWidgetItem*> list = mSelectionList->findItems(QString("*"), Qt::MatchWildcard);
+        foreach (QListWidgetItem* item, list)
+            item->setHidden(false);
     }
 
 }

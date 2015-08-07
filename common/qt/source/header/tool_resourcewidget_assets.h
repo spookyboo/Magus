@@ -64,6 +64,12 @@ namespace Magus
             // Select the appropriate tab, based on the given arguments
             void selectTab(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName);
 
+            // Apply filtering to the underlying widgets (mAudioSelection, mTextureSelection, ...)
+            void filter(const QString& pattern);
+
+            // Reset the filtering in the underlying widgets (mAudioSelection, mTextureSelection, ...)
+            void resetFilter(void);
+
         signals:
             void tabChanged(int index);
 

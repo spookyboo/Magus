@@ -56,6 +56,14 @@ namespace Magus
             QtResourceWidget(const QString& iconDir, QWidget* parent = 0);
             virtual ~QtResourceWidget(void);
 
+            // Returns a list of all resources in the resource tree. This includes both groups, subgroups and assets
+            // This function can be used to stream the data to a file
+            QVector<QtResourceInfo*>& getResources (void);
+
+            // Creates the resourcetree. This includes both groups, subgroups and assets
+            // This function can be used to load the data from a file
+            void setResources (const QVector<QtResourceInfo*>& resources);
+
         private:
             QtResourceMain* mResourceMain;
             QString mIconDir;

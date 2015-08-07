@@ -1,7 +1,4 @@
-#QT += widgets
 QT += widgets opengl
-
-# TODO: Change topline to: QT += opengl widgets
 
 HEADERS       = \
     source/header/constants.h \

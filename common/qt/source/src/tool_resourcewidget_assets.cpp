@@ -147,6 +147,23 @@ namespace Magus
     }
 
     //****************************************************************************/
+    void QtAssetsDockWidget::filter(const QString& pattern)
+    {
+        resetFilter();
+        mAudioSelection->filter(pattern);
+        // TODO: Filter Materials, Meshes, Scripts
+        mTextureSelection->filter(pattern);
+    }
+
+    //****************************************************************************/
+    void QtAssetsDockWidget::resetFilter(void)
+    {
+        mAudioSelection->resetFilter();
+        // TODO: Reset filter Materials, Meshes, Scripts
+        mTextureSelection->resetFilter();
+    }
+
+    //****************************************************************************/
     void QtAssetsDockWidget::handleTabChanged(int index)
     {
         emit tabChanged(index + 1);
