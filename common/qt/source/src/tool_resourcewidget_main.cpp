@@ -65,14 +65,14 @@ namespace Magus
     //****************************************************************************/
     void QtResourceMain::createActions(void)
     {
-        mNewHToolbarAction = new QAction(QIcon(mIconDir + "new.png"), QString("Insert tooltip for <mNewHToolbarAction> here"), this);
+        mNewHToolbarAction = new QAction(QIcon(mIconDir + "new.png"), QString("Clear resource tree"), this);
         connect(mNewHToolbarAction, SIGNAL(triggered()), this, SLOT(doNewHToolbarAction()));
-        mOpenHToolbarAction = new QAction(QIcon(mIconDir + "open.png"), QString("Insert tooltip for <mOpenHToolbarAction> here"), this);
-        connect(mOpenHToolbarAction, SIGNAL(triggered()), this, SLOT(doOpenHToolbarAction()));
-        mSaveHToolbarAction = new QAction(QIcon(mIconDir + "save.png"), QString("Insert tooltip for <mSaveHToolbarAction> here"), this);
+        mLoadHToolbarAction = new QAction(QIcon(mIconDir + "open.png"), QString("Load resource tree"), this);
+        connect(mLoadHToolbarAction, SIGNAL(triggered()), this, SLOT(doLoadHToolbarAction()));
+        mSaveHToolbarAction = new QAction(QIcon(mIconDir + "save.png"), QString("Save resource tree"), this);
         connect(mSaveHToolbarAction, SIGNAL(triggered()), this, SLOT(doSaveHToolbarAction()));
-        mColorHToolbarAction = new QAction(QIcon(mIconDir + "color.png"), QString("Insert tooltip for <mColorHToolbarAction> here"), this);
-        connect(mColorHToolbarAction, SIGNAL(triggered()), this, SLOT(doColorHToolbarAction()));
+        mShowCollectionsHToolbarAction = new QAction(QIcon(mIconDir + "color.png"), QString("Show/hide Collections area"), this);
+        connect(mShowCollectionsHToolbarAction, SIGNAL(triggered()), this, SLOT(doShowCollectionsHToolbarAction()));
     }
 
     //****************************************************************************/
@@ -88,9 +88,9 @@ namespace Magus
         mHToolBar->setMinimumHeight(TB_ICON_AND_SPACING);
         mHToolBar->setMinimumWidth(4 * TB_ICON_AND_SPACING);
         mHToolBar->addAction(mNewHToolbarAction);
-        mHToolBar->addAction(mOpenHToolbarAction);
+        mHToolBar->addAction(mLoadHToolbarAction);
         mHToolBar->addAction(mSaveHToolbarAction);
-        mHToolBar->addAction(mColorHToolbarAction);
+        mHToolBar->addAction(mShowCollectionsHToolbarAction);
     }
 
     //****************************************************************************/
@@ -105,7 +105,6 @@ namespace Magus
         mSourcesDockWidget = new QtSourcesDockWidget(mIconDir, QString("Sources"), this);
         connect(mSourcesDockWidget, SIGNAL(resourceSelected(int,int,int,const QString&,const QString&)), this, SLOT(handleResourceSelected(int,int,int,const QString&,const QString&)));
         connect(mSourcesDockWidget, SIGNAL(resourceAdded(int,int,int,const QString&,const QString&)), this, SLOT(handleResourceAdded(int,int,int,const QString&,const QString&)));
-        connect(mSourcesDockWidget, SIGNAL(resourceImported(int,int,int,const QString&,const QString&)), this, SLOT(handleResourceImported(int,int,int,const QString&,const QString&)));
         connect(mSourcesDockWidget, SIGNAL(resourceDeleted(int,int,int,const QString&,const QString&)), this, SLOT(handleResourceDeleted(int,int,int,const QString&,const QString&)));
         connect(mSourcesDockWidget, SIGNAL(resourceSearched(QString)), this, SLOT(handleResourceSearched(QString)));
         connect(mSourcesDockWidget, SIGNAL(resourceSearchReset()), this, SLOT(handleResourceSearchReset()));
@@ -119,36 +118,42 @@ namespace Magus
         // Collections
         mCollectionsDockWidget = new QtCollectionsDockWidget(mIconDir, QString("Collections"), this);
         addDockWidget(Qt::LeftDockWidgetArea, mCollectionsDockWidget);
+        mCollectionsDockWidget->setMinimumHeight(100);
+        mCollectionsDockWidget->hide();
     }
 
     //****************************************************************************/
     void QtResourceMain::doNewHToolbarAction(void)
     {
-        // Replace the code in this function with your own code.
-        QMessageBox::information(this, QString("QAction"), QString("Toolbar item <mNewHToolbarAction> selected;\nQtResourceMain::doNewMenuAction() called"));
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, "Test", "Are you sure to clear the resource tree?", QMessageBox::Yes|QMessageBox::No);
+        if (reply == QMessageBox::Yes)
+        {
+            mSourcesDockWidget->clearContent();
+            mAssetsDockWidget->clearContent();
+        }
     }
 
     //****************************************************************************/
-    void QtResourceMain::doOpenHToolbarAction(void)
+    void QtResourceMain::doLoadHToolbarAction(void)
     {
-        // Replace the code in this function with your own code.
-        QMessageBox::information(this, QString("QAction"), QString("Toolbar item <mOpenHToolbarAction> selected;\nQtResourceMain::doOpenMenuAction() called"));
+        emit loadButtonClicked();
     }
 
     //****************************************************************************/
     void QtResourceMain::doSaveHToolbarAction(void)
     {
-        // Replace the code in this function with your own code.
-        QMessageBox::information(this, QString("QAction"), QString("Toolbar item <mSaveHToolbarAction> selected;\nQtResourceMain::doSaveMenuAction() called"));
+        emit saveButtonClicked();
     }
 
     //****************************************************************************/
-    void QtResourceMain::doColorHToolbarAction(void)
+    void QtResourceMain::doShowCollectionsHToolbarAction(void)
     {
-        // Replace the code in this function with your own code.
-        QMessageBox::information(this, QString("QAction"), QString("Toolbar item <mColorHToolbarAction> selected;\nQtResourceMain::doColorMenuAction() called"));
+        if (mCollectionsDockWidget->isVisible())
+            mCollectionsDockWidget->hide();
+        else
+            mCollectionsDockWidget->show();
     }
-
 
     //****************************************************************************/
     void QtResourceMain::update(void)
@@ -165,12 +170,6 @@ namespace Magus
     //****************************************************************************/
     void QtResourceMain::handleResourceAdded(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName)
     {
-        // TODO
-    }
-
-    //****************************************************************************/
-    void QtResourceMain::handleResourceImported(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName)
-    {
         // Add name to the mAssetsDockWidget
         mAssetsDockWidget->addAsset(toplevelId, parentId, resourceId, name, baseName);
     }
@@ -179,7 +178,8 @@ namespace Magus
     void QtResourceMain::handleResourceDeleted(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName)
     {
         // Delete name from mAssetsDockWidget
-        mAssetsDockWidget->deleteAsset(toplevelId, name);
+        //mAssetsDockWidget->deleteAsset(toplevelId, name);
+        mAssetsDockWidget->deleteAsset(toplevelId, name, baseName);
     }
 
     //****************************************************************************/
@@ -202,4 +202,5 @@ namespace Magus
         // Set the correct toplevel group in mSourcesDockWidget, based on the selected tab
         mSourcesDockWidget->selectTopLevel(toplevelId);
     }
+
 }

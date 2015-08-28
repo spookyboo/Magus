@@ -75,7 +75,7 @@ namespace Magus
         Q_OBJECT
 
         public:
-            QtSceneViewWidget(const QString iconDir, QWidget* parent = 0);
+            QtSceneViewWidget(const QString& iconDir, QWidget* parent = 0);
             virtual ~QtSceneViewWidget(void);
             bool eventFilter(QObject* object, QEvent* event);
 

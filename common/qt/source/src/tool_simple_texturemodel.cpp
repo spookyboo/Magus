@@ -223,12 +223,15 @@ void QtSimpleTextureModel::deleteTexture(const QString& name)
     {
         ++row;
         if (name == textureName)
+        {
             removeRows(row, 1, QModelIndex());
+            return;
+        }
     }
 }
 
 //****************************************************************************/
-const QString QtSimpleTextureModel::getName(const QModelIndex &index) const
+const QString& QtSimpleTextureModel::getName(const QModelIndex &index) const
 {
     return mNames.value(index.row());
 }

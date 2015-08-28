@@ -102,6 +102,9 @@ namespace Magus
             // else use the basename
             void deleteAudio(const QString& name, bool nameIsFullName = true);
 
+            // Delete an item from the QtAudioWidget. Both name (full qualified name) and baseName must match
+            void deleteAudio(const QString& name, const QString& baseName);
+
             // Clear the content of the widget
             void clearContent(void);
 

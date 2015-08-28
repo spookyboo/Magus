@@ -85,7 +85,7 @@ namespace Magus
     }
 
     //****************************************************************************/
-    void QtAssetsDockWidget::addTab(QWidget* widget, const QIcon& icon, const QString name)
+    void QtAssetsDockWidget::addTab(QWidget* widget, const QIcon& icon, const QString& name)
     {
         mTabWidget->addTab(widget, icon, name);
     }
@@ -200,6 +200,48 @@ namespace Magus
     }
 
     //****************************************************************************/
+    void QtAssetsDockWidget::deleteAsset(int toplevelId, const QString& name, const QString& baseName)
+    {
+        switch (toplevelId)
+        {
+            case TOOL_SOURCES_LEVEL_X000_AUDIO:
+            {
+                // Delete from mAudioSelection
+                mAudioSelection->deleteAudio(name, baseName);
+            }
+            break;
+
+            case TOOL_SOURCES_LEVEL_X000_MATERIALS:
+            {
+                // Delete from mMaterialSelection
+                mMaterialSelection->deleteAsset(name, baseName);
+            }
+            break;
+
+            case TOOL_SOURCES_LEVEL_X000_MESHES:
+            {
+                // Delete from mMeshSelection
+                mMeshSelection->deleteAsset(name, baseName);
+            }
+            break;
+
+            case TOOL_SOURCES_LEVEL_X000_SCRIPTS:
+            {
+                // Delete from mScriptSelection
+                mScriptSelection->deleteAsset(name, baseName);
+            }
+            break;
+
+            case TOOL_SOURCES_LEVEL_X000_TEXTURES:
+            {
+                // Delete from mTextureSelection
+                mTextureSelection->deleteTexture(name, baseName);
+            }
+            break;
+        }
+    }
+
+    //****************************************************************************/
     void QtAssetsDockWidget::filter(const QString& pattern)
     {
         resetFilter();
@@ -218,6 +260,16 @@ namespace Magus
         mMeshSelection->resetFilter();
         mScriptSelection->resetFilter();
         mTextureSelection->resetFilter();
+    }
+
+    //****************************************************************************/
+    void QtAssetsDockWidget::clearContent(void)
+    {
+        mAudioSelection->clearContent();
+        mMaterialSelection->clearContent();
+        mMeshSelection->clearContent();
+        mScriptSelection->clearContent();
+        mTextureSelection->clearContent();
     }
 
     //****************************************************************************/

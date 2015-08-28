@@ -47,7 +47,7 @@ namespace Magus
         Q_OBJECT
 
         public:
-            QtLayeredSceneViewWidget(const QString iconDir, QWidget* parent = 0);
+            QtLayeredSceneViewWidget(const QString& iconDir, QWidget* parent = 0);
             virtual ~QtLayeredSceneViewWidget(void);
 
             // Set a sceneviewwidget; this widgets is used to determine the item dragged and dropped

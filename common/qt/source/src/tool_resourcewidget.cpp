@@ -30,6 +30,8 @@ namespace Magus
         mIconDir = iconDir;
         QHBoxLayout* mainLayout = new QHBoxLayout;
         mResourceMain = new QtResourceMain(iconDir); // Don't set parent
+        connect(mResourceMain, SIGNAL(loadButtonClicked()), this, SLOT(handleLoadResources()));
+        connect(mResourceMain, SIGNAL(saveButtonClicked()), this, SLOT(handleSaveResources()));
         mainLayout->addWidget(mResourceMain);
         setLayout(mainLayout);
     }
@@ -52,5 +54,17 @@ namespace Magus
         // TODO
         // Assume that 'QtResourceInfo->resourceName' is a filename, so the basename can be easily derived
         // Delegate to mResourceMain and from there, delegate to both mSourcesDockWidget and mAssetsDockWidget
+    }
+
+    //****************************************************************************/
+    void QtResourceWidget::handleLoadResources(void)
+    {
+        emit loadResources();
+    }
+
+    //****************************************************************************/
+    void QtResourceWidget::handleSaveResources(void)
+    {
+        emit saveResources();
     }
 }

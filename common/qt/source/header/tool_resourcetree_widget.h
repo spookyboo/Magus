@@ -32,13 +32,9 @@
 
 /*
  * TODO:
- * - emits resourceRenamed, when a resource is renamed
  * - Add to contextmenu: Duplicate asset (create new entry and emit signal with existing resourceId and new resourceId)
- * - Save asset (emits signal only)
- * - Edit asset (emits signal only)
  * - getAssets (returns only the assets of all groups and subgroups, but not the groups themselves)
  * - getGroups (returns only the groups/subgroups, but not the assets)
- * - Show warning when a resource is deleted (through the context menu)
 */
 
 QT_BEGIN_NAMESPACE
@@ -52,6 +48,7 @@ namespace Magus
     static const int TOOL_RESOURCETREE_KEY_PARENTID = 2;
     static const int TOOL_RESOURCETREE_KEY_ICONNAME = 3;
     static const int TOOL_RESOURCETREE_KEY_TYPE = 4;
+    static const int TOOL_RESOURCETREE_KEY_FULLNAME = 5;
     static const int TOOL_RESOURCETREE_KEY_TYPE_TOPLEVEL_GROUP = 1;
     static const int TOOL_RESOURCETREE_KEY_TYPE_GROUP = 2;
     static const int TOOL_RESOURCETREE_KEY_TYPE_ASSET = 3;
@@ -62,6 +59,7 @@ namespace Magus
     static const QString TOOL_RESOURCETREE_ACTION_CREATE_SUBGROUP = QString("Create a subgroup");
     static const QString TOOL_RESOURCETREE_ACTION_CREATE_ASSET = QString("Create an asset");
     static const QString TOOL_RESOURCETREE_ACTION_IMPORT_ASSET = QString("Import asset(s)");
+    static const QString TOOL_RESOURCETREE_ACTION_DUPLICATE_ASSET = QString("Duplicate an asset");
     static const QString TOOL_RESOURCETREE_ACTION_DELETE_RESOURCE = QString("Delete selected item");
     static const QString TOOL_RESOURCETREE_WARNING_1 = QString("Toplevel groups may not be moved");
     static const QString TOOL_RESOURCETREE_WARNING_2 = QString("Attaching a subgroup to an asset is not allowed");
@@ -78,6 +76,7 @@ namespace Magus
         int parentId;
         QString iconName;
         QString resourceName;
+        QString fullQualifiedName;
         int resourceType; // Is TOOL_RESOURCETREE_KEY_TYPE_TOPLEVEL_GROUP, TOOL_RESOURCETREE_KEY_TYPE_GROUP or TOOL_RESOURCETREE_KEY_TYPE_ASSET
     };
 
@@ -105,7 +104,10 @@ namespace Magus
             // A registered resource does not automatically show up in the resource tree, but is used in the contextmenu.
             // By means of the contextmenu, the resource can be added (once) to the resource tree, but it can
             // also be used as a selection item (eg. select icon of a subgroup)
-            void registerResource (int resourceId, const QString& resourceName, const QString& iconName);
+            void registerResource (int resourceId,
+                                   const QString& resourceName,
+                                   const QString& fullQualifiedName,
+                                   const QString& iconName);
 
             // Returns a list of registered resources
             QVector<QtResourceInfo*>& getRegisteredResources (void);
@@ -148,6 +150,12 @@ namespace Magus
             void setImportAssetContextMenuItemEnabled(bool enabled);
             bool isImportAssetContextMenuItemEnabled(void);
 
+            // If true, the context menu is extended with an option to duplicate an asset
+            // Duplicating only creates another item in the resourcetree and emits a signal. The application that
+            // uses this widget can react on this signal.
+            void setDuplicateAssetContextMenuItemEnabled(bool enabled);
+            bool isDuplicateAssetContextMenuItemEnabled(void);
+
             // If true, the context menu is extended with an option to delete a resource
             void setDeleteResourceContextMenuItemEnabled(bool enabled);
             bool isDeleteResourceContextMenuItemEnabled(void);
@@ -164,12 +172,22 @@ namespace Magus
             //       The resourceId does not represent the order in the resource tree.
             // parentId is the parent of the asset. If parentId == 0, the resource is added to the top-level.
             // The name of the resource is identified by means of resourceName
+            // The fullQualifiedName is a reference to the resource file or other element
             // An optional icon can be provided; the iconName is the name of the imagefile
             // If isAsset is false, the resource is a toplevel group or a subgroup
-            void addResource (int resourceId, int parentId, const QString& resourceName, const QString& iconName, bool isAsset = false);
+            void addResource (int resourceId,
+                              int parentId,
+                              const QString& resourceName,
+                              const QString& fullQualifiedName,
+                              const QString& iconName,
+                              bool isAsset = false);
 
             // Add a resource to the resource tree, but automatically determine the resourceId (and return it)
-            int addResource (int parentId, const QString& resourceName, const QString& iconName, bool isAsset = false);
+            int addResource (int parentId,
+                             const QString& resourceName,
+                             const QString& fullQualifiedName,
+                             const QString& iconName,
+                             bool isAsset = false);
 
             // Returns a list of all resources in the resource tree. This includes both groups, subgroups and assets
             QVector<QtResourceInfo*>& getResources (void);
@@ -177,6 +195,9 @@ namespace Magus
             // Delete a resource from the resource tree. If the resource - identified by means of resourceId (value >= 0) - has
             // child items, the underlying childs are also deleted
             void deleteResource (int resourceId);
+
+            // Delete all resources from the resource tree. If the toplevelresources cannot be deleted, they remain
+            void clear (void);
 
             // Delete a resource - identified by resourceName - from the resource tree. The first occurence of
             // 'resourceName' is deleted
@@ -259,6 +280,10 @@ namespace Magus
             const QString& getResourceNameFromItem(QTreeWidgetItem* item);
             const QString& getResourceName(int resourceId);
 
+            // Return the full qualified name (eg. a filename) of a QTreeWidgetItem
+            const QString& getFullQualifiedNameFromItem(QTreeWidgetItem* item);
+            const QString& getFullQualifiedName(int resourceId);
+
             // Return the type Name of a QTreeWidgetItem. It returns:
             // 0                                         : type is undetermined
             // TOOL_RESOURCETREE_KEY_TYPE_TOPLEVEL_GROUP : type is toplevel group
@@ -302,9 +327,15 @@ namespace Magus
             // Called when the search string changes
             void searchLineTextChanged(QString text);
 
-    signals:
+            // Called when an item in the tree is changed
+            void handleItemChanged (QTreeWidgetItem* item, int column);
+
+        signals:
             // Emitted when a resource is added to the resource tree
             void resourceAdded (int resourceId);
+
+            // Emitted when a resource is duplicated (eg. from the context menu
+            void assetDuplicated (int duplicateResourceId);
 
             // Emitted when a resource is deleted from the resource tree
             void resourceDeleted (int resourceId);
@@ -333,7 +364,10 @@ namespace Magus
             // Emitted when searching is reset (searchline is cleared)
             void resourceSearchReset (void);
 
-    protected:
+            // Emitted when a resource is changed (eg. its name is changed)
+            void resourceChanged (int resourceId);
+
+        protected:
             QtResourceInfo* getRegisteredResourceInfo (int resourceId);
             int getDepth(int resourceId); // Depth in the tree
             void buildContextMenu(void);
@@ -360,6 +394,7 @@ namespace Magus
             bool mInheritSubGroupIconFromParent; // If true, no submenu / if false, a submenu with icons is displayed
             bool mCreateAssetContextMenuItemEnabled;
             bool mImportAssetContextMenuItemEnabled;
+            bool mDuplicateAssetContextMenuItemEnabled;
             bool mDeleteResourceContextMenuItemEnabled;
             bool mAssetItemEditable;
             int mMaxDepth;

@@ -32,6 +32,11 @@ QT_BEGIN_NAMESPACE
 
 QT_END_NAMESPACE
 
+/*
+ * TODO:
+ * - Drag and drop from file dialog
+ */
+
 namespace Magus
 {
     static const int TOOL_SOURCES_LEVEL_X000_AUDIO = 1;
@@ -63,6 +68,17 @@ namespace Magus
             // Creates the resourcetree. This includes both groups, subgroups and assets
             // This function can be used to load the data from a file
             void setResources (const QVector<QtResourceInfo*>& resources);
+
+        signals:
+            // Emitted when the load button is clicked
+            void loadResources(void);
+
+            // Emitted when the save button is clicked
+            void saveResources(void);
+
+        private slots:
+            void handleLoadResources(void);
+            void handleSaveResources(void);
 
         private:
             QtResourceMain* mResourceMain;

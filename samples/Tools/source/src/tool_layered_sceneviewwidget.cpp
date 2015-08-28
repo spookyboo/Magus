@@ -24,7 +24,7 @@
 namespace Magus
 {
     //****************************************************************************/
-    QtLayeredSceneViewWidget::QtLayeredSceneViewWidget(const QString iconDir, QWidget* parent) : QWidget(parent)
+    QtLayeredSceneViewWidget::QtLayeredSceneViewWidget(const QString& iconDir, QWidget* parent) : QWidget(parent)
     {
         QHBoxLayout* mainLayout = new QHBoxLayout();
         mSceneViewWidget = new QtSceneViewWidget(iconDir, this);

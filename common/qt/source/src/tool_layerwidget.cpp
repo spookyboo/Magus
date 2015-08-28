@@ -34,7 +34,7 @@
 namespace Magus
 {
     //****************************************************************************/
-    QtLayerWidget::QtLayerWidget(const QString iconDir, QtSceneViewWidget* sceneViewWidget, QWidget* parent) : QWidget(parent)
+    QtLayerWidget::QtLayerWidget(const QString& iconDir, QtSceneViewWidget* sceneViewWidget, QWidget* parent) : QWidget(parent)
     {
         setWindowTitle(QString("Layers"));
         QHBoxLayout* mainLayout = new QHBoxLayout;

@@ -162,6 +162,31 @@ namespace Magus
                     row = mSelectionList->row(item);
                     mSelectionList->removeItemWidget(item);
                     mSelectionList->takeItem(row);
+                    return;
+                }
+            }
+        }
+    }
+
+    //****************************************************************************/
+    void QtAudioWidget::deleteAudio(const QString& name, const QString& baseName)
+    {
+        QtAudioAndText* audioAndText;
+        QWidget* widget;
+        int row;
+        QList<QListWidgetItem*> list = mSelectionList->findItems(QString("*"), Qt::MatchWildcard);
+        foreach (QListWidgetItem* item, list)
+        {
+            widget = mSelectionList->itemWidget(item);
+            if (widget)
+            {
+                audioAndText = static_cast<QtAudioAndText*>(widget);
+                if (audioAndText->mName == name && audioAndText->mBaseName == baseName)
+                {
+                    row = mSelectionList->row(item);
+                    mSelectionList->removeItemWidget(item);
+                    mSelectionList->takeItem(row);
+                    return;
                 }
             }
         }

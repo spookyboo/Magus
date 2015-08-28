@@ -58,11 +58,18 @@ namespace Magus
         setTitleBarWidget(new QWidget());
         delete oldTitleBar;
 
+        // Add toplevel groups
+        initializeResourceTree();
+    }
+
+    //****************************************************************************/
+    void QtSourcesDockWidget::initializeResourceTree (void)
+    {
         // Initialize; add toplevel groups to the mResourceTreeWidget up front
         QtSourcesInfo info;
 
         // Audio
-        mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_AUDIO, 0, QString("Audio"), QString("audio.png"));
+        mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_AUDIO, 0, QString("Audio"), QString(""), TOOL_RESOURCE_ICON_AUDIO);
         info.toplevelId = TOOL_SOURCES_LEVEL_X000_AUDIO;
         info.resourceId = TOOL_SOURCES_LEVEL_X000_AUDIO;
         info.parentId = 0;
@@ -73,7 +80,7 @@ namespace Magus
         mSourceInfo[TOOL_SOURCES_LEVEL_X000_AUDIO] = info;
 
         // Materials
-        mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_MATERIALS, 0, QString("Materials"), QString("material.png"));
+        mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_MATERIALS, 0, QString("Materials"), QString(""), TOOL_RESOURCE_ICON_MATERIAL);
         info.toplevelId = TOOL_SOURCES_LEVEL_X000_MATERIALS;
         info.resourceId = TOOL_SOURCES_LEVEL_X000_MATERIALS;
         info.fileName = QString("Materials");
@@ -83,7 +90,7 @@ namespace Magus
         mSourceInfo[TOOL_SOURCES_LEVEL_X000_MATERIALS] = info;
 
         // Meshes
-        mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_MESHES, 0, QString("Meshes"), QString("softbody.png"));
+        mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_MESHES, 0, QString("Meshes"), QString(""), TOOL_RESOURCE_ICON_MESH);
         info.toplevelId = TOOL_SOURCES_LEVEL_X000_MESHES;
         info.resourceId = TOOL_SOURCES_LEVEL_X000_MESHES;
         info.fileName = QString("Meshes");
@@ -93,7 +100,7 @@ namespace Magus
         mSourceInfo[TOOL_SOURCES_LEVEL_X000_MESHES] = info;
 
         // Scripts
-        mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_SCRIPTS, 0, QString("Scripts"), QString("cog.png"));
+        mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_SCRIPTS, 0, QString("Scripts"), QString(""), TOOL_RESOURCE_ICON_SCRIPT);
         info.toplevelId = TOOL_SOURCES_LEVEL_X000_SCRIPTS;
         info.resourceId = TOOL_SOURCES_LEVEL_X000_SCRIPTS;
         info.fileName = QString("Scripts");
@@ -103,7 +110,7 @@ namespace Magus
         mSourceInfo[TOOL_SOURCES_LEVEL_X000_SCRIPTS] = info;
 
         // Textures
-        mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_TEXTURES, 0, QString("Textures"), QString("texture_bold.png"));
+        mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_TEXTURES, 0, QString("Textures"), QString(""), TOOL_RESOURCE_ICON_TEXTURE);
         info.toplevelId = TOOL_SOURCES_LEVEL_X000_TEXTURES;
         info.resourceId = TOOL_SOURCES_LEVEL_X000_TEXTURES;
         info.fileName = QString("Textures");
@@ -135,6 +142,13 @@ namespace Magus
     }
 
     //****************************************************************************/
+    void QtSourcesDockWidget::clearContent(void)
+    {
+        mResourceTreeWidget->clear();
+        initializeResourceTree();
+    }
+
+    //****************************************************************************/
     void QtSourcesDockWidget::handleResourceSelected(int resourceId)
     {
         // Determine which type is selected
@@ -153,10 +167,11 @@ namespace Magus
         QtSourcesInfo info;
         int toplevelId = mResourceTreeWidget->getToplevelParentId(resourceId);
         QString name = mResourceTreeWidget->getResourceName(resourceId);
+        QString fullQualifiedName = mResourceTreeWidget->getFullQualifiedName(resourceId);
         info.toplevelId = toplevelId;
         info.resourceId = resourceId;
         info.parentId = mResourceTreeWidget->getParentId(resourceId);
-        info.fileName = name;
+        info.fileName = fullQualifiedName;
         info.baseName = name;
         mSourceInfo[resourceId] = info;
 
@@ -193,8 +208,14 @@ namespace Magus
             {
                 // Add an asset to the resourceId that is passed in this function (this is the parent)
                 // nB. Also add the info to mSourceInfo (file dialog title and file dialog filter are omitted)
+                // fileInfo.fileName() is the base file name
+                // fileInfo.absoluteFilePath() is the full qualified filename
                 fileInfo = it.value();
-                int childResourceId = mResourceTreeWidget->addResource(resourceId, fileInfo.fileName(), QString(""), true);
+                int childResourceId = mResourceTreeWidget->addResource(resourceId,
+                                                                       fileInfo.fileName(),
+                                                                       fileInfo.absoluteFilePath(),
+                                                                       QString(""),
+                                                                       true);
                 info.toplevelId = toplevelId;
                 info.resourceId = childResourceId;
                 info.parentId = resourceId;

@@ -50,6 +50,7 @@ namespace Magus
         mResourceTree->setDragDropOverwriteMode(true);
         mResourceTree->viewport()->installEventFilter(this);
         mResourceTree->header()->hide();
+        connect(mResourceTree, SIGNAL(itemChanged(QTreeWidgetItem*,int)), this, SLOT(handleItemChanged(QTreeWidgetItem*,int)));
 
         // Create edit
         mSearchLayout = new QHBoxLayout;
@@ -83,6 +84,7 @@ namespace Magus
         mInheritSubGroupIconFromParent = true;
         mCreateAssetContextMenuItemEnabled = true;
         mImportAssetContextMenuItemEnabled = true;
+        mDuplicateAssetContextMenuItemEnabled = true;
         mDeleteResourceContextMenuItemEnabled = true;
         buildContextMenu();
 
@@ -173,6 +175,7 @@ namespace Magus
             enableContextMenuItem(TOOL_RESOURCETREE_ACTION_CREATE_SUBGROUP, false);
             enableContextMenuItem(TOOL_RESOURCETREE_ACTION_CREATE_ASSET, false);
             enableContextMenuItem(TOOL_RESOURCETREE_ACTION_IMPORT_ASSET, false);
+            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_DUPLICATE_ASSET, true);
             enableContextMenuItem(TOOL_RESOURCETREE_ACTION_DELETE_RESOURCE, true);
         }
         else if (isItemSubGroup(item))
@@ -181,6 +184,7 @@ namespace Magus
             enableContextMenuItem(TOOL_RESOURCETREE_ACTION_CREATE_SUBGROUP, true);
             enableContextMenuItem(TOOL_RESOURCETREE_ACTION_CREATE_ASSET, true);
             enableContextMenuItem(TOOL_RESOURCETREE_ACTION_IMPORT_ASSET, true);
+            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_DUPLICATE_ASSET, false);
             enableContextMenuItem(TOOL_RESOURCETREE_ACTION_DELETE_RESOURCE, true);
         }
         else if (isItemToplevelGroup(item))
@@ -189,6 +193,7 @@ namespace Magus
             enableContextMenuItem(TOOL_RESOURCETREE_ACTION_CREATE_SUBGROUP, true);
             enableContextMenuItem(TOOL_RESOURCETREE_ACTION_CREATE_ASSET, true);
             enableContextMenuItem(TOOL_RESOURCETREE_ACTION_IMPORT_ASSET, true);
+            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_DUPLICATE_ASSET, false);
             enableContextMenuItem(TOOL_RESOURCETREE_ACTION_DELETE_RESOURCE, mDeleteTopLevelGroupEnabled);
         }
     }
@@ -268,11 +273,15 @@ namespace Magus
     }
 
     //****************************************************************************/
-    void QtResourceTreeWidget::registerResource (int resourceId, const QString& resourceName, const QString& iconName)
+    void QtResourceTreeWidget::registerResource (int resourceId,
+                                                 const QString& resourceName,
+                                                 const QString& fullQualifiedName,
+                                                 const QString& iconName)
     {
         QtResourceInfo* info = new QtResourceInfo();
         info->resourceId = resourceId;
         info->resourceName = resourceName;
+        info->fullQualifiedName = fullQualifiedName;
         info->iconName = iconName;
         mRegisteredResources.append(info);
 
@@ -429,6 +438,19 @@ namespace Magus
     }
 
     //****************************************************************************/
+    void QtResourceTreeWidget::setDuplicateAssetContextMenuItemEnabled(bool enabled)
+    {
+        mDuplicateAssetContextMenuItemEnabled = enabled;
+        buildContextMenu();
+    }
+
+    //****************************************************************************/
+    bool QtResourceTreeWidget::isDuplicateAssetContextMenuItemEnabled(void)
+    {
+        return mDuplicateAssetContextMenuItemEnabled;
+    }
+
+    //****************************************************************************/
     void QtResourceTreeWidget::setDeleteResourceContextMenuItemEnabled(bool enabled)
     {
         mDeleteResourceContextMenuItemEnabled = enabled;
@@ -499,13 +521,22 @@ namespace Magus
         if (mImportAssetContextMenuItemEnabled)
             mContextMenu->addAction(new QAction(TOOL_RESOURCETREE_ACTION_IMPORT_ASSET, mResourceTree));
 
+        // Menu item for duplicating the asset
+        if (mDuplicateAssetContextMenuItemEnabled)
+            mContextMenu->addAction(new QAction(TOOL_RESOURCETREE_ACTION_DUPLICATE_ASSET, mResourceTree));
+
         // Menu item for deleting an item from the resource tree
         if (mDeleteResourceContextMenuItemEnabled)
             mContextMenu->addAction(new QAction(TOOL_RESOURCETREE_ACTION_DELETE_RESOURCE, mResourceTree));
     }
 
     //****************************************************************************/
-    void QtResourceTreeWidget::addResource (int resourceId, int parentId, const QString& resourceName, const QString& iconName, bool isAsset)
+    void QtResourceTreeWidget::addResource (int resourceId,
+                                            int parentId,
+                                            const QString& resourceName,
+                                            const QString& fullQualifiedName,
+                                            const QString& iconName,
+                                            bool isAsset)
     {
         // First, check existence in the resource tree; do not processed if the resourceId is already available
         if (getResourceItem(resourceId))
@@ -534,10 +565,12 @@ namespace Magus
         // Set name
         resourceItem->setText(0, resourceName);
 
-        // Set resourceId, parentId and iconName
+        // Set resourceId, parentId, iconName and fullQualifiedName
         resourceItem->setData(TOOL_RESOURCETREE_KEY_RESOURCEID, Qt::UserRole, QVariant(resourceId));
         resourceItem->setData(TOOL_RESOURCETREE_KEY_PARENTID, Qt::UserRole, QVariant(parentId));
         resourceItem->setData(TOOL_RESOURCETREE_KEY_ICONNAME, Qt::UserRole, QVariant(iconName));
+        resourceItem->setData(TOOL_RESOURCETREE_KEY_FULLNAME, Qt::UserRole, QVariant(fullQualifiedName));
+
         int type;
         if (isAsset)
         {
@@ -579,10 +612,14 @@ namespace Magus
     }
 
     //****************************************************************************/
-    int QtResourceTreeWidget::addResource (int parentId, const QString& resourceName, const QString& iconName, bool isAsset)
+    int QtResourceTreeWidget::addResource (int parentId,
+                                           const QString& resourceName,
+                                           const QString& fullQualifiedName,
+                                           const QString& iconName,
+                                           bool isAsset)
     {
         int resourceId = generateUniqueResourceId();
-        addResource (resourceId, parentId, resourceName, iconName, isAsset);
+        addResource (resourceId, parentId, resourceName, fullQualifiedName, iconName, isAsset);
         return resourceId;
     }
 
@@ -597,6 +634,7 @@ namespace Magus
             info->resourceId = getResourceIdFromItem(*it);
             info->parentId = getParentIdFromItem(*it);
             info->resourceName = (*it)->text(0);
+            info->fullQualifiedName = getFullQualifiedNameFromItem(*it);
             info->iconName = getIconNameFromItem(*it);
             info->resourceType = getTypeFromItem(*it);
             mResourceInfoVec.append(info);
@@ -629,6 +667,12 @@ namespace Magus
 
         // Signal
         emit resourceDeleted(resourceId);
+    }
+
+    //****************************************************************************/
+    void QtResourceTreeWidget::clear (void)
+    {
+        mResourceTree->clear();
     }
 
     //****************************************************************************/
@@ -917,10 +961,27 @@ namespace Magus
     }
 
     //****************************************************************************/
+    const QString& QtResourceTreeWidget::getFullQualifiedNameFromItem(QTreeWidgetItem* item)
+    {
+        mTempString = QString("");
+        if (item)
+            mTempString = item->data(TOOL_RESOURCETREE_KEY_FULLNAME, Qt::UserRole).toString();
+
+        return mTempString;
+    }
+
+    //****************************************************************************/
     const QString& QtResourceTreeWidget::getResourceName(int resourceId)
     {
         QTreeWidgetItem* item = getResourceItem(resourceId);
         return getResourceNameFromItem(item);
+    }
+
+    //****************************************************************************/
+    const QString& QtResourceTreeWidget::getFullQualifiedName(int resourceId)
+    {
+        QTreeWidgetItem* item = getResourceItem(resourceId);
+        return getFullQualifiedNameFromItem(item);
     }
 
     //****************************************************************************/
@@ -991,7 +1052,7 @@ namespace Magus
             if (info)
             {
                 // Add toplevel group and disable it
-                addResource (info->resourceId, 0, info->resourceName, info->iconName);
+                addResource (info->resourceId, 0, info->resourceName, info->fullQualifiedName, info->iconName);
                 action->setCheckable(false);
                 action->setEnabled(false);
             }
@@ -1011,7 +1072,11 @@ namespace Magus
                 {
                     // A subgroup may not be added to the toplevel
                     int resourceId = generateUniqueResourceId();
-                    addResource (resourceId, parentId, QString("<") + info->resourceName + QString(" subgroup>"), info->iconName);
+                    addResource (resourceId,
+                                 parentId,
+                                 QString("<") + info->resourceName + QString(" subgroup>"),
+                                 info->fullQualifiedName,
+                                 info->iconName);
                     expand(parentId);
                 }
             }
@@ -1035,6 +1100,7 @@ namespace Magus
                     addResource (resourceId,
                                  parentId,
                                  QString("<") + item->text(0) + QString(" subgroup>"),
+                                 QString(""),
                                  getIconNameFromItem(item));
                     expand(parentId);
                 }
@@ -1059,6 +1125,7 @@ namespace Magus
                                  parentId,
                                  QString("<Asset>"),
                                  QString(""),
+                                 QString(""),
                                  true);
                     expand(parentId);
                 }
@@ -1076,6 +1143,28 @@ namespace Magus
             {
                 int resourceId = getResourceIdFromItem(item);
                 emit resourceImported(resourceId);
+            }
+
+            return;
+        }
+        else if (action->text() == TOOL_RESOURCETREE_ACTION_DUPLICATE_ASSET)
+        {
+            QTreeWidgetItem* item = mResourceTree->currentItem();
+            if (!isItemAsset(item))
+                return;
+
+            if (item)
+            {
+                int parentId = getParentIdFromItem(item);
+                QString fullName = getFullQualifiedNameFromItem(item);
+                int duplicateResourceId = generateUniqueResourceId();
+                addResource (duplicateResourceId,
+                             parentId,
+                             QString("Copy of ") + item->text(0),
+                             fullName,
+                             QString(""),
+                             true);
+                emit assetDuplicated(duplicateResourceId);
             }
 
             return;
@@ -1236,4 +1325,12 @@ namespace Magus
         }
         return true;
     }
+
+    //****************************************************************************/
+    void QtResourceTreeWidget::handleItemChanged (QTreeWidgetItem * item, int column)
+    {
+        int id = getResourceIdFromItem(item);
+        emit resourceChanged (id);
+    }
+
 }

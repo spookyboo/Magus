@@ -55,14 +55,20 @@ namespace Magus
             void update(void);
             bool mIsClosing;
 
+        signals:
+            // Emitted when the load button is clicked
+            void loadButtonClicked(void);
+
+            // Emitted when the save button is clicked
+            void saveButtonClicked(void);
+
         private slots:
             void doNewHToolbarAction(void);
-            void doOpenHToolbarAction(void);
+            void doLoadHToolbarAction(void);
             void doSaveHToolbarAction(void);
-            void doColorHToolbarAction(void);
+            void doShowCollectionsHToolbarAction(void);
             void handleResourceSelected(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName);
             void handleResourceAdded(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName);
-            void handleResourceImported(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName);
             void handleResourceDeleted(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName);
             void handleResourceSearched(const QString& searchPattern);
             void handleResourceSearchReset(void);
@@ -77,9 +83,9 @@ namespace Magus
             void closeEvent(QCloseEvent* event);
 
             QAction* mNewHToolbarAction;
-            QAction* mOpenHToolbarAction;
+            QAction* mLoadHToolbarAction;
             QAction* mSaveHToolbarAction;
-            QAction* mColorHToolbarAction;
+            QAction* mShowCollectionsHToolbarAction;
             QToolBar* mHToolBar;
             QtSourcesDockWidget* mSourcesDockWidget;
             QtAssetsDockWidget* mAssetsDockWidget;

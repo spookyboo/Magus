@@ -82,11 +82,14 @@ namespace Magus
             // Add a pixmap to this widget. The name is a (fully qualified) filename for example.
             // E.g. name = "c:/temp/Tools/common/icons/info.png"
             // E.g. baseName = "info.png"
-            void addTexture(const QPixmap& pixmap, const QString name, const QString baseName);
+            void addTexture(const QPixmap& pixmap, const QString& name, const QString& baseName);
 
             // Delete an item from the QtExtendedTextureWidget. Use the full qualified name as search criterium if nameIsFullName = true;
             // else use the baseName as search criterium.
-            void deleteTexture(const QString name, bool nameIsFullName = true);
+            void deleteTexture(const QString& name, bool nameIsFullName = true);
+
+            // Delete an item from the QtExtendedTextureWidget. Both name (full qualified name) and baseName must match
+            void deleteTexture(const QString& name, const QString& baseName);
 
             // If a texture is originated from a file, setOriginIsFile must be set to 'true'
             void setOriginIsFile(bool originIsFile);

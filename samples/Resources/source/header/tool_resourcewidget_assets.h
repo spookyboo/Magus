@@ -63,13 +63,14 @@ namespace Magus
 
             // Add a tab to this widget. The tab represents an asset (mesh, texture, etc.). The widget is a widget that corresponds wuth
             // the asset type.
-            void addTab(QWidget* widget, const QIcon& icon, const QString name);
+            void addTab(QWidget* widget, const QIcon& icon, const QString& name);
 
             // Add an asset to a particular asset widget (eg. audio, texture, etc.)
             void addAsset(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName);
 
             // Delete an asset from a particular asset widget (eg. audio, texture, etc.)
             void deleteAsset(int toplevelId, const QString& name);
+            void deleteAsset(int toplevelId, const QString& name, const QString& baseName);
 
             // Select the appropriate tab, based on the given arguments
             void selectTab(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName);
@@ -79,6 +80,9 @@ namespace Magus
 
             // Reset the filtering in the underlying widgets (mAudioSelection, mTextureSelection, ...)
             void resetFilter(void);
+
+            // Clear all content in the underlying widgets (mAudioSelection, mTextureSelection, ...)
+            void clearContent(void);
 
         signals:
             void tabChanged(int index);

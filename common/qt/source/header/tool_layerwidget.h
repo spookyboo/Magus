@@ -81,7 +81,7 @@ namespace Magus
         Q_OBJECT
 
         public:
-            QtLayerWidget(const QString iconDir, QtSceneViewWidget* sceneViewWidget = 0, QWidget* parent = 0);
+            QtLayerWidget(const QString& iconDir, QtSceneViewWidget* sceneViewWidget = 0, QWidget* parent = 0);
             virtual ~QtLayerWidget(void);
             bool eventFilter(QObject* object, QEvent* event);
 

@@ -103,7 +103,7 @@ namespace Magus
     }
 
     //****************************************************************************/
-    void QtDefaultTextureWidget::addTexture(const QPixmap& pixmap, const QString name, const QString baseName)
+    void QtDefaultTextureWidget::addTexture(const QPixmap& pixmap, const QString& name, const QString& baseName)
     {
         QtDefaultTextureAndText* textureAndText = new QtDefaultTextureAndText(pixmap, name, baseName, mTextureSize, this);
         QListWidgetItem* item = new QListWidgetItem();
@@ -115,7 +115,7 @@ namespace Magus
     }
 
     //****************************************************************************/
-    void QtDefaultTextureWidget::deleteTexture(const QString name, bool nameIsFullName)
+    void QtDefaultTextureWidget::deleteTexture(const QString& name, bool nameIsFullName)
     {
         QtDefaultTextureAndText* textureAndText;
         QWidget* widget;
@@ -133,6 +133,31 @@ namespace Magus
                     row = mSelectionList->row(item);
                     mSelectionList->removeItemWidget(item);
                     mSelectionList->takeItem(row);
+                    return;
+                }
+            }
+        }
+    }
+
+    //****************************************************************************/
+    void QtDefaultTextureWidget::deleteTexture(const QString& name, const QString& baseName)
+    {
+        QtDefaultTextureAndText* textureAndText;
+        QWidget* widget;
+        int row;
+        QList<QListWidgetItem*> list = mSelectionList->findItems(QString("*"), Qt::MatchWildcard);
+        foreach (QListWidgetItem* item, list)
+        {
+            widget = mSelectionList->itemWidget(item);
+            if (widget)
+            {
+                textureAndText = static_cast<QtDefaultTextureAndText*>(widget);
+                if (textureAndText->mName == name && textureAndText->mBaseName == baseName)
+                {
+                    row = mSelectionList->row(item);
+                    mSelectionList->removeItemWidget(item);
+                    mSelectionList->takeItem(row);
+                    return;
                 }
             }
         }

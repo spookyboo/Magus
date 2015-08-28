@@ -85,6 +85,12 @@ namespace Magus
             // Select a toplevel resource.
             void selectTopLevel(int toplevelId);
 
+            // Clear all content in the resourcetree
+            void clearContent(void);
+
+        protected:
+            void initializeResourceTree (void);
+
         signals:
             void resourceSelected(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName);
             void resourceAdded(int toplevelId, int parentId, int resourceId, const QString& name, const QString& baseName);

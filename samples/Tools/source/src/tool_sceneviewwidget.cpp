@@ -32,7 +32,7 @@
 namespace Magus
 {
     //****************************************************************************/
-    QtSceneViewWidget::QtSceneViewWidget(const QString iconDir, QWidget* parent) : QWidget(parent)
+    QtSceneViewWidget::QtSceneViewWidget(const QString& iconDir, QWidget* parent) : QWidget(parent)
     {
         setWindowTitle(QString("Scene view"));
         mIconDir = iconDir;

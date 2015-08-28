@@ -121,7 +121,7 @@ namespace Magus
     }
 
     //****************************************************************************/
-    void QtGenericAssetWidget::deleteAsset(const QString name, bool nameIsFullName)
+    void QtGenericAssetWidget::deleteAsset(const QString& name, bool nameIsFullName)
     {
         QtGenericAssetAndText* assetAndText;
         QWidget* widget;
@@ -139,6 +139,31 @@ namespace Magus
                     row = mSelectionList->row(item);
                     mSelectionList->removeItemWidget(item);
                     mSelectionList->takeItem(row);
+                    return;
+                }
+            }
+        }
+    }
+
+    //****************************************************************************/
+    void QtGenericAssetWidget::deleteAsset(const QString& name, const QString& baseName)
+    {
+        QtGenericAssetAndText* assetAndText;
+        QWidget* widget;
+        int row;
+        QList<QListWidgetItem*> list = mSelectionList->findItems(QString("*"), Qt::MatchWildcard);
+        foreach (QListWidgetItem* item, list)
+        {
+            widget = mSelectionList->itemWidget(item);
+            if (widget)
+            {
+                assetAndText = static_cast<QtGenericAssetAndText*>(widget);
+                if (assetAndText->mName == name && assetAndText->mBaseName == baseName)
+                {
+                    row = mSelectionList->row(item);
+                    mSelectionList->removeItemWidget(item);
+                    mSelectionList->takeItem(row);
+                    return;
                 }
             }
         }

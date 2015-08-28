@@ -68,13 +68,13 @@ namespace Magus
     }
 
     //****************************************************************************/
-    void QtSimpleTextureWidget::addTexture(const QPixmap& pixmap, const QString name)
+    void QtSimpleTextureWidget::addTexture(const QPixmap& pixmap, const QString& name)
     {
         mSelectionModel->addTexture(pixmap, name, mTextureSize);
     }
 
     //****************************************************************************/
-    void QtSimpleTextureWidget::deleteTexture(const QString name)
+    void QtSimpleTextureWidget::deleteTexture(const QString& name)
     {
         mSelectionModel->deleteTexture(name);
     }

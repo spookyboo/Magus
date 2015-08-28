@@ -49,7 +49,7 @@ class QtSimpleTextureModel : public QAbstractListModel
         void addTexture(const QPixmap& pixmap, const QString& name, QSize size);
         void addTexture(const QString& fileName, QSize size);
         void deleteTexture(const QString& name);
-        const QString getName(const QModelIndex &index) const;
+        const QString& getName(const QModelIndex &index) const;
         QList<QString>mNames;
 
     private:

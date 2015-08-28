@@ -33,11 +33,6 @@ QT_BEGIN_NAMESPACE
 
 QT_END_NAMESPACE
 
-/*
- * TODO:
- * - Add option to doubleclick to view the asset; this is optional and can be defined during creation
- */
-
 namespace Magus
 {
     /****************************************************************************
@@ -86,7 +81,10 @@ namespace Magus
 
             // Delete an item from the QtGenericAssetWidget. Use the full qualified name as search criterium if nameIsFullName = true;
             // else use the baseName as search criterium.
-            void deleteAsset(const QString name, bool nameIsFullName = true);
+            void deleteAsset(const QString& name, bool nameIsFullName = true);
+
+            // Delete an item from the QtGenericAssetWidget. Both name (full qualified name) and baseName must match
+            void deleteAsset(const QString& name, const QString& baseName);
 
             // If a n asset is originated from a file, setOriginIsFile must be set to 'true'
             void setOriginIsFile(bool originIsFile);
