@@ -92,6 +92,55 @@ namespace Magus
     //****************************************************************************/
     //****************************************************************************/
     //****************************************************************************/
+    QtAudioListWidget::QtAudioListWidget(QWidget* parent) : QListWidget(parent)
+    {
+        setMouseTracking(true);
+        setAcceptDrops(true);
+        setDropIndicatorShown(true);
+    }
+
+    //****************************************************************************/
+    QtAudioListWidget::~QtAudioListWidget(void)
+    {
+    }
+
+    //****************************************************************************/
+    void QtAudioListWidget::dropEvent(QDropEvent* event)
+    {
+        const QMimeData *mimeData = event->mimeData();
+        if (mimeData->hasUrls())
+        {
+            QList<QUrl> urlList = mimeData->urls();
+            for (int i = 0; i < urlList.size(); ++i)
+            {
+                QString baseName = urlList.at(i).fileName();
+                if (isTypeBasedOnExtension(baseName, MAGUS_SUPPORTED_AUDIO_FORMATS, MAGUS_SUPPORTED_AUDIO_FORMATS_LENGTH))
+                {
+                    QString name = urlList.at(i).path();
+                    stripLeadingSlashes(name);
+                    //QMessageBox::information(0, QString("drop"), name); // testtesttesttest
+                    emit audioFileDropped(name, baseName);
+                }
+            }
+        }
+        event->acceptProposedAction();
+    }
+
+    //****************************************************************************/
+    void QtAudioListWidget::dragEnterEvent(QDragEnterEvent *event)
+    {
+        event->acceptProposedAction();
+    }
+
+    //****************************************************************************/
+    void QtAudioListWidget::dragMoveEvent(QDragMoveEvent *event)
+    {
+        event->acceptProposedAction();
+    }
+
+    //****************************************************************************/
+    //****************************************************************************/
+    //****************************************************************************/
     QtAudioWidget::QtAudioWidget(const QString& iconDir, QWidget* parent) : QWidget(parent)
     {
         mLastSelectedAudioAndText = 0;
@@ -106,8 +155,8 @@ namespace Magus
         QHBoxLayout* mainLayout = new QHBoxLayout;
         QVBoxLayout* textureSelectionLayout = new QVBoxLayout;
 
-        // Define selection widget (QListWidget)
-        mSelectionList = new QListWidget();
+        // Define selection widget (QtAudioListWidget)
+        mSelectionList = new QtAudioListWidget();
         mSelectionList->setViewMode(QListView::ListMode);
         mSelectionList->setWrapping(true);
         mSelectionList->setWordWrap(true);
@@ -115,9 +164,7 @@ namespace Magus
         mSelectionList->setUniformItemSizes(true);
         mSelectionList->setMovement(QListView::Snap);
         mSelectionList->setFlow(QListView::LeftToRight);
-        mSelectionList->setAcceptDrops(false);
-        mSelectionList->setDropIndicatorShown(false);
-        mSelectionList->setMouseTracking(true);
+        connect(mSelectionList, SIGNAL(audioFileDropped(QString,QString)), this, SLOT(handleAudioFileDropped(QString,QString)));
 
         // Layout
         textureSelectionLayout->addWidget(mSelectionList);
@@ -323,6 +370,13 @@ namespace Magus
     }
 
     //****************************************************************************/
+    void QtAudioWidget::handleAudioFileDropped (const QString& name, const QString& baseName)
+    {
+        addAudio(SOURCE_FILE, name, baseName);
+        emit audioFileDropped (name, baseName);
+    }
+
+    //****************************************************************************/
     void QtAudioWidget::playAudio(Source source, QString name, QtAudioAndText* audioAndText)
     {
         if (name != mCurrentAudioPlaying)
@@ -390,6 +444,14 @@ namespace Magus
         QList<QListWidgetItem*> list = mSelectionList->findItems(QString("*"), Qt::MatchWildcard);
         foreach (QListWidgetItem* item, list)
             item->setHidden(false);
+    }
+
+    //****************************************************************************/
+    void QtAudioWidget::setDropFilesAllowed(bool allowed)
+    {
+        mSelectionList->setMouseTracking(allowed);
+        mSelectionList->setAcceptDrops(allowed);
+        mSelectionList->setDropIndicatorShown(allowed);
     }
 
 }

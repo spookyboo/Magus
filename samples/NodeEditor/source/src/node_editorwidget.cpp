@@ -31,15 +31,6 @@
 #include "node_compound.h"
 #include "node_scene.h"
 
-/*
- * TODO:
- * ====
- * - display value of a port (nice to have)
- * - triangle port (nice to have)
- * - mouse over (over a node or port) (nice to have)
- * - round shaped nodes (nice to have)
-*/
-
 namespace Magus
 {
     //****************************************************************************/

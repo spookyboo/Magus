@@ -26,6 +26,8 @@
 #include <QLabel>
 #include <QImageReader>
 #include <QListWidgetItem>
+#include <QDropEvent>
+#include "magus_core.h"
 #include "tool_default_texturewidget.h"
 
 namespace Magus
@@ -68,6 +70,54 @@ namespace Magus
     //****************************************************************************/
     //****************************************************************************/
     //****************************************************************************/
+    QtDefaultTextureListWidget::QtDefaultTextureListWidget(QWidget* parent) : QListWidget(parent)
+    {
+        setMouseTracking(true);
+        setAcceptDrops(true);
+        setDropIndicatorShown(true);
+    }
+
+    //****************************************************************************/
+    QtDefaultTextureListWidget::~QtDefaultTextureListWidget(void)
+    {
+    }
+
+    //****************************************************************************/
+    void QtDefaultTextureListWidget::dropEvent(QDropEvent* event)
+    {
+        const QMimeData *mimeData = event->mimeData();
+        if (mimeData->hasUrls())
+        {
+            QList<QUrl> urlList = mimeData->urls();
+            for (int i = 0; i < urlList.size(); ++i)
+            {
+                QString baseName = urlList.at(i).fileName();
+                if (isTypeBasedOnExtension(baseName, MAGUS_SUPPORTED_IMAGE_FORMATS, MAGUS_SUPPORTED_IMAGE_FORMATS_LENGTH))
+                {
+                    QString name = urlList.at(i).path();
+                    stripLeadingSlashes(name);
+                    emit textureFileDropped(name, baseName);
+                }
+            }
+        }
+        event->acceptProposedAction();
+    }
+
+    //****************************************************************************/
+    void QtDefaultTextureListWidget::dragEnterEvent(QDragEnterEvent *event)
+    {
+        event->acceptProposedAction();
+    }
+
+    //****************************************************************************/
+    void QtDefaultTextureListWidget::dragMoveEvent(QDragMoveEvent *event)
+    {
+        event->acceptProposedAction();
+    }
+
+    //****************************************************************************/
+    //****************************************************************************/
+    //****************************************************************************/
     QtDefaultTextureWidget::QtDefaultTextureWidget(QWidget* parent) : QWidget(parent)
     {
         setWindowTitle(QString("Texture selection"));
@@ -78,8 +128,8 @@ namespace Magus
         QHBoxLayout* mainLayout = new QHBoxLayout;
         QVBoxLayout* textureSelectionLayout = new QVBoxLayout;
 
-        // Define selection widget (QListWidget)
-        mSelectionList = new QListWidget();
+        // Define selection widget (QtDefaultTextureListWidget)
+        mSelectionList = new QtDefaultTextureListWidget();
         mSelectionList->setViewMode(QListView::ListMode);
         mSelectionList->setWrapping(true);
         mSelectionList->setWordWrap(true);
@@ -87,9 +137,7 @@ namespace Magus
         mSelectionList->setUniformItemSizes(true);
         mSelectionList->setMovement(QListView::Snap);
         mSelectionList->setFlow(QListView::LeftToRight);
-        mSelectionList->setAcceptDrops(false);
-        mSelectionList->setDropIndicatorShown(false);
-        mSelectionList->setMouseTracking(true);
+        connect(mSelectionList, SIGNAL(textureFileDropped(QString,QString)), this, SLOT(handleTextureFileDropped(QString,QString)));
 
         // Layout
         textureSelectionLayout->addWidget(mSelectionList);
@@ -210,6 +258,14 @@ namespace Magus
     }
 
     //****************************************************************************/
+    void QtDefaultTextureWidget::handleTextureFileDropped(const QString& name, const QString& baseName)
+    {
+        QPixmap pixmap(name);
+        addTexture(pixmap, name, baseName);
+        emit textureFileDropped(name, baseName);
+    }
+
+    //****************************************************************************/
     void QtDefaultTextureWidget::setTextureSize (QSize size)
     {
         mTextureSize = size;
@@ -242,6 +298,14 @@ namespace Magus
         QList<QListWidgetItem*> list = mSelectionList->findItems(QString("*"), Qt::MatchWildcard);
         foreach (QListWidgetItem* item, list)
             item->setHidden(false);
+    }
+
+    //****************************************************************************/
+    void QtDefaultTextureWidget::setDropFilesAllowed(bool allowed)
+    {
+        mSelectionList->setMouseTracking(allowed);
+        mSelectionList->setAcceptDrops(allowed);
+        mSelectionList->setDropIndicatorShown(allowed);
     }
 
 }

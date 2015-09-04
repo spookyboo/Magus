@@ -536,7 +536,8 @@ namespace Magus
                                             const QString& resourceName,
                                             const QString& fullQualifiedName,
                                             const QString& iconName,
-                                            bool isAsset)
+                                            bool isAsset,
+                                            bool suppressSignal)
     {
         // First, check existence in the resource tree; do not processed if the resourceId is already available
         if (getResourceItem(resourceId))
@@ -599,7 +600,8 @@ namespace Magus
         }
 
         // Emit signal
-        emit resourceAdded(resourceId);
+        if (!suppressSignal)
+            emit resourceAdded(resourceId);
     }
 
     //****************************************************************************/
@@ -616,10 +618,11 @@ namespace Magus
                                            const QString& resourceName,
                                            const QString& fullQualifiedName,
                                            const QString& iconName,
-                                           bool isAsset)
+                                           bool isAsset,
+                                           bool suppressSignal)
     {
         int resourceId = generateUniqueResourceId();
-        addResource (resourceId, parentId, resourceName, fullQualifiedName, iconName, isAsset);
+        addResource (resourceId, parentId, resourceName, fullQualifiedName, iconName, isAsset, suppressSignal);
         return resourceId;
     }
 

@@ -158,7 +158,7 @@ namespace Magus
         {
             QModelIndex index = mSelectionModel->index(i, 0);
             name = mSelectionModel->getName(index);
-            name.toLower();
+            name = name.toLower();
             if (!name.contains(pattern))
                 mSelectionList->setRowHidden(i, true);
         }

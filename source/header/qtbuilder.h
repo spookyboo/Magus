@@ -55,7 +55,6 @@ static const QString FILE_MAINWINDOW_H = QString("mainwindow.h");
 static const QString FILE_PROJECT_PTP = QString("project.ptp");
 static const QString FILE_DOCKWIDGET_HTP = QString("dockwidget.htp");
 static const QString FILE_DOCKWIDGET_CTP = QString("dockwidget.ctp");
-static const QString FILE_GENERIC_FUNCTIONS_H = QString("generic_funtions.h");
 static const QString FILE_MAGUS_TREE_WIDGET_H = QString("magus_treewidget.h");
 static const QString FILE_MAGUS_TREE_WIDGET_CPP = QString("magus_treewidget.cpp");
 static const QString FILE_TRANSFORMATION_WIDGET_H = QString("tb_transformationwidget.h");

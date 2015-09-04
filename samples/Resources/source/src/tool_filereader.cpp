@@ -22,8 +22,8 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QMessageBox>
+#include "magus_core.h"
 #include "tool_filereader.h"
-#include "generic_funtions.h"
 
 namespace Magus
 {
@@ -57,7 +57,7 @@ namespace Magus
                 else
                 {
                     QString fileName = info.absoluteFilePath();
-                    if (isImageBasedOnExtension(fileName))
+                    if (isTypeBasedOnExtension(fileName, MAGUS_SUPPORTED_IMAGE_FORMATS, MAGUS_SUPPORTED_IMAGE_FORMATS_LENGTH))
                     {
                         // It is an image
                         QPixmap texturePixmap = QPixmap(info.absoluteFilePath());

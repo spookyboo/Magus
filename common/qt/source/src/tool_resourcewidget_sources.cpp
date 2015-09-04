@@ -149,6 +149,24 @@ namespace Magus
     }
 
     //****************************************************************************/
+    void QtSourcesDockWidget::addAssetQuiet(int toplevelId, const QString& name, const QString& baseName)
+    {
+        // Suppress the signal that a resource was added, otherwise the signal causes the asset to
+        // be added to the asset widget
+        int resourceId = mResourceTreeWidget->addResource(toplevelId, baseName, name, QString(""), true, true);
+        mResourceTreeWidget->expand(toplevelId);
+
+        // Also add it to mSourceInfo
+        QtSourcesInfo info;
+        info.toplevelId = toplevelId;
+        info.resourceId = resourceId;
+        info.parentId = toplevelId;
+        info.fileName = name;
+        info.baseName = baseName;
+        mSourceInfo[resourceId] = info;
+    }
+
+    //****************************************************************************/
     void QtSourcesDockWidget::handleResourceSelected(int resourceId)
     {
         // Determine which type is selected

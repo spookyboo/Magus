@@ -37,10 +37,12 @@ QT_END_NAMESPACE
 
 namespace Magus
 {
+    // Define the file types that can be imported; note, that this must be in line with the types
+    // defined in tool_resourcewidget_assets.h
     static const QString TOOL_SOURCES_FORMAT_AUDIO = QString("Audio (*.wav *.mp3)");
     static const QString TOOL_SOURCES_FORMAT_MATERIALS = QString("Materials (*.mat *.material)");
     static const QString TOOL_SOURCES_FORMAT_MESHES = QString("Meshes (*.mesh *.x *.fbx *.3ds)");
-    static const QString TOOL_SOURCES_FORMAT_SCRIPTS = QString("Scripts (*.lua)");
+    static const QString TOOL_SOURCES_FORMAT_SCRIPTS = QString("Scripts (*.lua *.txt)");
     static const QString TOOL_SOURCES_FORMAT_TEXTURES = QString("Textures (*.bmp *.jpg *.jpeg *.koa *.iff *.lbm *.mng *.pbm *.pcd *.pcx *.pgm *.pgm *.png *.ppm *.ppm *.ras *.tga *.targa *.tif *.tiff *.wap *.wbmp *.wbm *.psd *.cut *.xbm *.xpm *.gif *.hdr *.g3 *.sgi *.exr *.j2k *.j2c *.jp2 *.pfm *.pct *.pict *.pic *.dds)");
 
     /****************************************************************************
@@ -87,6 +89,12 @@ namespace Magus
 
             // Clear all content in the resourcetree
             void clearContent(void);
+
+            // Add an asset entry to the resource tree, but don't signal anything.
+            // This is typcially used when a file has been dropped to an asset widget (eg. audio) and the
+            // resource tree must be updated with the asset name.
+            // Suppressing the signal prevents that an asset is added to the asset widget twice.
+            void addAssetQuiet(int toplevelId, const QString& name, const QString& baseName);
 
         protected:
             void initializeResourceTree (void);

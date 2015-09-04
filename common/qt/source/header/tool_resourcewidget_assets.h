@@ -47,6 +47,15 @@ namespace Magus
     static const QString TOOL_GENERIC_ASSETWIDGET_ICON_MESH = QString("asset_mesh.png");
     static const QString TOOL_GENERIC_ASSETWIDGET_ICON_SCRIPT = QString("asset_script.png");
 
+    // Define the file types that can be dropped; note, that this must be in line with the importstring
+    // defined in tool_resourcewidget_sources.h
+    static QString TOOL_RESOURCE_MATERIAL_FORMATS[] = {"mat", "material"};
+    static int TOOL_RESOURCE_MATERIAL_FORMATS_LENGTH = 2;
+    static QString TOOL_RESOURCE_MESH_FORMATS[] = {"mesh", "x", "fbx", "3ds"};
+    static int TOOL_RESOURCE_MESH_FORMATS_LENGTH = 4;
+    static QString TOOL_RESOURCE_SCRIPT_FORMATS[] = {"lua", "txt"};
+    static int TOOL_RESOURCE_SCRIPT_FORMATS_LENGTH = 2;
+
     /****************************************************************************
     This class represents a generic QtAssetsDockWidget
     ***************************************************************************/
@@ -86,9 +95,15 @@ namespace Magus
 
         signals:
             void tabChanged(int index);
+            void fileDropped(int toplevelId, const QString& name, const QString& baseName);
 
         private slots:
             void handleTabChanged(int index);
+            void handleAudioFileDropped (const QString& name, const QString& baseName);
+            void handleMaterialFileDropped (const QString& name, const QString& baseName);
+            void handleMeshFileDropped (const QString& name, const QString& baseName);
+            void handleScriptFileDropped (const QString& name, const QString& baseName);
+            void handleTextureFileDropped (const QString& name, const QString& baseName);
 
         private:
             QMainWindow* mParent;

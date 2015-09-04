@@ -30,11 +30,6 @@ QT_BEGIN_NAMESPACE
 
 QT_END_NAMESPACE
 
-/*
- * TODO:
- * - Implement double mouse click
-*/
-
 namespace Magus
 {
     /****************************************************************************
@@ -57,6 +52,31 @@ namespace Magus
         private:
             QLabel* mTextureLabel;
             QLineEdit* mBaseNameEdit;
+    };
+
+    //****************************************************************************/
+    //****************************************************************************/
+    /****************************************************************************
+    /****************************************************************************
+    The QtDefaultTextureListWidget is a QListWidget with convenience functions regarding
+    drag and drop.
+    ***************************************************************************/
+    class QtDefaultTextureListWidget : public QListWidget
+    {
+        Q_OBJECT
+
+        public:
+            QtDefaultTextureListWidget(QWidget* parent = 0);
+            virtual ~QtDefaultTextureListWidget(void);
+
+        signals:
+            // Emitted when a texture file is dropped
+            void textureFileDropped(const QString& name, const QString& baseName);
+
+        protected:
+            virtual void dropEvent(QDropEvent* event);
+            virtual void dragEnterEvent(QDragEnterEvent *event);
+            virtual void dragMoveEvent(QDragMoveEvent *event);
     };
 
     //****************************************************************************/
@@ -108,19 +128,26 @@ namespace Magus
             // Reset the filtering
             void resetFilter(void);
 
-    signals:
+            // Determine whether dropping texture files from the file explorer is allowed
+            void setDropFilesAllowed(bool allowed);
+
+        signals:
             // Emitted when a texture is selected (via the mouse)
             void selected(const QString& name, const QString& baseName);
 
             // Emitted when a texture is doubleclicked (via the mouse)
             void doubleClicked(const QString& name, const QString& baseName);
 
+            // Emitted when a texture file is dropped
+            void textureFileDropped(const QString& name, const QString& baseName);
+
         protected slots:
             void handleSelected(QListWidgetItem* item);
             void handleDoubleClicked(QListWidgetItem* item);
+            void handleTextureFileDropped (const QString& name, const QString& baseName);
 
         private:
-            QListWidget* mSelectionList;
+            QtDefaultTextureListWidget* mSelectionList;
             QSize mTextureSize;
             QString mNameTexture; // In case of a filename, this is the fully qualified filename (path + filename)
             QString mBaseNameTexture; // If mNameTexture is a filename, this is the basename.

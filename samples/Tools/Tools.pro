@@ -4,7 +4,6 @@ HEADERS       = \
     source/header/constants.h \
     source/header/mainwindow.h \
     source/header/tool_gradientwidget.h \
-    source/header/generic_funtions.h \
     source/header/tool_gradientmarker.h \
     source/header/tool_gradient.h \
     source/header/tool_layerwidget.h \
@@ -14,7 +13,8 @@ HEADERS       = \
     source/header/tool_glspherewidget.h \
     source/header/tool_simple_texturemodel.h \
     source/header/tool_simple_texturewidget.h \
-    source/header/tool_extended_texturewidget.h
+    source/header/tool_extended_texturewidget.h \
+    source/header/magus_core.h
 
 
 SOURCES       = \

@@ -29,11 +29,6 @@ QT_BEGIN_NAMESPACE
 
 QT_END_NAMESPACE
 
-/*
- * TODO:
- * - Implement double mouse click
-*/
-
 namespace Magus
 {
     /****************************************************************************

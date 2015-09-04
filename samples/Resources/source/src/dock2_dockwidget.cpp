@@ -29,20 +29,7 @@ Dock2DockWidget::Dock2DockWidget(QString title, MainWindow* parent, Qt::WindowFl
 	QDockWidget (title, parent, flags), 
 	mParent(parent)
 {
-    /*
-    //setCursor(Qt::WaitCursor);
-    mAudioSelection = new Magus::QtAudioWidget(QString("../common/icons/"), this);
-    mAudioSelection->setTextureSize(QSize(112, 120));
-
-    // Create filereader and read the images from the filesystem
-    Magus::QtFileReader fileReader;
-    connect(&fileReader, SIGNAL(fileRead(QString,QString,QString)), this, SLOT(fileRead(QString,QString,QString)));
-    fileReader.readFileNamesRecursively(QString("../../assets/audio"), QString(""));
-    setCursor(Qt::ArrowCursor);
-    */
-
     mInnerMain = new QMainWindow();
-    //mInnerMain->setCentralWidget(mAudioSelection);
     setWidget(mInnerMain);
 
     // Perform standard functions

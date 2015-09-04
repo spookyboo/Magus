@@ -43,7 +43,6 @@ namespace Magus
         setMaximumSize(size);
         QHBoxLayout* mainLayout = new QHBoxLayout;
         QVBoxLayout* assetAndNameLayout = new QVBoxLayout;
-        //mPixmapGenericAsset = QPixmap(iconDir + assetIconName);
         mPixmapGenericAsset = assetPixmap;
 
         mName = name;
@@ -71,16 +70,77 @@ namespace Magus
     //****************************************************************************/
     //****************************************************************************/
     //****************************************************************************/
-    QtGenericAssetWidget::QtGenericAssetWidget(bool viewEnabled, QWidget* parent) : QWidget(parent)
+    QtGenericAssetListWidget::QtGenericAssetListWidget(QWidget* parent) : QListWidget(parent)
     {
+        setMouseTracking(true);
+        setAcceptDrops(true);
+        setDropIndicatorShown(true);
+    }
+
+    //****************************************************************************/
+    QtGenericAssetListWidget::~QtGenericAssetListWidget(void)
+    {
+    }
+
+    //****************************************************************************/
+    void QtGenericAssetListWidget::dropEvent(QDropEvent* event)
+    {
+        const QMimeData *mimeData = event->mimeData();
+        if (mimeData->hasUrls())
+        {
+            QList<QUrl> urlList = mimeData->urls();
+            for (int i = 0; i < urlList.size(); ++i)
+            {
+                QString baseName = urlList.at(i).fileName();
+                if (isTypeBasedOnExtension(baseName, mAllowedExtensions, mAllowedExtensionsLength))
+                {
+                    QString name = urlList.at(i).path();
+                    stripLeadingSlashes(name);
+                    emit fileDropped(name, baseName);
+                }
+            }
+        }
+        event->acceptProposedAction();
+    }
+
+    //****************************************************************************/
+    void QtGenericAssetListWidget::setAllowedExtensions(const QString ext[], int arrayLength)
+    {
+        for (int i = 0; i < arrayLength; ++i)
+        {
+            //QMessageBox::information(0, QString("test"), ext[i]); // testtesttesttest
+            mAllowedExtensions[i] = ext[i];
+        }
+
+        mAllowedExtensionsLength = arrayLength;
+    }
+
+    //****************************************************************************/
+    void QtGenericAssetListWidget::dragEnterEvent(QDragEnterEvent *event)
+    {
+        event->acceptProposedAction();
+    }
+
+    //****************************************************************************/
+    void QtGenericAssetListWidget::dragMoveEvent(QDragMoveEvent *event)
+    {
+        event->acceptProposedAction();
+    }
+
+    //****************************************************************************/
+    //****************************************************************************/
+    //****************************************************************************/
+    QtGenericAssetWidget::QtGenericAssetWidget(QPixmap defaultPixmap, bool viewEnabled, QWidget* parent) : QWidget(parent)
+    {
+        mDefaultPixmapAsset = defaultPixmap;
         setWindowTitle(QString("Texture selection"));
         mTextureSize = QSize(128, 128);
         mOriginIsFile = true;
         QHBoxLayout* mainLayout = new QHBoxLayout;
         QVBoxLayout* textureSelectionLayout = new QVBoxLayout;
 
-        // Define selection widget (QListWidget)
-        mSelectionList = new QListWidget();
+        // Define selection widget (QtGenericAssetListWidget)
+        mSelectionList = new QtGenericAssetListWidget();
         mSelectionList->setViewMode(QListView::ListMode);
         mSelectionList->setWrapping(true);
         mSelectionList->setWordWrap(true);
@@ -88,9 +148,7 @@ namespace Magus
         mSelectionList->setUniformItemSizes(true);
         mSelectionList->setMovement(QListView::Snap);
         mSelectionList->setFlow(QListView::LeftToRight);
-        mSelectionList->setAcceptDrops(false);
-        mSelectionList->setDropIndicatorShown(false);
-        mSelectionList->setMouseTracking(true);
+        connect(mSelectionList, SIGNAL(fileDropped(QString,QString)), this, SLOT(handleFileDropped(QString,QString)));
 
         // Textviewer
         mTextViewer = new QPlainTextEdit();
@@ -218,6 +276,13 @@ namespace Magus
     }
 
     //****************************************************************************/
+    void QtGenericAssetWidget::handleFileDropped(const QString& name, const QString& baseName)
+    {
+        addAsset(mDefaultPixmapAsset, name, baseName);
+        emit fileDropped(name, baseName);
+    }
+
+    //****************************************************************************/
     void QtGenericAssetWidget::loadFileInViewer(const QString& fileName, const QString& baseFileName)
     {
         QFile file(fileName);
@@ -277,6 +342,20 @@ namespace Magus
         QList<QListWidgetItem*> list = mSelectionList->findItems(QString("*"), Qt::MatchWildcard);
         foreach (QListWidgetItem* item, list)
             item->setHidden(false);
+    }
+
+    //****************************************************************************/
+    void QtGenericAssetWidget::setDropFilesAllowed(bool allowed)
+    {
+        mSelectionList->setMouseTracking(allowed);
+        mSelectionList->setAcceptDrops(allowed);
+        mSelectionList->setDropIndicatorShown(allowed);
+    }
+
+    //****************************************************************************/
+    void QtGenericAssetWidget::setAllowedExtensions(const QString ext[], int arrayLength)
+    {
+        mSelectionList->setAllowedExtensions(ext, arrayLength);
     }
 
 }

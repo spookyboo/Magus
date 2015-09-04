@@ -30,13 +30,6 @@
 #include <QLabel>
 #include "magus_treewidget.h"
 
-/*
- * TODO:
- * - Add to contextmenu: Duplicate asset (create new entry and emit signal with existing resourceId and new resourceId)
- * - getAssets (returns only the assets of all groups and subgroups, but not the groups themselves)
- * - getGroups (returns only the groups/subgroups, but not the assets)
-*/
-
 QT_BEGIN_NAMESPACE
 
 QT_END_NAMESPACE
@@ -175,19 +168,22 @@ namespace Magus
             // The fullQualifiedName is a reference to the resource file or other element
             // An optional icon can be provided; the iconName is the name of the imagefile
             // If isAsset is false, the resource is a toplevel group or a subgroup
+            // If suppressSignal is true, no signal is emitted, indicating that the resource was added
             void addResource (int resourceId,
                               int parentId,
                               const QString& resourceName,
                               const QString& fullQualifiedName,
                               const QString& iconName,
-                              bool isAsset = false);
+                              bool isAsset = false,
+                              bool suppressSignal = false);
 
             // Add a resource to the resource tree, but automatically determine the resourceId (and return it)
             int addResource (int parentId,
                              const QString& resourceName,
                              const QString& fullQualifiedName,
                              const QString& iconName,
-                             bool isAsset = false);
+                             bool isAsset = false,
+                             bool suppressSignal = false);
 
             // Returns a list of all resources in the resource tree. This includes both groups, subgroups and assets
             QVector<QtResourceInfo*>& getResources (void);

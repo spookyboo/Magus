@@ -50,7 +50,7 @@ HEADERS       = \
     source/header/sme_asset_texture_unit.h \
     source/header/node_compound.h \
     source/header/node_scene.h \
-    source/header/generic_funtions.h
+    source/header/magus_core.h
 
 
 SOURCES       = \

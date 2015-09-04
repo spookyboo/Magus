@@ -79,6 +79,31 @@ namespace Magus
     //****************************************************************************/
     //****************************************************************************/
     /****************************************************************************
+    /****************************************************************************
+    The QtAudioListWidget is a QListWidget with convenience functions regarding
+    drag and drop.
+    ***************************************************************************/
+    class QtAudioListWidget : public QListWidget
+    {
+        Q_OBJECT
+
+        public:
+            QtAudioListWidget(QWidget* parent = 0);
+            virtual ~QtAudioListWidget(void);
+
+        signals:
+            // Emitted when an audio file is dropped
+            void audioFileDropped(const QString& name, const QString& baseName);
+
+        protected:
+            virtual void dropEvent(QDropEvent* event);
+            virtual void dragEnterEvent(QDragEnterEvent *event);
+            virtual void dragMoveEvent(QDragMoveEvent *event);
+    };
+
+    //****************************************************************************/
+    //****************************************************************************/
+    /****************************************************************************
     Main class for audio selection widget
     ***************************************************************************/
     class QtAudioWidget : public QWidget
@@ -125,6 +150,9 @@ namespace Magus
             // Reset the filtering
             void resetFilter(void);
 
+            // Determine whether dropping audio files from the file explorer is allowed
+            void setDropFilesAllowed(bool allowed);
+
         signals:
             // Emitted when a texture is selected (via the mouse)
             void selected(const QString& name, const QString& baseName);
@@ -132,11 +160,15 @@ namespace Magus
             // Emitted when a texture is doubleclicked (via the mouse)
             void doubleClicked(const QString& name, const QString& baseName);
 
+            // Emitted when an audio file is dropped
+            void audioFileDropped(const QString& name, const QString& baseName);
+
         protected slots:
-            void handleSelected(QListWidgetItem* item);
-            void handleDoubleClicked(QListWidgetItem* item);
-            void contextMenuItemSelected(QAction* action);
-            void handlePositionChanged(qint64);
+            void handleSelected (QListWidgetItem* item);
+            void handleDoubleClicked (QListWidgetItem* item);
+            void contextMenuItemSelected (QAction* action);
+            void handlePositionChanged (qint64);
+            void handleAudioFileDropped (const QString& name, const QString& baseName);
 
         protected:
             void mouseClickHandler(QMouseEvent* event);
@@ -151,7 +183,7 @@ namespace Magus
             QMediaPlayer* mAudioPlayer;
             QMenu* mContextMenu;
             QString mIconDir;
-            QListWidget* mSelectionList;
+            QtAudioListWidget* mSelectionList;
             QSize mTextureSize;
             QString mNameTexture; // In case of a filename, this is the fully qualified filename (path + filename)
             QString mBaseNameTexture; // If mNameTexture is a filename, this is the basename.

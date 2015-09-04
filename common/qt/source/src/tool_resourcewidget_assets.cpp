@@ -42,22 +42,33 @@ namespace Magus
         // Create audio selection widget
         mAudioSelection = new QtAudioWidget(mIconDir, this);
         mAudioSelection->setTextureSize(QSize(112, 120));
+        connect(mAudioSelection, SIGNAL(audioFileDropped(QString,QString)), this, SLOT(handleAudioFileDropped(QString,QString)));
 
         // Create material selection widget
-        mMaterialSelection = new QtGenericAssetWidget(true, this);
+        QPixmap materialPixmap(mIconDir + TOOL_GENERIC_ASSETWIDGET_ICON_MATERIAL);
+        mMaterialSelection = new QtGenericAssetWidget(materialPixmap, true, this);
         mMaterialSelection->setTextureSize(QSize(112, 120));
+        mMaterialSelection->setAllowedExtensions(TOOL_RESOURCE_MATERIAL_FORMATS, TOOL_RESOURCE_MATERIAL_FORMATS_LENGTH);
+        connect(mMaterialSelection, SIGNAL(fileDropped(QString,QString)), this, SLOT(handleMaterialFileDropped(QString,QString)));
 
         // Create mesh selection widget
-        mMeshSelection = new QtGenericAssetWidget(false, this);
+        QPixmap meshPixmap(mIconDir + TOOL_GENERIC_ASSETWIDGET_ICON_MESH);
+        mMeshSelection = new QtGenericAssetWidget(meshPixmap, false, this);
         mMeshSelection->setTextureSize(QSize(112, 120));
+        mMeshSelection->setAllowedExtensions(TOOL_RESOURCE_MESH_FORMATS, TOOL_RESOURCE_MESH_FORMATS_LENGTH);
+        connect(mMeshSelection, SIGNAL(fileDropped(QString,QString)), this, SLOT(handleMeshFileDropped(QString,QString)));
 
         // Create script selection widget
-        mScriptSelection = new QtGenericAssetWidget(true, this);
+        QPixmap scriptPixmap(mIconDir + TOOL_GENERIC_ASSETWIDGET_ICON_SCRIPT);
+        mScriptSelection = new QtGenericAssetWidget(scriptPixmap, true, this);
         mScriptSelection->setTextureSize(QSize(112, 120));
+        mScriptSelection->setAllowedExtensions(TOOL_RESOURCE_SCRIPT_FORMATS, TOOL_RESOURCE_SCRIPT_FORMATS_LENGTH);
+        connect(mScriptSelection, SIGNAL(fileDropped(QString,QString)), this, SLOT(handleScriptFileDropped(QString,QString)));
 
         // Create texture selection widget
         mTextureSelection = new QtDefaultTextureWidget(this);
         mTextureSelection->setTextureSize(QSize(112, 120));
+        connect(mTextureSelection, SIGNAL(textureFileDropped(QString,QString)), this, SLOT(handleTextureFileDropped(QString,QString)));
 
         // -------------------------------------- Fill the assets widget --------------------------------------
         QIcon audioIcon(mIconDir + TOOL_RESOURCE_ICON_AUDIO);
@@ -77,7 +88,7 @@ namespace Magus
         createToolBars();
 
         connect(mTabWidget, SIGNAL(currentChanged(int)), this, SLOT(handleTabChanged(int)));
-}
+    }
 
     //****************************************************************************/
     QtAssetsDockWidget::~QtAssetsDockWidget(void)
@@ -278,4 +289,33 @@ namespace Magus
         emit tabChanged(index + 1);
     }
 
+    //****************************************************************************/
+    void QtAssetsDockWidget::handleAudioFileDropped (const QString& name, const QString& baseName)
+    {
+        emit fileDropped(TOOL_SOURCES_LEVEL_X000_AUDIO, name, baseName);
+    }
+
+    //****************************************************************************/
+    void QtAssetsDockWidget::handleMaterialFileDropped (const QString& name, const QString& baseName)
+    {
+        emit fileDropped(TOOL_SOURCES_LEVEL_X000_MATERIALS, name, baseName);
+    }
+
+    //****************************************************************************/
+    void QtAssetsDockWidget::handleMeshFileDropped (const QString& name, const QString& baseName)
+    {
+        emit fileDropped(TOOL_SOURCES_LEVEL_X000_MESHES, name, baseName);
+    }
+
+    //****************************************************************************/
+    void QtAssetsDockWidget::handleScriptFileDropped (const QString& name, const QString& baseName)
+    {
+        emit fileDropped(TOOL_SOURCES_LEVEL_X000_SCRIPTS, name, baseName);
+    }
+
+    //****************************************************************************/
+    void QtAssetsDockWidget::handleTextureFileDropped (const QString& name, const QString& baseName)
+    {
+        emit fileDropped(TOOL_SOURCES_LEVEL_X000_TEXTURES, name, baseName);
+    }
 }

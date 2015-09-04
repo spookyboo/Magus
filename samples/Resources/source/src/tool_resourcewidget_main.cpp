@@ -113,6 +113,7 @@ namespace Magus
         // Assets
         mAssetsDockWidget = new QtAssetsDockWidget(mIconDir, QString("Assets"), this);
         connect(mAssetsDockWidget, SIGNAL(tabChanged(int)), this, SLOT(handleTabChanged(int)));
+        connect(mAssetsDockWidget, SIGNAL(fileDropped(int,QString,QString)), this, SLOT(handleFileDropped(int,QString,QString)));
         addDockWidget(Qt::RightDockWidgetArea, mAssetsDockWidget);
 
         // Collections
@@ -201,6 +202,12 @@ namespace Magus
     {
         // Set the correct toplevel group in mSourcesDockWidget, based on the selected tab
         mSourcesDockWidget->selectTopLevel(toplevelId);
+    }
+
+    //****************************************************************************/
+    void QtResourceMain::handleFileDropped(int toplevelId, const QString& name, const QString& baseName)
+    {
+        mSourcesDockWidget->addAssetQuiet(toplevelId, name, baseName);
     }
 
 }

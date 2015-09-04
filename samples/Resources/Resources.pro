@@ -17,7 +17,6 @@ HEADERS       = \
     source/header/tool_resourcewidget_collections.h \
     source/header/tool_resourcewidget_assets.h \
     source/header/tool_resourcewidget_main.h \
-    source/header/generic_funtions.h \
     source/header/tool_generic_assetwidget.h
 
 

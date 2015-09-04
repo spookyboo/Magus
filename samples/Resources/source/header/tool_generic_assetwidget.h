@@ -63,6 +63,36 @@ namespace Magus
     //****************************************************************************/
     //****************************************************************************/
     /****************************************************************************
+    /****************************************************************************
+    The QtGenericAssetListWidget is a QListWidget with convenience functions regarding
+    drag and drop.
+    ***************************************************************************/
+    class QtGenericAssetListWidget : public QListWidget
+    {
+        Q_OBJECT
+
+        public:
+            QtGenericAssetListWidget(QWidget* parent = 0);
+            virtual ~QtGenericAssetListWidget(void);
+
+            // Determine which file types are allowed, based on their extensions
+            void setAllowedExtensions(const QString ext[], int arrayLength);
+
+        signals:
+            // Emitted when a file is dropped
+            void fileDropped(const QString& name, const QString& baseName);
+
+        protected:
+            QString mAllowedExtensions[200];
+            int mAllowedExtensionsLength;
+            virtual void dropEvent(QDropEvent* event);
+            virtual void dragEnterEvent(QDragEnterEvent *event);
+            virtual void dragMoveEvent(QDragMoveEvent *event);
+    };
+
+    //****************************************************************************/
+    //****************************************************************************/
+    /****************************************************************************
     Main class for generic asset selection widget
     ***************************************************************************/
     class QtGenericAssetWidget : public QWidget
@@ -70,7 +100,7 @@ namespace Magus
         Q_OBJECT
 
         public:
-            QtGenericAssetWidget(bool viewEnabled = false, QWidget* parent = 0);
+            QtGenericAssetWidget(QPixmap defaultPixmap, bool viewEnabled = false, QWidget* parent = 0);
             virtual ~QtGenericAssetWidget(void);
 
             // Add an 'asset' to this widget. The name is a (fully qualified) filename for example.
@@ -109,6 +139,12 @@ namespace Magus
             // Reset the filtering
             void resetFilter(void);
 
+            // Determine whether dropping files from the file explorer is allowed
+            void setDropFilesAllowed(bool allowed);
+
+            // Determine which file types are allowed, based on their extensions
+            void setAllowedExtensions(const QString ext[], int arrayLength);
+
         signals:
             // Emitted when an asset is selected (via the mouse)
             void selected(const QString& name, const QString& baseName);
@@ -116,15 +152,20 @@ namespace Magus
             // Emitted when an asset is doubleclicked (via the mouse)
             void doubleClicked(const QString& name, const QString& baseName);
 
+            // Emitted when a file is dropped
+            void fileDropped(const QString& name, const QString& baseName);
+
         protected slots:
             void handleSelected(QListWidgetItem* item);
             void handleDoubleClicked(QListWidgetItem* item);
+            void handleFileDropped (const QString& name, const QString& baseName);
 
         protected:
             void loadFileInViewer(const QString& fileName, const QString& baseFileName);
 
         private:
-            QListWidget* mSelectionList;
+            QPixmap mDefaultPixmapAsset;
+            QtGenericAssetListWidget* mSelectionList;
             QPlainTextEdit* mTextViewer;
             QSize mTextureSize;
             QString mNameAsset; // In case of a filename, this is the fully qualified filename (path + filename)

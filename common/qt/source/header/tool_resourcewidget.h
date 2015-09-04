@@ -32,11 +32,6 @@ QT_BEGIN_NAMESPACE
 
 QT_END_NAMESPACE
 
-/*
- * TODO:
- * - Drag and drop from file dialog
- */
-
 namespace Magus
 {
     static const int TOOL_SOURCES_LEVEL_X000_AUDIO = 1;

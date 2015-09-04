@@ -194,7 +194,6 @@ void QtBuilder::build(ApplicationTemplate* applicationTemplate)
     // Step 3: Copy the base files (that do not need to be changed)
     fileUtil.copy(mQtHeader + FILE_MAGUS_CORE_H, mFullOutputHeaderDir + FILE_MAGUS_CORE_H);
     fileUtil.copy(mQtHeader + FILE_CONSTANTS_HTP, mFullOutputHeaderDir + FILE_CONSTANTS_H);
-    fileUtil.copy(mQtHeader + FILE_GENERIC_FUNCTIONS_H, mFullOutputHeaderDir + FILE_GENERIC_FUNCTIONS_H);
     fileUtil.copy(mQtHeader + FILE_MAGUS_TREE_WIDGET_H, mFullOutputHeaderDir + FILE_MAGUS_TREE_WIDGET_H);
     fileUtil.copy(mQtSrc + FILE_MAIN_CTP, mFullOutputSrcDir + FILE_MAIN_CPP);
     fileUtil.copy(mQtSrc + FILE_MAGUS_TREE_WIDGET_CPP, mFullOutputSrcDir + FILE_MAGUS_TREE_WIDGET_CPP);

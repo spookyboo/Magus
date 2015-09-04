@@ -1,0 +1,25 @@
+Things to do:
+=========
+
+- QtAudioWidget: Pressing Delete button deletes the asset
+- QtDefaultTextureWidget: Implement double mouse click
+- QtDefaultTextureWidget: Pressing Delete button deletes the asset
+- QtResourceTreeWidget: Add to contextmenu => Duplicate asset (create new entry and emit signal with existing resourceId and new resourceId)
+- QtResourceTreeWidget: getAssets (returns only the assets of all groups and subgroups, but not the groups themselves)
+- QtResourceTreeWidget: getGroups (returns only the groups/subgroups, but not the assets)
+- QtResourceWidget: Drag and drop from file dialog
+- QtResourceWidget: implement setResources
+- QtFileReader: Filter by mask
+- QtExtendedTextureWidget: Implement double mouse click
+- QtExtendedTextureWidget: Pressing Delete button deletes the asset
+- QtGradientWidget: Bug? Add new alphamarker => all alpha becomes 0% unless another alpha marker has been selected?
+- QtSimpleTextureWidget: Implement double mouse click
+- QtGenericAssetWidget: Pressing Delete button deletes the asset
+
+
+- QtNodeEditor: Zooming (scrollwheel) only changes the size of the nodes, but not their mutual distance
+- QtNodeEditor: Display value of a port (nice to have)
+- QtNodeEditor: Implement triangle port (nice to have)
+- QtNodeEditor: Mouse over (over a node or port) displays info (nice to have)
+- QtNodeEditor: Implement round shaped nodes (nice to have)
+
