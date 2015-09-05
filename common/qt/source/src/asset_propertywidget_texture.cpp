@@ -72,7 +72,7 @@ namespace Magus
     void QtTextureProperty::setTextureFileName(const QString& fileNameTexture)
     {
         // Check whether the file is an image (based on the extension)
-        if (!isTypeBasedOnExtension(fileNameTexture, MAGUS_SUPPORTED_IMAGE_FORMATS))
+        if (!isTypeBasedOnExtension(fileNameTexture, MAGUS_SUPPORTED_IMAGE_FORMATS, MAGUS_SUPPORTED_IMAGE_FORMATS_LENGTH))
             return;
 
         QFile f(fileNameTexture);
