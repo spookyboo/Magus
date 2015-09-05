@@ -169,6 +169,7 @@ namespace Magus
             void contextMenuItemSelected (QAction* action);
             void handlePositionChanged (qint64);
             void handleAudioFileDropped (const QString& name, const QString& baseName);
+            void handleMouseOver(QListWidgetItem* item);
 
         protected:
             void mouseClickHandler(QMouseEvent* event);

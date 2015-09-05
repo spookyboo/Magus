@@ -54,6 +54,7 @@ namespace Magus
         mTextureLabel = new QLabel();
         mTextureLabel->setPixmap(mPixmapGenericAsset);
         mTextureLabel->setScaledContents(true);
+        setMouseTracking(true);
 
         // Layout
         assetAndNameLayout->addWidget(mTextureLabel, 1000);
@@ -149,6 +150,9 @@ namespace Magus
         mSelectionList->setMovement(QListView::Snap);
         mSelectionList->setFlow(QListView::LeftToRight);
         connect(mSelectionList, SIGNAL(fileDropped(QString,QString)), this, SLOT(handleFileDropped(QString,QString)));
+        connect(mSelectionList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(handleSelected(QListWidgetItem*)));
+        connect(mSelectionList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(handleDoubleClicked(QListWidgetItem*)));
+        connect(mSelectionList, SIGNAL(itemEntered(QListWidgetItem*)), this, SLOT(handleMouseOver(QListWidgetItem*)));
 
         // Textviewer
         mTextViewer = new QPlainTextEdit();
@@ -174,8 +178,6 @@ namespace Magus
         item->setSizeHint(mTextureSize); // Must be present, otherwise the widget is not shown
         mSelectionList->addItem(item);
         mSelectionList->setItemWidget(item, assetAndText);
-        connect(mSelectionList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(handleSelected(QListWidgetItem*)));
-        connect(mSelectionList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(handleDoubleClicked(QListWidgetItem*)));
     }
 
     //****************************************************************************/
@@ -280,6 +282,18 @@ namespace Magus
     {
         addAsset(mDefaultPixmapAsset, name, baseName);
         emit fileDropped(name, baseName);
+    }
+
+    //****************************************************************************/
+    void QtGenericAssetWidget::handleMouseOver(QListWidgetItem* item)
+    {
+        QWidget* widget = mSelectionList->itemWidget(item);
+        if (widget)
+        {
+            QtGenericAssetAndText* assetAndText = static_cast<QtGenericAssetAndText*>(widget);
+            QString name = assetAndText->mName;
+            mSelectionList->setToolTip(name);
+        }
     }
 
     //****************************************************************************/

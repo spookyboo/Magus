@@ -1,0 +1,1 @@
+If your read this, the txt file is added to the 'script' asset widget

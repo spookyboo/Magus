@@ -145,8 +145,10 @@ namespace Magus
             void textureFileDropped(const QString& name, const QString& baseName);
 
         protected slots:
+            void handleSelected(QListWidgetItem* item);
             void handleSelected(const QString& name, const QString& baseName);
             void handleTextureFileDropped (const QString& name, const QString& baseName);
+            void handleMouseOver(QListWidgetItem* item);
 
         private:
             QtExtendedTextureListWidget* mSelectionList;

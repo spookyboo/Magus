@@ -54,6 +54,7 @@ namespace Magus
         mTextureLabel = new QLabel();
         mTextureLabel->setPixmap(pixmap);
         mTextureLabel->setScaledContents(true);
+        setMouseTracking(true);
 
         // Layout
         textureAndNameLayout->addWidget(mTextureLabel, 1000);
@@ -138,6 +139,9 @@ namespace Magus
         mSelectionList->setMovement(QListView::Snap);
         mSelectionList->setFlow(QListView::LeftToRight);
         connect(mSelectionList, SIGNAL(textureFileDropped(QString,QString)), this, SLOT(handleTextureFileDropped(QString,QString)));
+        connect(mSelectionList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(handleSelected(QListWidgetItem*)));
+        connect(mSelectionList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(handleDoubleClicked(QListWidgetItem*)));
+        connect(mSelectionList, SIGNAL(itemEntered(QListWidgetItem*)), this, SLOT(handleMouseOver(QListWidgetItem*)));
 
         // Layout
         textureSelectionLayout->addWidget(mSelectionList);
@@ -158,8 +162,6 @@ namespace Magus
         item->setSizeHint(mTextureSize); // Must be present, otherwise the widget is not shown
         mSelectionList->addItem(item);
         mSelectionList->setItemWidget(item, textureAndText);
-        connect(mSelectionList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(handleSelected(QListWidgetItem*)));
-        connect(mSelectionList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(handleDoubleClicked(QListWidgetItem*)));
     }
 
     //****************************************************************************/
@@ -263,6 +265,18 @@ namespace Magus
         QPixmap pixmap(name);
         addTexture(pixmap, name, baseName);
         emit textureFileDropped(name, baseName);
+    }
+
+    //****************************************************************************/
+    void QtDefaultTextureWidget::handleMouseOver(QListWidgetItem* item)
+    {
+        QWidget* widget = mSelectionList->itemWidget(item);
+        if (widget)
+        {
+            QtDefaultTextureAndText* textureAndText = static_cast<QtDefaultTextureAndText*>(widget);
+            QString name = textureAndText->mName;
+            mSelectionList->setToolTip(name);
+        }
     }
 
     //****************************************************************************/

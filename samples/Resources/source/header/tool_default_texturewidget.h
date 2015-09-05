@@ -145,6 +145,7 @@ namespace Magus
             void handleSelected(QListWidgetItem* item);
             void handleDoubleClicked(QListWidgetItem* item);
             void handleTextureFileDropped (const QString& name, const QString& baseName);
+            void handleMouseOver(QListWidgetItem* item);
 
         private:
             QtDefaultTextureListWidget* mSelectionList;

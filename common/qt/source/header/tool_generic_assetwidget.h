@@ -159,6 +159,7 @@ namespace Magus
             void handleSelected(QListWidgetItem* item);
             void handleDoubleClicked(QListWidgetItem* item);
             void handleFileDropped (const QString& name, const QString& baseName);
+            void handleMouseOver(QListWidgetItem* item);
 
         protected:
             void loadFileInViewer(const QString& fileName, const QString& baseFileName);

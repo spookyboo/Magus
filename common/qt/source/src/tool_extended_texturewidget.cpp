@@ -48,6 +48,7 @@ namespace Magus
         mBaseNameEdit->setText(mBaseName);
         mBaseNameEdit->setEnabled(false);
         connect(mSphereWidget, SIGNAL(selected(QString,QString)), this, SLOT(handleSelected(QString,QString)));
+        setMouseTracking(true);
 
         // Layout
         sphereAndNameLayout->addWidget(mSphereWidget, 1000);
@@ -139,6 +140,8 @@ namespace Magus
         mSelectionList->setWrapping(true);
         mSelectionList->setWordWrap(true);
         connect(mSelectionList, SIGNAL(textureFileDropped(QString,QString)), this, SLOT(handleTextureFileDropped(QString,QString)));
+        connect(mSelectionList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(handleSelected(QListWidgetItem*)));
+        connect(mSelectionList, SIGNAL(itemEntered(QListWidgetItem*)), this, SLOT(handleMouseOver(QListWidgetItem*)));
 
         // Layout
         textureSelectionLayout->addWidget(mSelectionList);
@@ -159,6 +162,8 @@ namespace Magus
         item->setSizeHint(mTextureSize); // Must be present, otherwise the widget is not shown
         mSelectionList->addItem(item);
         mSelectionList->setItemWidget(item, textureAndText);
+
+        // Needed to do this on a detailed (item) level when the texture itself is selected
         connect(textureAndText, SIGNAL(selected(QString,QString)), this, SLOT(handleSelected(QString,QString)));
     }
 
@@ -236,6 +241,17 @@ namespace Magus
     }
 
     //****************************************************************************/
+    void QtExtendedTextureWidget::handleSelected(QListWidgetItem* item)
+    {
+        QWidget* widget = mSelectionList->itemWidget(item);
+        if (widget)
+        {
+            QtTextureAndText* textureAndText = static_cast<QtTextureAndText*>(widget);
+            handleSelected(textureAndText->mName, textureAndText->mBaseName);
+        }
+    }
+
+    //****************************************************************************/
     void QtExtendedTextureWidget::handleSelected(const QString& name, const QString& baseName)
     {
         emit selected(name, baseName);
@@ -247,6 +263,18 @@ namespace Magus
         QPixmap pixmap(name);
         addTexture(pixmap, name, baseName);
         emit textureFileDropped(name, baseName);
+    }
+
+    //****************************************************************************/
+    void QtExtendedTextureWidget::handleMouseOver(QListWidgetItem* item)
+    {
+        QWidget* widget = mSelectionList->itemWidget(item);
+        if (widget)
+        {
+            QtTextureAndText* textureAndText = static_cast<QtTextureAndText*>(widget);
+            QString name = textureAndText->mName;
+            mSelectionList->setToolTip(name);
+        }
     }
 
     //****************************************************************************/

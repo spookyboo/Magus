@@ -58,6 +58,7 @@ namespace Magus
         mTextureLabel = new QLabel();
         mTextureLabel->setPixmap(mPixmapAudioStop);
         mTextureLabel->setScaledContents(true);
+        setMouseTracking(true);
 
         // Layout
         audioAndNameLayout->addWidget(mTextureLabel, 1000);
@@ -165,6 +166,9 @@ namespace Magus
         mSelectionList->setMovement(QListView::Snap);
         mSelectionList->setFlow(QListView::LeftToRight);
         connect(mSelectionList, SIGNAL(audioFileDropped(QString,QString)), this, SLOT(handleAudioFileDropped(QString,QString)));
+        connect(mSelectionList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(handleSelected(QListWidgetItem*)));
+        connect(mSelectionList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(handleDoubleClicked(QListWidgetItem*)));
+        connect(mSelectionList, SIGNAL(itemEntered(QListWidgetItem*)), this, SLOT(handleMouseOver(QListWidgetItem*)));
 
         // Layout
         textureSelectionLayout->addWidget(mSelectionList);
@@ -185,8 +189,6 @@ namespace Magus
         item->setSizeHint(mTextureSize); // Must be present, otherwise the widget is not shown
         mSelectionList->addItem(item);
         mSelectionList->setItemWidget(item, audioAndText);
-        connect(mSelectionList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(handleSelected(QListWidgetItem*)));
-        connect(mSelectionList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(handleDoubleClicked(QListWidgetItem*)));
         buildContextMenu();
     }
 
@@ -374,6 +376,18 @@ namespace Magus
     {
         addAudio(SOURCE_FILE, name, baseName);
         emit audioFileDropped (name, baseName);
+    }
+
+    //****************************************************************************/
+    void QtAudioWidget::handleMouseOver(QListWidgetItem* item)
+    {
+        QWidget* widget = mSelectionList->itemWidget(item);
+        if (widget)
+        {
+            QtAudioAndText* audioAndText = static_cast<QtAudioAndText*>(widget);
+            QString name = audioAndText->mName;
+            mSelectionList->setToolTip(name);
+        }
     }
 
     //****************************************************************************/
