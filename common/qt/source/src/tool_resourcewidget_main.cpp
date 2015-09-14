@@ -114,6 +114,7 @@ namespace Magus
         mAssetsDockWidget = new QtAssetsDockWidget(mIconDir, QString("Assets"), this);
         connect(mAssetsDockWidget, SIGNAL(tabChanged(int)), this, SLOT(handleTabChanged(int)));
         connect(mAssetsDockWidget, SIGNAL(fileDropped(int,QString,QString)), this, SLOT(handleFileDropped(int,QString,QString)));
+        connect(mAssetsDockWidget, SIGNAL(assetDeleted(int,QString,QString)), this, SLOT(handleAssetDeleted(int,QString,QString)));
         addDockWidget(Qt::RightDockWidgetArea, mAssetsDockWidget);
 
         // Collections
@@ -208,6 +209,12 @@ namespace Magus
     void QtResourceMain::handleFileDropped(int toplevelId, const QString& name, const QString& baseName)
     {
         mSourcesDockWidget->addAssetQuiet(toplevelId, name, baseName);
+    }
+
+    //****************************************************************************/
+    void QtResourceMain::handleAssetDeleted(int toplevelId, const QString& name, const QString& baseName)
+    {
+        mSourcesDockWidget->deleteAssetQuiet(toplevelId, name, baseName);
     }
 
 }

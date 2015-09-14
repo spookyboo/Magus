@@ -167,6 +167,12 @@ namespace Magus
     }
 
     //****************************************************************************/
+    void QtSourcesDockWidget::deleteAssetQuiet(int toplevelId, const QString& name, const QString& baseName)
+    {
+        mResourceTreeWidget->deleteResource(toplevelId, name, true);
+    }
+
+    //****************************************************************************/
     void QtSourcesDockWidget::handleResourceSelected(int resourceId)
     {
         // Determine which type is selected

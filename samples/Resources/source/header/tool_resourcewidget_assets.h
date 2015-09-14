@@ -96,6 +96,7 @@ namespace Magus
         signals:
             void tabChanged(int index);
             void fileDropped(int toplevelId, const QString& name, const QString& baseName);
+            void assetDeleted(int toplevelId, const QString& name, const QString& baseName);
 
         private slots:
             void handleTabChanged(int index);
@@ -104,6 +105,11 @@ namespace Magus
             void handleMeshFileDropped (const QString& name, const QString& baseName);
             void handleScriptFileDropped (const QString& name, const QString& baseName);
             void handleTextureFileDropped (const QString& name, const QString& baseName);
+            void handleAudioDeleted(const QString& name, const QString& baseName);
+            void handleMaterialDeleted(const QString& name, const QString& baseName);
+            void handleMeshDeleted(const QString& name, const QString& baseName);
+            void handleScriptDeleted(const QString& name, const QString& baseName);
+            void handleTextureDeleted(const QString& name, const QString& baseName);
 
         private:
             QMainWindow* mParent;

@@ -86,6 +86,38 @@ namespace Magus
     }
 
     //****************************************************************************/
+    void QtExtendedTextureListWidget::keyPressEvent(QKeyEvent* event)
+    {
+        switch (event->key())
+        {
+            case Qt::Key_Delete:
+            {
+                if (count() > 0)
+                {
+                    QListWidgetItem* item = currentItem();
+                    if (item)
+                    {
+                        QWidget* widget = itemWidget(item);
+                        if (widget)
+                        {
+                            int r = row(item);
+                            QtTextureAndText* textureAndText = static_cast<QtTextureAndText*>(widget);
+                            QString name = textureAndText->mName;
+                            QString baseName = textureAndText->mBaseName;
+                            removeItemWidget(item);
+                            takeItem(r);
+                            emit assetDeleted(name, baseName);
+                        }
+                    }
+                }
+            }
+            break;
+        }
+
+        event->accept();
+    }
+
+    //****************************************************************************/
     void QtExtendedTextureListWidget::dropEvent(QDropEvent* event)
     {
         const QMimeData *mimeData = event->mimeData();
@@ -142,6 +174,7 @@ namespace Magus
         connect(mSelectionList, SIGNAL(textureFileDropped(QString,QString)), this, SLOT(handleTextureFileDropped(QString,QString)));
         connect(mSelectionList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(handleSelected(QListWidgetItem*)));
         connect(mSelectionList, SIGNAL(itemEntered(QListWidgetItem*)), this, SLOT(handleMouseOver(QListWidgetItem*)));
+        connect(mSelectionList, SIGNAL(assetDeleted(QString,QString)), this, SLOT(handleAssetDeleted(QString,QString)));
 
         // Layout
         textureSelectionLayout->addWidget(mSelectionList);
@@ -254,6 +287,7 @@ namespace Magus
     //****************************************************************************/
     void QtExtendedTextureWidget::handleSelected(const QString& name, const QString& baseName)
     {
+        // TODO: Make the item in mSelectionList the currentItem
         emit selected(name, baseName);
     }
 
@@ -275,6 +309,12 @@ namespace Magus
             QString name = textureAndText->mName;
             mSelectionList->setToolTip(name);
         }
+    }
+
+    //****************************************************************************/
+    void QtExtendedTextureWidget::handleAssetDeleted(const QString& name, const QString& baseName)
+    {
+        emit assetDeleted(name, baseName);
     }
 
     //****************************************************************************/

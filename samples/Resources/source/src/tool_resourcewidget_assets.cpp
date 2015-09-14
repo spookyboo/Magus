@@ -43,6 +43,7 @@ namespace Magus
         mAudioSelection = new QtAudioWidget(mIconDir, this);
         mAudioSelection->setTextureSize(QSize(112, 120));
         connect(mAudioSelection, SIGNAL(audioFileDropped(QString,QString)), this, SLOT(handleAudioFileDropped(QString,QString)));
+        connect(mAudioSelection, SIGNAL(assetDeleted(QString,QString)), this, SLOT(handleAudioDeleted(QString,QString)));
 
         // Create material selection widget
         QPixmap materialPixmap(mIconDir + TOOL_GENERIC_ASSETWIDGET_ICON_MATERIAL);
@@ -50,6 +51,7 @@ namespace Magus
         mMaterialSelection->setTextureSize(QSize(112, 120));
         mMaterialSelection->setAllowedExtensions(TOOL_RESOURCE_MATERIAL_FORMATS, TOOL_RESOURCE_MATERIAL_FORMATS_LENGTH);
         connect(mMaterialSelection, SIGNAL(fileDropped(QString,QString)), this, SLOT(handleMaterialFileDropped(QString,QString)));
+        connect(mMaterialSelection, SIGNAL(assetDeleted(QString,QString)), this, SLOT(handleMaterialDeleted(QString,QString)));
 
         // Create mesh selection widget
         QPixmap meshPixmap(mIconDir + TOOL_GENERIC_ASSETWIDGET_ICON_MESH);
@@ -57,6 +59,7 @@ namespace Magus
         mMeshSelection->setTextureSize(QSize(112, 120));
         mMeshSelection->setAllowedExtensions(TOOL_RESOURCE_MESH_FORMATS, TOOL_RESOURCE_MESH_FORMATS_LENGTH);
         connect(mMeshSelection, SIGNAL(fileDropped(QString,QString)), this, SLOT(handleMeshFileDropped(QString,QString)));
+        connect(mMeshSelection, SIGNAL(assetDeleted(QString,QString)), this, SLOT(handleMeshDeleted(QString,QString)));
 
         // Create script selection widget
         QPixmap scriptPixmap(mIconDir + TOOL_GENERIC_ASSETWIDGET_ICON_SCRIPT);
@@ -64,11 +67,13 @@ namespace Magus
         mScriptSelection->setTextureSize(QSize(112, 120));
         mScriptSelection->setAllowedExtensions(TOOL_RESOURCE_SCRIPT_FORMATS, TOOL_RESOURCE_SCRIPT_FORMATS_LENGTH);
         connect(mScriptSelection, SIGNAL(fileDropped(QString,QString)), this, SLOT(handleScriptFileDropped(QString,QString)));
+        connect(mScriptSelection, SIGNAL(assetDeleted(QString,QString)), this, SLOT(handleScriptDeleted(QString,QString)));
 
         // Create texture selection widget
         mTextureSelection = new QtDefaultTextureWidget(this);
         mTextureSelection->setTextureSize(QSize(112, 120));
         connect(mTextureSelection, SIGNAL(textureFileDropped(QString,QString)), this, SLOT(handleTextureFileDropped(QString,QString)));
+        connect(mTextureSelection, SIGNAL(assetDeleted(QString,QString)), this, SLOT(handleTextureDeleted(QString,QString)));
 
         // -------------------------------------- Fill the assets widget --------------------------------------
         QIcon audioIcon(mIconDir + TOOL_RESOURCE_ICON_AUDIO);
@@ -250,6 +255,41 @@ namespace Magus
             }
             break;
         }
+    }
+
+    //****************************************************************************/
+    void QtAssetsDockWidget::handleAudioDeleted(const QString& name, const QString& baseName)
+    {
+        // The asset was deleted from the audio widget; signal to higher level
+        emit assetDeleted(TOOL_SOURCES_LEVEL_X000_AUDIO, name, baseName);
+    }
+
+    //****************************************************************************/
+    void QtAssetsDockWidget::handleMaterialDeleted(const QString& name, const QString& baseName)
+    {
+        // The asset was deleted from the material widget; signal to higher level
+        emit assetDeleted(TOOL_SOURCES_LEVEL_X000_MATERIALS, name, baseName);
+    }
+
+    //****************************************************************************/
+    void QtAssetsDockWidget::handleMeshDeleted(const QString& name, const QString& baseName)
+    {
+        // The asset was deleted from the mesh widget; signal to higher level
+        emit assetDeleted(TOOL_SOURCES_LEVEL_X000_MESHES, name, baseName);
+    }
+
+    //****************************************************************************/
+    void QtAssetsDockWidget::handleScriptDeleted(const QString& name, const QString& baseName)
+    {
+        // The asset was deleted from the script widget; signal to higher level
+        emit assetDeleted(TOOL_SOURCES_LEVEL_X000_SCRIPTS, name, baseName);
+    }
+
+    //****************************************************************************/
+    void QtAssetsDockWidget::handleTextureDeleted(const QString& name, const QString& baseName)
+    {
+        // The asset was deleted from the Texture widget; signal to higher level
+        emit assetDeleted(TOOL_SOURCES_LEVEL_X000_TEXTURES, name, baseName);
     }
 
     //****************************************************************************/

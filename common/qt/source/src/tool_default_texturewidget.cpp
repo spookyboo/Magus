@@ -84,6 +84,38 @@ namespace Magus
     }
 
     //****************************************************************************/
+    void QtDefaultTextureListWidget::keyPressEvent(QKeyEvent* event)
+    {
+        switch (event->key())
+        {
+            case Qt::Key_Delete:
+            {
+                if (count() > 0)
+                {
+                    QListWidgetItem* item = currentItem();
+                    if (item)
+                    {
+                        QWidget* widget = itemWidget(item);
+                        if (widget)
+                        {
+                            int r = row(item);
+                            QtDefaultTextureAndText* textureAndText = static_cast<QtDefaultTextureAndText*>(widget);
+                            QString name = textureAndText->mName;
+                            QString baseName = textureAndText->mBaseName;
+                            removeItemWidget(item);
+                            takeItem(r);
+                            emit assetDeleted(name, baseName);
+                        }
+                    }
+                }
+            }
+            break;
+        }
+
+        event->accept();
+    }
+
+    //****************************************************************************/
     void QtDefaultTextureListWidget::dropEvent(QDropEvent* event)
     {
         const QMimeData *mimeData = event->mimeData();
@@ -142,6 +174,7 @@ namespace Magus
         connect(mSelectionList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(handleSelected(QListWidgetItem*)));
         connect(mSelectionList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(handleDoubleClicked(QListWidgetItem*)));
         connect(mSelectionList, SIGNAL(itemEntered(QListWidgetItem*)), this, SLOT(handleMouseOver(QListWidgetItem*)));
+        connect(mSelectionList, SIGNAL(assetDeleted(QString,QString)), this, SLOT(handleAssetDeleted(QString,QString)));
 
         // Layout
         textureSelectionLayout->addWidget(mSelectionList);
@@ -277,6 +310,12 @@ namespace Magus
             QString name = textureAndText->mName;
             mSelectionList->setToolTip(name);
         }
+    }
+
+    //****************************************************************************/
+    void QtDefaultTextureWidget::handleAssetDeleted(const QString& name, const QString& baseName)
+    {
+        emit assetDeleted(name, baseName);
     }
 
     //****************************************************************************/

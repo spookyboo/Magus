@@ -190,14 +190,19 @@ namespace Magus
 
             // Delete a resource from the resource tree. If the resource - identified by means of resourceId (value >= 0) - has
             // child items, the underlying childs are also deleted
-            void deleteResource (int resourceId);
+            // If suppressSignal is true, no signal is emitted
+            void deleteResource (int resourceId, bool suppressSignal = false);
 
             // Delete all resources from the resource tree. If the toplevelresources cannot be deleted, they remain
             void clear (void);
 
             // Delete a resource - identified by resourceName - from the resource tree. The first occurence of
             // 'resourceName' is deleted
-            //void deleteResource (const QString& resourceName);
+            void deleteResource (const QString& name, bool suppressSignal = false);
+
+            // Delete a resource - identified by resourceName - from the resource tree. The scope is narrowed by the
+            // toplevelId; toplevelId is a resourceId with a parentId = 0
+            void deleteResource (int toplevelId, const QString& name, bool suppressSignal = false);
 
             // Move a resource - identified by means of resourceId - from the resource tree to another parent -
             // identified by means of parentId. Both resourceId and parentId must exist, of course.
@@ -253,6 +258,12 @@ namespace Magus
 
             // Return the resourceId of a QTreeWidgetItem
             int getResourceIdFromItem (QTreeWidgetItem* item);
+
+            // Return the resourceId of a QTreeWidgetItem, based on the full qualified name
+            int getResourceIdFromName (const QString& name);
+
+            // Return the resourceId of a QTreeWidgetItem, based on the full qualified name, scoped within a topLevelId
+            int getResourceIdFromToplevelIdAndName (int topLevelId, const QString& name);
 
             // Return the parentId of a QTreeWidgetItem
             int getParentIdFromItem (QTreeWidgetItem* item);

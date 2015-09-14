@@ -657,7 +657,7 @@ namespace Magus
     }
 
     //****************************************************************************/
-    void QtResourceTreeWidget::deleteResource (int resourceId)
+    void QtResourceTreeWidget::deleteResource (int resourceId, bool suppressSignal)
     {
         // Toplevel item may not be deleted if mDeleteTopLevelGroupEnabled is  'false'
         if (!mDeleteTopLevelGroupEnabled && getParentId(resourceId) == 0)
@@ -669,7 +669,22 @@ namespace Magus
         delete item;
 
         // Signal
-        emit resourceDeleted(resourceId);
+        if (!suppressSignal)
+            emit resourceDeleted(resourceId);
+    }
+
+    //****************************************************************************/
+    void QtResourceTreeWidget::deleteResource (const QString& name, bool suppressSignal)
+    {
+        int resourceId = getResourceIdFromName(name);
+        deleteResource(resourceId, suppressSignal);
+    }
+
+    //****************************************************************************/
+    void QtResourceTreeWidget::deleteResource (int toplevelId, const QString& name, bool suppressSignal)
+    {
+        int resourceId = getResourceIdFromToplevelIdAndName(toplevelId, name);
+        deleteResource(resourceId, suppressSignal);
     }
 
     //****************************************************************************/
@@ -893,6 +908,41 @@ namespace Magus
             id = item->data(TOOL_RESOURCETREE_KEY_RESOURCEID, Qt::UserRole).toInt();
 
         return id;
+    }
+
+    //****************************************************************************/
+    int QtResourceTreeWidget::getResourceIdFromName (const QString& name)
+    {
+        QTreeWidgetItemIterator it(mResourceTree);
+        QString fullQualifiedResourceName;
+        while (*it)
+        {
+            fullQualifiedResourceName = getFullQualifiedNameFromItem(*it);
+            if (name == fullQualifiedResourceName)
+                return getResourceIdFromItem(*it);
+
+            ++it;
+        }
+    }
+
+    //****************************************************************************/
+    int QtResourceTreeWidget::getResourceIdFromToplevelIdAndName (int topLevelId, const QString& name)
+    {
+        QTreeWidgetItemIterator it(mResourceTree);
+        QString fullQualifiedResourceName;
+        int top;
+        while (*it)
+        {
+            top = getToplevelParentIdFromItem(*it);
+            if (top == topLevelId)
+            {
+                fullQualifiedResourceName = getFullQualifiedNameFromItem(*it);
+                if (name == fullQualifiedResourceName)
+                    return getResourceIdFromItem(*it);
+            }
+
+            ++it;
+        }
     }
 
     //****************************************************************************/

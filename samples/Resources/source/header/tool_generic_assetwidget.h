@@ -82,9 +82,13 @@ namespace Magus
             // Emitted when a file is dropped
             void fileDropped(const QString& name, const QString& baseName);
 
+            // Emitted when an asset is deleted
+            void assetDeleted(const QString& name, const QString& baseName);
+
         protected:
             QString mAllowedExtensions[200];
             int mAllowedExtensionsLength;
+            virtual void keyPressEvent(QKeyEvent* event);
             virtual void dropEvent(QDropEvent* event);
             virtual void dragEnterEvent(QDragEnterEvent *event);
             virtual void dragMoveEvent(QDragMoveEvent *event);
@@ -155,11 +159,15 @@ namespace Magus
             // Emitted when a file is dropped
             void fileDropped(const QString& name, const QString& baseName);
 
+            // Emitted when an asset is deleted
+            void assetDeleted(const QString& name, const QString& baseName);
+
         protected slots:
             void handleSelected(QListWidgetItem* item);
             void handleDoubleClicked(QListWidgetItem* item);
             void handleFileDropped (const QString& name, const QString& baseName);
             void handleMouseOver(QListWidgetItem* item);
+            void handleAssetDeleted(const QString& name, const QString& baseName);
 
         protected:
             void loadFileInViewer(const QString& fileName, const QString& baseFileName);

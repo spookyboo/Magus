@@ -1,10 +1,11 @@
 Things to do:
-=========
+=====================================================================================================================================================
 
-- QtAudioWidget: Pressing Delete button deletes the asset (also add to context menu)
+Updates:
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+- QtAudioWidget: Delete from context menu
 - QtAudioWidget: Set external application to start when doubleclicked and edit audio (setSystemCommandEditAsset)
 - QtDefaultTextureWidget: Implement double mouse click
-- QtDefaultTextureWidget: Pressing Delete button deletes the asset
 - QtDefaultTextureWidget: Set external application to start when doubleclicked and edit texture (setSystemCommandEditAsset)
 - QtDefaultTextureWidget: Add context menu (edit, delete, duplicate)
 - QtResourceTreeWidget: Add to contextmenu => Duplicate asset (create new entry and emit signal with existing resourceId and new resourceId)
@@ -14,16 +15,11 @@ Things to do:
 - QtResourceWidget: implement setResources
 - QtFileReader: Filter by mask
 - QtExtendedTextureWidget: Implement double mouse click
-- QtExtendedTextureWidget: Pressing Delete button deletes the asset
 - QtExtendedTextureWidget: Set external application to start when doubleclicked and edit texture (setSystemCommandEditAsset)
 - QtExtendedTextureWidget: Add context menu (edit, delete, duplicate)
-- QtGradientWidget: Bug? Add new alphamarker => all alpha becomes 0% unless another alpha marker has been selected?
 - QtSimpleTextureWidget: Implement double mouse click
-- QtGenericAssetWidget: Pressing Delete button deletes the asset
 - QtGenericAssetWidget: Set external application to start when doubleclicked and edit asset (setSystemCommandEditAsset)
 - QtGenericAssetWidget: Add context menu (edit, delete, duplicate)
-- QtVideoWidget: Same as QtAudioWidget, put playing small videos on the icon
-- QtResourcePathWidget: Same as QtGenericAssetWidget, but icons represent a full path (directory); usefull to create a resource file for Ogre3D
 
 - QtNodeEditor: Zooming (scrollwheel) only changes the size of the nodes, but not their mutual distance
 - QtNodeEditor: Display value of a port (nice to have)
@@ -31,10 +27,26 @@ Things to do:
 - QtNodeEditor: Mouse over (over a node or port) displays info (nice to have)
 - QtNodeEditor: Implement round shaped nodes (nice to have)
 
+
+New:
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+- QtVideoWidget: Same as QtAudioWidget, put playing small videos on the icon
+- QtResourcePathWidget: Same as QtGenericAssetWidget, but icons represent a full path (directory); usefull to create a resource file for Ogre3D
+
+
+Bugs:
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+- QtGradientWidget: Bug? Add new alphamarker => all alpha becomes 0% unless another alpha marker has been selected?
+
+
 Done:
-===
+=====================================================================================================================================================
 - QtResourceWidget: Drag and drop from file explorer => done 5/9/2015
 - QtAudioWidget: Mouseover shows full name => done 5/9/2015
 - QtDefaultTextureWidget: Mouseover shows full name => done 5/9/2015
 - QtExtendedTextureWidget: Mouseover shows full name => done 5/9/2015
 - QtGenericAssetWidget: Mouseover shows full name => done 5/9/2015
+- QtAudioWidget: Pressing Delete button deletes the asset => done 14/9/2015
+- QtDefaultTextureWidget: Pressing Delete button deletes the asset => done 14/9/2015
+- QtExtendedTextureWidget: Pressing Delete button deletes the asset => done 14/9/2015
+- QtGenericAssetWidget: Pressing Delete button deletes the asset => done 14/9/2015

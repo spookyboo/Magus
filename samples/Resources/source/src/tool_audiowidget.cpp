@@ -106,6 +106,38 @@ namespace Magus
     }
 
     //****************************************************************************/
+    void QtAudioListWidget::keyPressEvent(QKeyEvent* event)
+    {
+        switch (event->key())
+        {
+            case Qt::Key_Delete:
+            {
+                if (count() > 0)
+                {
+                    QListWidgetItem* item = currentItem();
+                    if (item)
+                    {
+                        QWidget* widget = itemWidget(item);
+                        if (widget)
+                        {
+                            int r = row(item);
+                            QtAudioAndText* audioAndText = static_cast<QtAudioAndText*>(widget);
+                            QString name = audioAndText->mName;
+                            QString baseName = audioAndText->mBaseName;
+                            removeItemWidget(item);
+                            takeItem(r);
+                            emit assetDeleted(name, baseName);
+                        }
+                    }
+                }
+            }
+            break;
+        }
+
+        event->accept();
+    }
+
+    //****************************************************************************/
     void QtAudioListWidget::dropEvent(QDropEvent* event)
     {
         const QMimeData *mimeData = event->mimeData();
@@ -169,6 +201,7 @@ namespace Magus
         connect(mSelectionList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(handleSelected(QListWidgetItem*)));
         connect(mSelectionList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(handleDoubleClicked(QListWidgetItem*)));
         connect(mSelectionList, SIGNAL(itemEntered(QListWidgetItem*)), this, SLOT(handleMouseOver(QListWidgetItem*)));
+        connect(mSelectionList, SIGNAL(assetDeleted(QString,QString)), this, SLOT(handleAssetDeleted(QString,QString)));
 
         // Layout
         textureSelectionLayout->addWidget(mSelectionList);
@@ -208,6 +241,9 @@ namespace Magus
                 if ((audioAndText->mName == name && nameIsFullName) ||
                     (audioAndText->mBaseName == name && !nameIsFullName))
                 {
+                    if (mLastSelectedAudioAndText = audioAndText)
+                        mLastSelectedAudioAndText = 0;
+
                     row = mSelectionList->row(item);
                     mSelectionList->removeItemWidget(item);
                     mSelectionList->takeItem(row);
@@ -232,6 +268,9 @@ namespace Magus
                 audioAndText = static_cast<QtAudioAndText*>(widget);
                 if (audioAndText->mName == name && audioAndText->mBaseName == baseName)
                 {
+                    if (mLastSelectedAudioAndText = audioAndText)
+                        mLastSelectedAudioAndText = 0;
+
                     row = mSelectionList->row(item);
                     mSelectionList->removeItemWidget(item);
                     mSelectionList->takeItem(row);
@@ -253,8 +292,8 @@ namespace Magus
             break;
 
         }
-        QObject::eventFilter(object, event);
-        return false;
+        //event->accept();
+        return QObject::eventFilter(object, event);
     }
 
     //****************************************************************************/
@@ -272,6 +311,7 @@ namespace Magus
                     pos.setY(event->screenPos().y());
                     mContextMenu->popup(pos);
                 }
+                event->accept();
             }
             break;
         }
@@ -320,11 +360,19 @@ namespace Magus
             // First stop the audio of the latest one
             if (mLastSelectedAudioAndText != audioAndText)
             {
-                stopAudio(mLastSelectedAudioAndText);
+                if (mLastSelectedAudioAndText)
+                    stopAudio(mLastSelectedAudioAndText);
                 mLastSelectedAudioAndText = audioAndText;
             }
             emit selected(audioAndText->mName, audioAndText->mBaseName);
         }
+    }
+
+    //****************************************************************************/
+    void QtAudioWidget::handleAssetDeleted(const QString& name, const QString& baseName)
+    {
+        mLastSelectedAudioAndText = 0; // Set to 0, because this one does not exist anymore
+        emit assetDeleted(name, baseName);
     }
 
     //****************************************************************************/

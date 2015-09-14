@@ -96,6 +96,9 @@ namespace Magus
             // Suppressing the signal prevents that an asset is added to the asset widget twice.
             void addAssetQuiet(int toplevelId, const QString& name, const QString& baseName);
 
+            // Delete an asset entry from the resource tree, but don't signal anything.
+            void deleteAssetQuiet(int toplevelId, const QString& name, const QString& baseName);
+
         protected:
             void initializeResourceTree (void);
 

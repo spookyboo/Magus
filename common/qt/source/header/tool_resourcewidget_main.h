@@ -74,6 +74,7 @@ namespace Magus
             void handleResourceSearchReset(void);
             void handleTabChanged(int toplevelId);
             void handleFileDropped(int toplevelId, const QString& name, const QString& baseName);
+            void handleAssetDeleted(int toplevelId, const QString& name, const QString& baseName);
 
         private:
             void createActions(void);

@@ -95,7 +95,11 @@ namespace Magus
             // Emitted when an audio file is dropped
             void audioFileDropped(const QString& name, const QString& baseName);
 
+            // Emitted when an asset is deleted
+            void assetDeleted(const QString& name, const QString& baseName);
+
         protected:
+            virtual void keyPressEvent(QKeyEvent* event);
             virtual void dropEvent(QDropEvent* event);
             virtual void dragEnterEvent(QDragEnterEvent *event);
             virtual void dragMoveEvent(QDragMoveEvent *event);
@@ -154,14 +158,17 @@ namespace Magus
             void setDropFilesAllowed(bool allowed);
 
         signals:
-            // Emitted when a texture is selected (via the mouse)
+            // Emitted when an audio asset is selected (via the mouse) from the QtAudioWidget
             void selected(const QString& name, const QString& baseName);
 
             // Emitted when a texture is doubleclicked (via the mouse)
             void doubleClicked(const QString& name, const QString& baseName);
 
-            // Emitted when an audio file is dropped
+            // Emitted when an audio file is dropped on the QtAudioWidget
             void audioFileDropped(const QString& name, const QString& baseName);
+
+            // Emitted when an asset is deleted from the QtAudioWidget
+            void assetDeleted(const QString& name, const QString& baseName);
 
         protected slots:
             void handleSelected (QListWidgetItem* item);
@@ -170,6 +177,7 @@ namespace Magus
             void handlePositionChanged (qint64);
             void handleAudioFileDropped (const QString& name, const QString& baseName);
             void handleMouseOver(QListWidgetItem* item);
+            void handleAssetDeleted(const QString& name, const QString& baseName);
 
         protected:
             void mouseClickHandler(QMouseEvent* event);

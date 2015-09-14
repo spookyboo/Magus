@@ -84,6 +84,38 @@ namespace Magus
     }
 
     //****************************************************************************/
+    void QtGenericAssetListWidget::keyPressEvent(QKeyEvent* event)
+    {
+        switch (event->key())
+        {
+            case Qt::Key_Delete:
+            {
+                if (count() > 0)
+                {
+                    QListWidgetItem* item = currentItem();
+                    if (item)
+                    {
+                        QWidget* widget = itemWidget(item);
+                        if (widget)
+                        {
+                            int r = row(item);
+                            QtGenericAssetAndText* assetAndText = static_cast<QtGenericAssetAndText*>(widget);
+                            QString name = assetAndText->mName;
+                            QString baseName = assetAndText->mBaseName;
+                            removeItemWidget(item);
+                            takeItem(r);
+                            emit assetDeleted(name, baseName);
+                        }
+                    }
+                }
+            }
+            break;
+        }
+
+        event->accept();
+    }
+
+    //****************************************************************************/
     void QtGenericAssetListWidget::dropEvent(QDropEvent* event)
     {
         const QMimeData *mimeData = event->mimeData();
@@ -153,6 +185,7 @@ namespace Magus
         connect(mSelectionList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(handleSelected(QListWidgetItem*)));
         connect(mSelectionList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(handleDoubleClicked(QListWidgetItem*)));
         connect(mSelectionList, SIGNAL(itemEntered(QListWidgetItem*)), this, SLOT(handleMouseOver(QListWidgetItem*)));
+        connect(mSelectionList, SIGNAL(assetDeleted(QString,QString)), this, SLOT(handleAssetDeleted(QString,QString)));
 
         // Textviewer
         mTextViewer = new QPlainTextEdit();
@@ -294,6 +327,12 @@ namespace Magus
             QString name = assetAndText->mName;
             mSelectionList->setToolTip(name);
         }
+    }
+
+    //****************************************************************************/
+    void QtGenericAssetWidget::handleAssetDeleted(const QString& name, const QString& baseName)
+    {
+        emit assetDeleted(name, baseName);
     }
 
     //****************************************************************************/

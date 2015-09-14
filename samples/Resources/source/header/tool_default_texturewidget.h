@@ -73,7 +73,11 @@ namespace Magus
             // Emitted when a texture file is dropped
             void textureFileDropped(const QString& name, const QString& baseName);
 
+            // Emitted when an asset is deleted
+            void assetDeleted(const QString& name, const QString& baseName);
+
         protected:
+            virtual void keyPressEvent(QKeyEvent* event);
             virtual void dropEvent(QDropEvent* event);
             virtual void dragEnterEvent(QDragEnterEvent *event);
             virtual void dragMoveEvent(QDragMoveEvent *event);
@@ -141,11 +145,15 @@ namespace Magus
             // Emitted when a texture file is dropped
             void textureFileDropped(const QString& name, const QString& baseName);
 
+            // Emitted when an asset is deleted
+            void assetDeleted(const QString& name, const QString& baseName);
+
         protected slots:
             void handleSelected(QListWidgetItem* item);
             void handleDoubleClicked(QListWidgetItem* item);
             void handleTextureFileDropped (const QString& name, const QString& baseName);
             void handleMouseOver(QListWidgetItem* item);
+            void handleAssetDeleted(const QString& name, const QString& baseName);
 
         private:
             QtDefaultTextureListWidget* mSelectionList;
