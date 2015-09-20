@@ -155,6 +155,8 @@ namespace Magus
     QtDefaultTextureWidget::QtDefaultTextureWidget(QWidget* parent) : QWidget(parent)
     {
         setWindowTitle(QString("Texture selection"));
+        mNameTexture = QString("");
+        mBaseNameTexture = QString("");
         mSystemCommandEditAsset = QString("");
         mTextureSize = QSize(128, 128);
         mOriginIsFile = true;
@@ -247,6 +249,18 @@ namespace Magus
     }
 
     //****************************************************************************/
+    const QString& QtDefaultTextureWidget::getNameTexture(void)
+    {
+        return mNameTexture;
+    }
+
+    //****************************************************************************/
+    const QString& QtDefaultTextureWidget::getBaseNameTexture(void)
+    {
+        return mBaseNameTexture;
+    }
+
+    //****************************************************************************/
     void QtDefaultTextureWidget::setOriginIsFile(bool originIsFile)
     {
         mOriginIsFile = originIsFile;
@@ -265,6 +279,8 @@ namespace Magus
         if (widget)
         {
             QtDefaultTextureAndText* textureAndText = static_cast<QtDefaultTextureAndText*>(widget);
+            mNameTexture = textureAndText->mName;
+            mBaseNameTexture = textureAndText->mBaseName;
             emit selected(textureAndText->mName, textureAndText->mBaseName);
         }
     }

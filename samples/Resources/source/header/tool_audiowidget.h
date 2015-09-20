@@ -137,6 +137,14 @@ namespace Magus
             // Clear the content of the widget
             void clearContent(void);
 
+            // Return the name of the selected audio
+            // E.g. "c:/temp/Audio/bell.wav"
+            const QString& getNameAudio(void);
+
+            // Return the base name of the selected audio
+            // E.g. "bell.wav" in case the name of the audio is a full qualified filename.
+            const QString& getBaseNameAudio(void);
+
             // Define the width and height of a texture in the selection box
             void setTextureSize (QSize size);
 
@@ -183,6 +191,8 @@ namespace Magus
             void stopAudio(QtAudioAndText* audioAndText = 0);
 
         private:
+            QString mNameAudio; // In case of a filename, this is the fully qualified filename (path + filename)
+            QString mBaseNameAudio; // If mNameAudio is a filename, this is the basename.
             QString mSystemCommandEditAsset;
             QString mCurrentAudioPlaying;
             QtAudioAndText* mLastSelectedAudioAndText;

@@ -164,6 +164,8 @@ namespace Magus
     QtExtendedTextureWidget::QtExtendedTextureWidget(QWidget* parent) : QWidget(parent)
     {
         setWindowTitle(QString("Texture selection"));
+        mNameTexture = QString("");
+        mBaseNameTexture = QString("");
         mSystemCommandEditAsset = QString("");
         mTextureSize = QSize(128, 128);
         mOriginIsFile = true;
@@ -259,6 +261,18 @@ namespace Magus
     }
 
     //****************************************************************************/
+    const QString& QtExtendedTextureWidget::getNameTexture(void)
+    {
+        return mNameTexture;
+    }
+
+    //****************************************************************************/
+    const QString& QtExtendedTextureWidget::getBaseNameTexture(void)
+    {
+        return mBaseNameTexture;
+    }
+
+    //****************************************************************************/
     void QtExtendedTextureWidget::setOriginIsFile(bool originIsFile)
     {
         mOriginIsFile = originIsFile;
@@ -285,6 +299,8 @@ namespace Magus
     void QtExtendedTextureWidget::handleSelected(const QString& name, const QString& baseName)
     {
         // TODO: Make the item in mSelectionList the currentItem
+        mNameTexture = name;
+        mBaseNameTexture = baseName;
         emit selected(name, baseName);
     }
 
@@ -296,17 +312,6 @@ namespace Magus
         {
             QtTextureAndText* textureAndText = static_cast<QtTextureAndText*>(widget);
             handleDoubleClicked(textureAndText->mName, textureAndText->mBaseName);
-            /*
-            if (!mSystemCommandEditAsset.isEmpty())
-            {
-                QProcess p;
-                QStringList sl;
-                sl.append(textureAndText->mName);
-                p.startDetached(mSystemCommandEditAsset, sl);
-            }
-
-            emit selected(textureAndText->mName, textureAndText->mBaseName);
-            */
         }
     }
 
@@ -321,7 +326,7 @@ namespace Magus
             p.startDetached(mSystemCommandEditAsset, sl);
         }
 
-        emit selected(name, baseName);
+        emit doubleClicked(name, baseName);
     }
 
     //****************************************************************************/

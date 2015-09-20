@@ -120,6 +120,14 @@ namespace Magus
             // Delete an item from the QtGenericAssetWidget. Both name (full qualified name) and baseName must match
             void deleteAsset(const QString& name, const QString& baseName);
 
+            // Return the name of the selected asset
+            // E.g. "c:/temp/assets/xyz.txt"
+            const QString& getNameAsset(void);
+
+            // Return the base name of the selected asset
+            // E.g. "xyz.txt" in case the name of the asset is a full qualified filename.
+            const QString& getBaseNameAsset(void);
+
             // If a n asset is originated from a file, setOriginIsFile must be set to 'true'
             void setOriginIsFile(bool originIsFile);
 
@@ -169,6 +177,8 @@ namespace Magus
             void loadFileInViewer(const QString& fileName, const QString& baseFileName);
 
         private:
+            QString mNameAsset;
+            QString mBaseNameAsset;
             QString mSystemCommandEditAsset;
             QPixmap mDefaultPixmapAsset;
             QtGenericAssetListWidget* mSelectionList;

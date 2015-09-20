@@ -119,6 +119,14 @@ namespace Magus
             // Delete an item from the QtExtendedTextureWidget. Both name (full qualified name) and baseName must match
             void deleteTexture(const QString& name, const QString& baseName);
 
+            // Return the name of the selected texture
+            // E.g. "c:/temp/Tools/common/icons/info.png"
+            const QString& getNameTexture(void);
+
+            // Return the base name of the selected texture
+            // E.g. "info.png" in case the name of the texture is a full qualified filename.
+            const QString& getBaseNameTexture(void);
+
             // If a texture is originated from a file, setOriginIsFile must be set to 'true'
             void setOriginIsFile(bool originIsFile);
 
@@ -144,6 +152,9 @@ namespace Magus
             // Emitted when a texture is selected (via the mouse)
             void selected(const QString& name, const QString& baseName);
 
+            // Emitted when a texture is doubleclicked (via the mouse)
+            void doubleClicked(const QString& name, const QString& baseName);
+
             // Emitted when a texture file is dropped
             void textureFileDropped(const QString& name, const QString& baseName);
 
@@ -160,6 +171,8 @@ namespace Magus
             void handleAssetDeleted(const QString& name, const QString& baseName);
 
         private:
+            QString mNameTexture; // In case of a filename, this is the fully qualified filename (path + filename)
+            QString mBaseNameTexture; // If mNameTexture is a filename, this is the basename.
             QString mSystemCommandEditAsset;
             QtExtendedTextureListWidget* mSelectionList;
             QSize mTextureSize;

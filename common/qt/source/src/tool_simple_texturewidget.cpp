@@ -53,7 +53,8 @@ namespace Magus
         mSelectionList->setMouseTracking(true);
         mSelectionModel = new QtSimpleTextureModel();
         mSelectionList->setModel(mSelectionModel);
-        connect(mSelectionList, SIGNAL(clicked(QModelIndex)), this, SLOT(handleSelected(void)));
+        connect(mSelectionList, SIGNAL(clicked(QModelIndex)), this, SLOT(handleSelected(QModelIndex)));
+        connect(mSelectionList, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(handleDoubleClicked(QModelIndex)));
         connect(mSelectionList, SIGNAL(entered(QModelIndex)), this, SLOT(mouseOver(QModelIndex)));
 
         // Layout
@@ -104,35 +105,43 @@ namespace Magus
     }
 
     //****************************************************************************/
-    void QtSimpleTextureWidget::handleSelected(void)
+    void QtSimpleTextureWidget::handleSelected(QModelIndex index)
     {
-        QModelIndex selectedTexture = mSelectionList->currentIndex();
-        QString name = mSelectionModel->getName(selectedTexture);
+        QString name = index.data(Qt::UserRole + 1).toString();
         if (!name.isEmpty())
         {
             mNameTexture = name;
-
             if (mOriginIsFile)
             {
                 QFileInfo fileInfo(name);
                 name = fileInfo.fileName();
             }
-
             mBaseNameTexture = name;
             emit selected(mNameTexture);
         }
     }
 
     //****************************************************************************/
+    void QtSimpleTextureWidget::handleDoubleClicked(QModelIndex index)
+    {
+        QString name = index.data(Qt::UserRole + 1).toString();
+        if (!name.isEmpty())
+            emit doubleClicked(name);
+    }
+
+    //****************************************************************************/
     void QtSimpleTextureWidget::mouseOver(QModelIndex index)
     {
         QString name = index.data(Qt::UserRole + 1).toString();
-        if (mOriginIsFile)
+        if (!name.isEmpty())
         {
-            QFileInfo fileInfo(name);
-            name = fileInfo.fileName();
+            if (mOriginIsFile)
+            {
+                QFileInfo fileInfo(name);
+                name = fileInfo.fileName();
+            }
+            mSelectionList->setToolTip(name);
         }
-        mSelectionList->setToolTip(name);
     }
 
     //****************************************************************************/

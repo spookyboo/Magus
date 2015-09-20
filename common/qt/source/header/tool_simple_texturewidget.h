@@ -79,8 +79,12 @@ namespace Magus
             // Emitted when a texture is selected (via the mouse)
             void selected(const QString& name);
 
+            // Emitted when a texture is double clicked (via the mouse)
+            void doubleClicked(const QString& name);
+
         protected slots:
-            void handleSelected(void);
+            void handleSelected(QModelIndex index);
+            void handleDoubleClicked(QModelIndex index);
             void mouseOver(QModelIndex index);
 
         private:

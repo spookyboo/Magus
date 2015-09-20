@@ -166,6 +166,8 @@ namespace Magus
     //****************************************************************************/
     QtGenericAssetWidget::QtGenericAssetWidget(QPixmap defaultPixmap, bool viewEnabled, QWidget* parent) : QWidget(parent)
     {
+        mNameAsset = QString("");
+        mBaseNameAsset = QString("");
         mSystemCommandEditAsset = QString("");
         mDefaultPixmapAsset = defaultPixmap;
         setWindowTitle(QString("Texture selection"));
@@ -265,6 +267,18 @@ namespace Magus
     }
 
     //****************************************************************************/
+    const QString& QtGenericAssetWidget::getNameAsset(void)
+    {
+        return mNameAsset;
+    }
+
+    //****************************************************************************/
+    const QString& QtGenericAssetWidget::getBaseNameAsset(void)
+    {
+        return mBaseNameAsset;
+    }
+
+    //****************************************************************************/
     void QtGenericAssetWidget::setOriginIsFile(bool originIsFile)
     {
         mOriginIsFile = originIsFile;
@@ -283,6 +297,8 @@ namespace Magus
         if (widget)
         {
             QtGenericAssetAndText* assetAndText = static_cast<QtGenericAssetAndText*>(widget);
+            mNameAsset = assetAndText->mName;
+            mBaseNameAsset = assetAndText->mBaseName;
             emit selected(assetAndText->mName, assetAndText->mBaseName);
         }
     }
@@ -306,7 +322,7 @@ namespace Magus
                     p.startDetached(mSystemCommandEditAsset, sl);
                 }
             }
-            emit selected(assetAndText->mName, assetAndText->mBaseName);
+            emit doubleClicked(assetAndText->mName, assetAndText->mBaseName);
         }
     }
 

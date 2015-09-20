@@ -177,6 +177,8 @@ namespace Magus
     //****************************************************************************/
     QtAudioWidget::QtAudioWidget(const QString& iconDir, QWidget* parent) : QWidget(parent)
     {
+        mNameAudio = QString("");
+        mBaseNameAudio = QString("");
         mSystemCommandEditAsset = QString("");
         mCurrentAudioPlaying = QString("");
         mLastSelectedAudioAndText = 0;
@@ -282,6 +284,18 @@ namespace Magus
     }
 
     //****************************************************************************/
+    const QString& QtAudioWidget::getNameAudio(void)
+    {
+        return mNameAudio;
+    }
+
+    //****************************************************************************/
+    const QString& QtAudioWidget::getBaseNameAudio(void)
+    {
+        return mBaseNameAudio;
+    }
+
+    //****************************************************************************/
     bool QtAudioWidget::eventFilter(QObject* object, QEvent* event)
     {
         //QMessageBox::information(0, "test", "test"); // Test
@@ -353,6 +367,8 @@ namespace Magus
                     stopAudio(mLastSelectedAudioAndText);
                 mLastSelectedAudioAndText = audioAndText;
             }
+            mNameAudio = audioAndText->mName;
+            mBaseNameAudio = audioAndText->mBaseName;
             emit selected(audioAndText->mName, audioAndText->mBaseName);
         }
     }
