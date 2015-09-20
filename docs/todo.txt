@@ -4,21 +4,14 @@ Things to do:
 Updates:
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 - QtAudioWidget: Delete from context menu
-- QtAudioWidget: Set external application to start when doubleclicked and edit audio (setSystemCommandEditAsset)
-- QtDefaultTextureWidget: Implement double mouse click
-- QtDefaultTextureWidget: Set external application to start when doubleclicked and edit texture (setSystemCommandEditAsset)
 - QtDefaultTextureWidget: Add context menu (edit, delete, duplicate)
 - QtResourceTreeWidget: Add to contextmenu => Duplicate asset (create new entry and emit signal with existing resourceId and new resourceId)
 - QtResourceTreeWidget: getAssets (returns only the assets of all groups and subgroups, but not the groups themselves)
 - QtResourceTreeWidget: getGroups (returns only the groups/subgroups, but not the assets)
-- QtResourceTreeWidget: Delete function => add argument to suppress signal
 - QtResourceWidget: implement setResources
 - QtFileReader: Filter by mask
-- QtExtendedTextureWidget: Implement double mouse click
-- QtExtendedTextureWidget: Set external application to start when doubleclicked and edit texture (setSystemCommandEditAsset)
 - QtExtendedTextureWidget: Add context menu (edit, delete, duplicate)
 - QtSimpleTextureWidget: Implement double mouse click
-- QtGenericAssetWidget: Set external application to start when doubleclicked and edit asset (setSystemCommandEditAsset)
 - QtGenericAssetWidget: Add context menu (edit, delete, duplicate)
 
 - QtNodeEditor: Zooming (scrollwheel) only changes the size of the nodes, but not their mutual distance
@@ -50,3 +43,10 @@ Done:
 - QtDefaultTextureWidget: Pressing Delete button deletes the asset => done 14/9/2015
 - QtExtendedTextureWidget: Pressing Delete button deletes the asset => done 14/9/2015
 - QtGenericAssetWidget: Pressing Delete button deletes the asset => done 14/9/2015
+- QtResourceTreeWidget: Delete function => add argument to suppress signal => done 14/9/2015
+- QtAudioWidget: Set external application to start when doubleclicked and edit audio (setSystemCommandEditAsset) => done 20/9/2015
+- QtDefaultTextureWidget: Set external application to start when doubleclicked and edit texture (setSystemCommandEditAsset) => done 20/9/2015
+- QtExtendedTextureWidget: Set external application to start when doubleclicked and edit texture (setSystemCommandEditAsset) => done 20/9/2015
+- QtGenericAssetWidget: Set external application to start when doubleclicked and edit asset (setSystemCommandEditAsset) => done 20/9/2015
+- QtDefaultTextureWidget: Implement double mouse click => done 20/9/2015
+- QtExtendedTextureWidget: Implement double mouse click => done 20/9/2015

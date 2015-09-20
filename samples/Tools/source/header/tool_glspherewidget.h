@@ -57,6 +57,7 @@ namespace Magus
     signals:
         void clicked();
         void selected(const QString& fullName, const QString& baseName);
+        void doubleClicked(const QString& fullName, const QString& baseName);
 
     protected:
         void initializeGL();
@@ -65,6 +66,7 @@ namespace Magus
         void mousePressEvent(QMouseEvent *event);
         void mouseMoveEvent(QMouseEvent *event);
         void mouseReleaseEvent(QMouseEvent *event);
+        void mouseDoubleClickEvent(QMouseEvent *event);
 
     private:
         void buildSphere(void);

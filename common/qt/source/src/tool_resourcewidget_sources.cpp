@@ -181,7 +181,7 @@ namespace Magus
         {
             QtSourcesInfo info = it.value();
             emit resourceSelected(info.toplevelId, info.parentId, info.resourceId, info.fileName, info.baseName);
-            //QMessageBox::information(0, QString("this"), QVariant(info.toplevelId).toString()); // testtesttesttest
+            //QMessageBox::information(0, QString("this"), QVariant(info.toplevelId).toString()); // test
         }
     }
 

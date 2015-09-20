@@ -25,6 +25,7 @@
 #include <QDir>
 #include <QImageReader>
 #include <QListWidgetItem>
+#include <QProcess>
 #include "magus_core.h"
 #include "tool_extended_texturewidget.h"
 
@@ -48,6 +49,7 @@ namespace Magus
         mBaseNameEdit->setText(mBaseName);
         mBaseNameEdit->setEnabled(false);
         connect(mSphereWidget, SIGNAL(selected(QString,QString)), this, SLOT(handleSelected(QString,QString)));
+        connect(mSphereWidget, SIGNAL(doubleClicked(QString,QString)), this, SLOT(handleDoubleClicked(QString,QString)));
         setMouseTracking(true);
 
         // Layout
@@ -68,6 +70,12 @@ namespace Magus
     void QtTextureAndText::handleSelected(const QString& name, const QString& baseName)
     {
         emit selected(name, baseName);
+    }
+
+    //****************************************************************************/
+    void QtTextureAndText::handleDoubleClicked(const QString& name, const QString& baseName)
+    {
+        emit doubleClicked(name, baseName);
     }
 
     //****************************************************************************/
@@ -156,8 +164,7 @@ namespace Magus
     QtExtendedTextureWidget::QtExtendedTextureWidget(QWidget* parent) : QWidget(parent)
     {
         setWindowTitle(QString("Texture selection"));
-        mNameTexture = QString("");
-        mBaseNameTexture = QString("");
+        mSystemCommandEditAsset = QString("");
         mTextureSize = QSize(128, 128);
         mOriginIsFile = true;
         QHBoxLayout* mainLayout = new QHBoxLayout;
@@ -173,6 +180,7 @@ namespace Magus
         mSelectionList->setWordWrap(true);
         connect(mSelectionList, SIGNAL(textureFileDropped(QString,QString)), this, SLOT(handleTextureFileDropped(QString,QString)));
         connect(mSelectionList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(handleSelected(QListWidgetItem*)));
+        connect(mSelectionList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(handleDoubleClicked(QListWidgetItem*)));
         connect(mSelectionList, SIGNAL(itemEntered(QListWidgetItem*)), this, SLOT(handleMouseOver(QListWidgetItem*)));
         connect(mSelectionList, SIGNAL(assetDeleted(QString,QString)), this, SLOT(handleAssetDeleted(QString,QString)));
 
@@ -196,8 +204,9 @@ namespace Magus
         mSelectionList->addItem(item);
         mSelectionList->setItemWidget(item, textureAndText);
 
-        // Needed to do this on a detailed (item) level when the texture itself is selected
+        // Needed to do this on a detailed (item) level when the texture itself is selected or double clicked
         connect(textureAndText, SIGNAL(selected(QString,QString)), this, SLOT(handleSelected(QString,QString)));
+        connect(textureAndText, SIGNAL(doubleClicked(QString,QString)), this, SLOT(handleDoubleClicked(QString,QString)));
     }
 
     //****************************************************************************/
@@ -262,18 +271,6 @@ namespace Magus
     }
 
     //****************************************************************************/
-    const QString& QtExtendedTextureWidget::getNameTexture(void)
-    {
-        return mNameTexture;
-    }
-
-    //****************************************************************************/
-    const QString& QtExtendedTextureWidget::getBaseNameTexture(void)
-    {
-        return mBaseNameTexture;
-    }
-
-    //****************************************************************************/
     void QtExtendedTextureWidget::handleSelected(QListWidgetItem* item)
     {
         QWidget* widget = mSelectionList->itemWidget(item);
@@ -288,6 +285,42 @@ namespace Magus
     void QtExtendedTextureWidget::handleSelected(const QString& name, const QString& baseName)
     {
         // TODO: Make the item in mSelectionList the currentItem
+        emit selected(name, baseName);
+    }
+
+    //****************************************************************************/
+    void QtExtendedTextureWidget::handleDoubleClicked(QListWidgetItem* item)
+    {
+        QWidget* widget = mSelectionList->itemWidget(item);
+        if (widget)
+        {
+            QtTextureAndText* textureAndText = static_cast<QtTextureAndText*>(widget);
+            handleDoubleClicked(textureAndText->mName, textureAndText->mBaseName);
+            /*
+            if (!mSystemCommandEditAsset.isEmpty())
+            {
+                QProcess p;
+                QStringList sl;
+                sl.append(textureAndText->mName);
+                p.startDetached(mSystemCommandEditAsset, sl);
+            }
+
+            emit selected(textureAndText->mName, textureAndText->mBaseName);
+            */
+        }
+    }
+
+    //****************************************************************************/
+    void QtExtendedTextureWidget::handleDoubleClicked(const QString& name, const QString& baseName)
+    {
+        if (!mSystemCommandEditAsset.isEmpty())
+        {
+            QProcess p;
+            QStringList sl;
+            sl.append(name);
+            p.startDetached(mSystemCommandEditAsset, sl);
+        }
+
         emit selected(name, baseName);
     }
 
@@ -360,4 +393,9 @@ namespace Magus
         mSelectionList->setDropIndicatorShown(allowed);
     }
 
+    //****************************************************************************/
+    void QtExtendedTextureWidget::setSystemCommandEditAsset(const QString& systemCommand)
+    {
+        mSystemCommandEditAsset = systemCommand;
+    }
 }

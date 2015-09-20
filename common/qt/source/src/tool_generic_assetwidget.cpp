@@ -27,6 +27,7 @@
 #include <QImageReader>
 #include <QTextStream>
 #include <QListWidgetItem>
+#include <QProcess>
 #include "tool_generic_assetwidget.h"
 
 namespace Magus
@@ -141,7 +142,7 @@ namespace Magus
     {
         for (int i = 0; i < arrayLength; ++i)
         {
-            //QMessageBox::information(0, QString("test"), ext[i]); // testtesttesttest
+            //QMessageBox::information(0, QString("test"), ext[i]); // test
             mAllowedExtensions[i] = ext[i];
         }
 
@@ -165,6 +166,7 @@ namespace Magus
     //****************************************************************************/
     QtGenericAssetWidget::QtGenericAssetWidget(QPixmap defaultPixmap, bool viewEnabled, QWidget* parent) : QWidget(parent)
     {
+        mSystemCommandEditAsset = QString("");
         mDefaultPixmapAsset = defaultPixmap;
         setWindowTitle(QString("Texture selection"));
         mTextureSize = QSize(128, 128);
@@ -275,18 +277,6 @@ namespace Magus
     }
 
     //****************************************************************************/
-    const QString& QtGenericAssetWidget::getNameAsset(void)
-    {
-        return mNameAsset;
-    }
-
-    //****************************************************************************/
-    const QString& QtGenericAssetWidget::getBaseNameAsset(void)
-    {
-        return mBaseNameAsset;
-    }
-
-    //****************************************************************************/
     void QtGenericAssetWidget::handleSelected(QListWidgetItem* item)
     {
         QWidget* widget = mSelectionList->itemWidget(item);
@@ -305,7 +295,17 @@ namespace Magus
         {
             QtGenericAssetAndText* assetAndText = static_cast<QtGenericAssetAndText*>(widget);
             if (mViewEnabled)
-                loadFileInViewer(assetAndText->mName, assetAndText->mBaseName); // Currently only viewing files is implemented and no other sources
+            {
+                if (mSystemCommandEditAsset.isEmpty())
+                    loadFileInViewer(assetAndText->mName, assetAndText->mBaseName); // Currently only viewing files is implemented and no other sources
+                else
+                {
+                    QProcess p;
+                    QStringList sl;
+                    sl.append(assetAndText->mName);
+                    p.startDetached(mSystemCommandEditAsset, sl);
+                }
+            }
             emit selected(assetAndText->mName, assetAndText->mBaseName);
         }
     }
@@ -411,4 +411,9 @@ namespace Magus
         mSelectionList->setAllowedExtensions(ext, arrayLength);
     }
 
+    //****************************************************************************/
+    void QtGenericAssetWidget::setSystemCommandEditAsset(const QString& systemCommand)
+    {
+        mSystemCommandEditAsset = systemCommand;
+    }
 }

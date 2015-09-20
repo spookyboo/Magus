@@ -235,8 +235,6 @@ namespace Magus
                                                               mSceneViewWidget->getAssetIdOfAssetItem(assetItem),
                                                               assetItem->text(0));
                     }
-
-                    //QMessageBox::information(0, "test", item->text(1)); // Test
                 }
                 else if (mListenToSceneViewWidget->itemIsAsset(item))
                 {

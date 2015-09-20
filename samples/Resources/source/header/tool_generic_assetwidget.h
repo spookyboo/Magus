@@ -126,14 +126,6 @@ namespace Magus
             // Clear the content of the widget
             void clearContent(void);
 
-            // Return the name of the selected texture
-            // E.g. "c:/temp/assets/meshes/character.mesh"
-            const QString& getNameAsset(void);
-
-            // Return the base name of the selected asset
-            // E.g. "character.mesh" in case the name of the asset is a full qualified filename.
-            const QString& getBaseNameAsset(void);
-
             // Define the width and height of a texture in the selection box
             void setTextureSize (QSize size);
 
@@ -148,6 +140,10 @@ namespace Magus
 
             // Determine which file types are allowed, based on their extensions
             void setAllowedExtensions(const QString ext[], int arrayLength);
+
+            // Executes a system command when doubleclicked; if not set, the default viewer is displayd
+            // Note, that this only works in case QtGenericAssetWidget was created with argument 'viewEnabled = true'
+            void setSystemCommandEditAsset(const QString& systemCommand);
 
         signals:
             // Emitted when an asset is selected (via the mouse)
@@ -173,12 +169,11 @@ namespace Magus
             void loadFileInViewer(const QString& fileName, const QString& baseFileName);
 
         private:
+            QString mSystemCommandEditAsset;
             QPixmap mDefaultPixmapAsset;
             QtGenericAssetListWidget* mSelectionList;
             QPlainTextEdit* mTextViewer;
             QSize mTextureSize;
-            QString mNameAsset; // In case of a filename, this is the fully qualified filename (path + filename)
-            QString mBaseNameAsset; // If mNameAsset is a filename, this is the basename.
             bool mOriginIsFile;
             bool mViewEnabled;
     };

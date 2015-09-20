@@ -137,14 +137,6 @@ namespace Magus
             // Clear the content of the widget
             void clearContent(void);
 
-            // Return the name of the selected texture
-            // E.g. "c:/temp/Tools/common/icons/info.png"
-            const QString& getNameTexture(void);
-
-            // Return the base name of the selected texture
-            // E.g. "info.png" in case the name of the texture is a full qualified filename.
-            const QString& getBaseNameTexture(void);
-
             // Define the width and height of a texture in the selection box
             void setTextureSize (QSize size);
 
@@ -156,6 +148,10 @@ namespace Magus
 
             // Determine whether dropping audio files from the file explorer is allowed
             void setDropFilesAllowed(bool allowed);
+
+            // Executes a system command when doubleclicked / selected edit; if not set, the default function
+            // (play) is executed
+            void setSystemCommandEditAsset(const QString& systemCommand);
 
         signals:
             // Emitted when an audio asset is selected (via the mouse) from the QtAudioWidget
@@ -187,6 +183,7 @@ namespace Magus
             void stopAudio(QtAudioAndText* audioAndText = 0);
 
         private:
+            QString mSystemCommandEditAsset;
             QString mCurrentAudioPlaying;
             QtAudioAndText* mLastSelectedAudioAndText;
             QMediaPlayer* mAudioPlayer;
@@ -194,8 +191,6 @@ namespace Magus
             QString mIconDir;
             QtAudioListWidget* mSelectionList;
             QSize mTextureSize;
-            QString mNameTexture; // In case of a filename, this is the fully qualified filename (path + filename)
-            QString mBaseNameTexture; // If mNameTexture is a filename, this is the basename.
     };
 }
 

@@ -27,6 +27,7 @@
 #include <QImageReader>
 #include <QListWidgetItem>
 #include <QMouseEvent>
+#include <QProcess>
 #include "tool_audiowidget.h"
 
 namespace Magus
@@ -151,7 +152,7 @@ namespace Magus
                 {
                     QString name = urlList.at(i).path();
                     stripLeadingSlashes(name);
-                    //QMessageBox::information(0, QString("drop"), name); // testtesttesttest
+                    //QMessageBox::information(0, QString("drop"), name); // test
                     emit audioFileDropped(name, baseName);
                 }
             }
@@ -176,14 +177,14 @@ namespace Magus
     //****************************************************************************/
     QtAudioWidget::QtAudioWidget(const QString& iconDir, QWidget* parent) : QWidget(parent)
     {
+        mSystemCommandEditAsset = QString("");
+        mCurrentAudioPlaying = QString("");
         mLastSelectedAudioAndText = 0;
         mAudioPlayer = new QMediaPlayer();
         connect(mAudioPlayer, SIGNAL(positionChanged(qint64)), this, SLOT(handlePositionChanged(qint64)));
         mContextMenu = 0;
         mIconDir = iconDir;
         setWindowTitle(QString("Texture selection"));
-        mNameTexture = QString("");
-        mBaseNameTexture = QString("");
         mTextureSize = QSize(128, 128);
         QHBoxLayout* mainLayout = new QHBoxLayout;
         QVBoxLayout* textureSelectionLayout = new QVBoxLayout;
@@ -338,18 +339,6 @@ namespace Magus
     }
 
     //****************************************************************************/
-    const QString& QtAudioWidget::getNameTexture(void)
-    {
-        return mNameTexture;
-    }
-
-    //****************************************************************************/
-    const QString& QtAudioWidget::getBaseNameTexture(void)
-    {
-        return mBaseNameTexture;
-    }
-
-    //****************************************************************************/
     void QtAudioWidget::handleSelected(QListWidgetItem* item)
     {
         QWidget* widget = mSelectionList->itemWidget(item);
@@ -382,8 +371,18 @@ namespace Magus
         if (widget)
         {
             QtAudioAndText* audioAndText = static_cast<QtAudioAndText*>(widget);
-            playAudio(audioAndText->mSource, audioAndText->mName, audioAndText);
-            mLastSelectedAudioAndText = audioAndText;
+            if (mSystemCommandEditAsset.isEmpty())
+            {
+                playAudio(audioAndText->mSource, audioAndText->mName, audioAndText);
+                mLastSelectedAudioAndText = audioAndText;
+            }
+            else
+            {
+                QProcess p;
+                QStringList sl;
+                sl.append(audioAndText->mName);
+                p.startDetached(mSystemCommandEditAsset, sl);
+            }
             emit doubleClicked(audioAndText->mName, audioAndText->mBaseName);
         }
     }
@@ -514,6 +513,12 @@ namespace Magus
         mSelectionList->setMouseTracking(allowed);
         mSelectionList->setAcceptDrops(allowed);
         mSelectionList->setDropIndicatorShown(allowed);
+    }
+
+    //****************************************************************************/
+    void QtAudioWidget::setSystemCommandEditAsset(const QString& systemCommand)
+    {
+        mSystemCommandEditAsset = systemCommand;
     }
 
 }

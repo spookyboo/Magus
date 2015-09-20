@@ -27,6 +27,7 @@
 #include <QImageReader>
 #include <QListWidgetItem>
 #include <QDropEvent>
+#include <QProcess>
 #include "magus_core.h"
 #include "tool_default_texturewidget.h"
 
@@ -154,8 +155,7 @@ namespace Magus
     QtDefaultTextureWidget::QtDefaultTextureWidget(QWidget* parent) : QWidget(parent)
     {
         setWindowTitle(QString("Texture selection"));
-        mNameTexture = QString("");
-        mBaseNameTexture = QString("");
+        mSystemCommandEditAsset = QString("");
         mTextureSize = QSize(128, 128);
         mOriginIsFile = true;
         QHBoxLayout* mainLayout = new QHBoxLayout;
@@ -259,18 +259,6 @@ namespace Magus
     }
 
     //****************************************************************************/
-    const QString& QtDefaultTextureWidget::getNameTexture(void)
-    {
-        return mNameTexture;
-    }
-
-    //****************************************************************************/
-    const QString& QtDefaultTextureWidget::getBaseNameTexture(void)
-    {
-        return mBaseNameTexture;
-    }
-
-    //****************************************************************************/
     void QtDefaultTextureWidget::handleSelected(QListWidgetItem* item)
     {
         QWidget* widget = mSelectionList->itemWidget(item);
@@ -288,6 +276,14 @@ namespace Magus
         if (widget)
         {
             QtDefaultTextureAndText* textureAndText = static_cast<QtDefaultTextureAndText*>(widget);
+            if (!mSystemCommandEditAsset.isEmpty())
+            {
+                QProcess p;
+                QStringList sl;
+                sl.append(textureAndText->mName);
+                p.startDetached(mSystemCommandEditAsset, sl);
+            }
+
             emit selected(textureAndText->mName, textureAndText->mBaseName);
         }
     }
@@ -361,4 +357,9 @@ namespace Magus
         mSelectionList->setDropIndicatorShown(allowed);
     }
 
+    //****************************************************************************/
+    void QtDefaultTextureWidget::setSystemCommandEditAsset(const QString& systemCommand)
+    {
+        mSystemCommandEditAsset = systemCommand;
+    }
 }

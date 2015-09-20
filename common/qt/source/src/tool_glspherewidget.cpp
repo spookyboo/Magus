@@ -208,6 +208,12 @@ namespace Magus
     }
 
     //****************************************************************************/
+    void QtGLSphereWidget::mouseDoubleClickEvent(QMouseEvent *event)
+    {
+        emit doubleClicked(mFullName, mBaseName);
+    }
+
+    //****************************************************************************/
     void QtGLSphereWidget::buildSphere(void)
     {
         texture = bindTexture(mPixmap, GL_TEXTURE_2D);
