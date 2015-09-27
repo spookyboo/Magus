@@ -188,6 +188,17 @@ namespace Magus
             // Returns a list of all resources in the resource tree. This includes both groups, subgroups and assets
             QVector<QtResourceInfo*>& getResources (void);
 
+            // Set a list of resources in the resource tree. This includes both groups, subgroups and assets
+            // This method clears the resourcetree and sets the resources. Is does not generate any signal if suppressSignal is
+            // set to 'true'
+            void setResources(const QVector<QtResourceInfo*>& resources, bool suppressSignal = false);
+
+            // Returns a list of all assets in the resource tree.
+            QVector<QtResourceInfo*>& getAssets (void);
+
+            // Returns a list of all toplevel groups and sublevel groups in the resource tree.
+            QVector<QtResourceInfo*>& getGroups (void);
+
             // Delete a resource from the resource tree. If the resource - identified by means of resourceId (value >= 0) - has
             // child items, the underlying childs are also deleted
             // If suppressSignal is true, no signal is emitted

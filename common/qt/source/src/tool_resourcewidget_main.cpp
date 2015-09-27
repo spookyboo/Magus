@@ -57,6 +57,17 @@ namespace Magus
     }
 
     //****************************************************************************/
+    void QtResourceMain::setResources (const QVector<QtResourceInfo*>& resources)
+    {
+        // Clear the mAssetsDockWidget
+        mAssetsDockWidget->clearContent();
+
+        // Delegate to mSourcesDockWidget; mSourcesDockWidget signals a 'resourceAdded', which results in the fact that
+        // the resource (only in assets) is added to te mAssetsDockWidget.
+        mSourcesDockWidget->setResources(resources);
+    }
+
+    //****************************************************************************/
     void QtResourceMain::closeEvent(QCloseEvent* event)
     {
         mIsClosing = true;
@@ -128,7 +139,7 @@ namespace Magus
     void QtResourceMain::doNewHToolbarAction(void)
     {
         QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(this, "Test", "Are you sure to clear the resource tree?", QMessageBox::Yes|QMessageBox::No);
+        reply = QMessageBox::question(this, "Message", "Are you sure to clear the resource tree?", QMessageBox::Yes|QMessageBox::No);
         if (reply == QMessageBox::Yes)
         {
             mSourcesDockWidget->clearContent();

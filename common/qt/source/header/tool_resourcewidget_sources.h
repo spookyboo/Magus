@@ -84,6 +84,9 @@ namespace Magus
             // Returns a list of all resources in the resource tree. This includes both groups, subgroups and assets
             QVector<QtResourceInfo*>& getResources (void);
 
+            // Set the resources
+            void setResources (const QVector<QtResourceInfo*>& resources);
+
             // Select a toplevel resource.
             void selectTopLevel(int toplevelId);
 

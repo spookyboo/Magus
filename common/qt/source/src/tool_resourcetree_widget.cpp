@@ -648,6 +648,83 @@ namespace Magus
     }
 
     //****************************************************************************/
+    void QtResourceTreeWidget::setResources(const QVector<QtResourceInfo*>& resources, bool suppressSignal)
+    {
+        clear();
+        QVectorIterator<QtResourceInfo*> it(resources);
+        it.toFront();
+        QtResourceInfo* info;
+        bool isAsset;
+
+        // The order of the resources is important a resource cannot be added if its parent does not exist.
+        // If the resources were aquired by means of getResources, the order is ok.
+        while (it.hasNext())
+        {
+            info = it.next();
+            isAsset = (info->resourceType == TOOL_RESOURCETREE_KEY_TYPE_ASSET);
+            addResource (info->resourceId,
+                         info->parentId,
+                         info->resourceName,
+                         info->fullQualifiedName,
+                         info->iconName,
+                         isAsset,
+                         suppressSignal);
+        }
+    }
+
+    //****************************************************************************/
+    QVector<QtResourceInfo*>& QtResourceTreeWidget::getAssets (void)
+    {
+        clearResourceInfoVec();
+        QTreeWidgetItemIterator it(mResourceTree);
+        int type;
+        while (*it)
+        {
+            QtResourceInfo* info = new QtResourceInfo();
+            type = getTypeFromItem(*it);
+            if (type == TOOL_RESOURCETREE_KEY_TYPE_ASSET)
+            {
+                info->resourceId = getResourceIdFromItem(*it);
+                info->parentId = getParentIdFromItem(*it);
+                info->resourceName = (*it)->text(0);
+                info->fullQualifiedName = getFullQualifiedNameFromItem(*it);
+                info->iconName = getIconNameFromItem(*it);
+                info->resourceType = getTypeFromItem(*it);
+                mResourceInfoVec.append(info);
+                ++it;
+            }
+        }
+
+        return mResourceInfoVec;
+    }
+
+    //****************************************************************************/
+    QVector<QtResourceInfo*>& QtResourceTreeWidget::getGroups (void)
+    {
+        clearResourceInfoVec();
+        QTreeWidgetItemIterator it(mResourceTree);
+        int type;
+        while (*it)
+        {
+            QtResourceInfo* info = new QtResourceInfo();
+            type = getTypeFromItem(*it);
+            if (type == TOOL_RESOURCETREE_KEY_TYPE_TOPLEVEL_GROUP || type == TOOL_RESOURCETREE_KEY_TYPE_TOPLEVEL_GROUP)
+            {
+                info->resourceId = getResourceIdFromItem(*it);
+                info->parentId = getParentIdFromItem(*it);
+                info->resourceName = (*it)->text(0);
+                info->fullQualifiedName = getFullQualifiedNameFromItem(*it);
+                info->iconName = getIconNameFromItem(*it);
+                info->resourceType = getTypeFromItem(*it);
+                mResourceInfoVec.append(info);
+                ++it;
+            }
+        }
+
+        return mResourceInfoVec;
+    }
+
+    //****************************************************************************/
     void QtResourceTreeWidget::clearResourceInfoVec (void)
     {
         foreach (QtResourceInfo* info, mResourceInfoVec)

@@ -6,9 +6,7 @@ Updates:
 - QtAudioWidget: Delete from context menu
 - QtDefaultTextureWidget: Add context menu (edit, delete, duplicate)
 - QtResourceTreeWidget: Add to contextmenu => Duplicate asset (create new entry and emit signal with existing resourceId and new resourceId)
-- QtResourceTreeWidget: getAssets (returns only the assets of all groups and subgroups, but not the groups themselves)
-- QtResourceTreeWidget: getGroups (returns only the groups/subgroups, but not the assets)
-- QtResourceWidget: implement setResources
+- QtResourceWidget: When an asset is renamed, it is also renamed in the underlying asset widgets
 - QtFileReader: Filter by mask
 - QtExtendedTextureWidget: Add context menu (edit, delete, duplicate)
 - QtGenericAssetWidget: Add context menu (edit, delete, duplicate)
@@ -24,6 +22,8 @@ New:
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 - QtVideoWidget: Same as QtAudioWidget, put playing small videos on the icon
 - QtResourcePathWidget: Same as QtGenericAssetWidget, but icons represent a full path (directory); usefull to create a resource file for Ogre3D
+- QtTimelineWidget
+- QtTileWidget
 
 
 Bugs:
@@ -50,3 +50,6 @@ Done:
 - QtDefaultTextureWidget: Implement double mouse click => done 20/9/2015
 - QtExtendedTextureWidget: Implement double mouse click => done 20/9/2015
 - QtSimpleTextureWidget: Implement double mouse click => done 20/9/2015
+- QtResourceWidget: implement setResources => done 27/9/2015
+- QtResourceTreeWidget: getAssets (returns the assets of all groups and subgroups, but not the groups themselves) => done 27/9/2015
+- QtResourceTreeWidget: getGroups (returns the groups/subgroups, but not the assets) => done 27/9/2015

@@ -52,6 +52,10 @@ namespace Magus
             // Returns a list of all resources in the resource tree. This includes both groups, subgroups and assets
             QVector<QtResourceInfo*>& getResources (void);
 
+            // Creates the resourcetree and loads the assets. Setting the resources generates a signal (resourceAdded) from
+            // mSourcesDockWidget; this automatically adds the assets to the mAssetsDockWidget
+            void setResources (const QVector<QtResourceInfo*>& resources);
+
             void update(void);
             bool mIsClosing;
 

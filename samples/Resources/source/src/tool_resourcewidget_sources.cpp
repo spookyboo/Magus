@@ -136,6 +136,13 @@ namespace Magus
     }
 
     //****************************************************************************/
+    void QtSourcesDockWidget::setResources(const QVector<QtResourceInfo*>& resources)
+    {
+        // Delegate to mResourceTreeWidget; this is the component that actually sets the data in the tree
+        mResourceTreeWidget->setResources(resources);
+    }
+
+    //****************************************************************************/
     void QtSourcesDockWidget::selectTopLevel(int toplevelId)
     {
         mResourceTreeWidget->selectResource(toplevelId, false);
@@ -200,7 +207,7 @@ namespace Magus
         mSourceInfo[resourceId] = info;
 
         // Emit file info to QtResourceMain, because the QtAssetsDockWidget must be appended with the new files
-        // Do this only in case the resource is am asset
+        // Do this only in case the resource is an asset
         if (mResourceTreeWidget->isResourceAsset(resourceId))
             emit resourceAdded(info.toplevelId, info.parentId, info.resourceId, info.fileName, info.baseName);
     }
@@ -306,6 +313,5 @@ namespace Magus
         emit resourceSearchReset();
     }
 }
-
 
 
