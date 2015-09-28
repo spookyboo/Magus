@@ -10,3 +10,11 @@ relevant application code and all related resources.
 Currently, only Qt projects are supported. Magus generates the C++ code, a Qt project file (.pro) and the relevant resources (images).
 
 Note, the Git repo also contains some Windows Dll's. These are VC2010 Qt Dll's. Their purpose is more as a reference (to show which Dll's are needed for the executable).
+
+Some examples made with Magus:
+![Material editor](/materialeditor.png)
+![Resource widget](/resource_widget.png)
+![Texture selection](/magus_tex_sel.png)
+![Gradient](/gradient.png)
+![Curve editor](/curveeditor.png)
+![Scene layer](/layer.png)
