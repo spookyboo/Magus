@@ -1,6 +1,6 @@
 [GENERAL]
 project = "ContentBrowser"
-icon = NoImage.png
+icon = Contentbrowser.png
 description = "ContentBrowser"
 type = qt
 style = dark

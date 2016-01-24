@@ -9,7 +9,7 @@ GUI framework. The graphical representation of the framework can be modified in 
 relevant application code and all related resources.
 Currently, only Qt projects are supported. Magus generates the C++ code, a Qt project file (.pro) and the relevant resources (images).
 
-Note, the Git repo also contains some Windows Dll's. These are VC2010 Qt Dll's. Their purpose is more as a reference (to show which Dll's are needed for the executable).
+Note, the Git repo also contains some Windows Dll's. These are VC2015 Qt Dll's (64bit). Their purpose is more as a reference (to show which Dll's are needed for the executable).
 
 Some examples made with Magus:
 ![Material editor](/materialeditor.png)
