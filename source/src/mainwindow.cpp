@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015
+** Copyright (C) 2016
 **
 ** This file is part of the Magus toolkit
 **
@@ -333,7 +333,9 @@ void MainWindow::config(void)
         //QString templateDir = dialog.mGeneralPage->getTemplateDir();
         QString outputDir = dialog.mBuildPage->getOutputDir();
         QString ogreRootEnv = dialog.mOgrePage->getOgreRootEnv();
+        bool ogreRootUseEnv = dialog.mOgrePage->isOgreRootUseEnv();
         QString ogreRoot = dialog.mOgrePage->getOgreRoot();
+        QString ogreVersion = dialog.mOgrePage->getOgreVersion();
 
         // Update the configuration file
         QSettings globalSettings (GLOBAL_CONFIG_FILE,  QSettings::IniFormat);
@@ -342,14 +344,16 @@ void MainWindow::config(void)
         //globalSettings.setValue(CONFIG_KEY_TEMPLATE_DIR, templateDir);
         globalSettings.setValue(CONFIG_KEY_OUTPUT_DIR, outputDir);
         globalSettings.setValue(CONFIG_KEY_OGRE_ROOT_ENV, ogreRootEnv);
+        globalSettings.setValue(CONFIG_KEY_OGRE_ROOT_USE_ENV, ogreRootUseEnv);
         globalSettings.setValue(CONFIG_KEY_OGRE_ROOT, ogreRoot);
+        globalSettings.setValue(CONFIG_KEY_OGRE_VERSION, ogreVersion);
 
         // Activate the new settings
         mIconDir = iconDir;
         //mLayoutDir = layoutDir;
         //mTemplateDir = templateDir;
         getCurrentBuilder()->setOutputDir(outputDir);
-        getCurrentBuilder()->setOgre(ogreRootEnv, ogreRoot);
+        getCurrentBuilder()->setOgre(ogreRootUseEnv, ogreRootEnv, ogreRoot, ogreVersion);
     }
 }
 
@@ -358,7 +362,7 @@ void MainWindow::about(void)
 {
     infoLabel->setText(tr("Invoked <b>Help|About</b>"));
     QMessageBox::about(this, tr("About"),
-            tr("<center><b>Magus</b> V0.2<br></center>\n<center>2015</center>"));
+            tr("<center><b>Magus</b> V0.2<br></center>\n<center>2016</center>"));
 }
 
 //****************************************************************************/

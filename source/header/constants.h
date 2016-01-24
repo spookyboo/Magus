@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015
+** Copyright (C) 2016
 **
 ** This file is part of the Magus toolkit
 **
@@ -66,10 +66,10 @@ static const QString CONFIG_KEY_OUTPUT_BIN_DIR = QString("output_bin_dir");
 static const QString CONFIG_KEY_OUTPUT_ICON_DIR = QString("output_icon_dir");
 static const QString CONFIG_KEY_OUTPUT_HEADER_DIR = QString("output_header_dir");
 static const QString CONFIG_KEY_OUTPUT_SRC_DIR = QString("output_src_dir");
-static const QString CONFIG_KEY_OUTPUT_OGRE_DIR = QString("output_ogre_dir");
 static const QString CONFIG_KEY_OGRE_ROOT = QString("ogre_root");
 static const QString CONFIG_KEY_OGRE_ROOT_ENV = QString("ogre_root_env");
-static const QString CONFIG_KEY_OGRE_DIR = QString("ogre_dir");
+static const QString CONFIG_KEY_OGRE_ROOT_USE_ENV = QString("ogre_root_use_env");
+static const QString CONFIG_KEY_OGRE_VERSION = QString("ogre_version");
 static const QString TEMPLATE_KEY_PROJECT = QString("project");
 static const QString TEMPLATE_KEY_DESCRIPTION = QString("description");
 static const QString TEMPLATE_KEY_ICON = QString("icon");
@@ -103,6 +103,12 @@ static const QString TEMPLATE_KEY_USE_DEFAULT_ACTION_EXIT = QString("use_action_
 static const QString TEMPLATE_KEY_USE_DEFAULT_ACTION_QUIT = QString("use_action_quit");
 static const QString TEMPLATE_KEY_USE_DEFAULT_ACTION_ABOUT = QString("use_action_about");
 static const QString TEMPLATE_KEY_USE_DEFAULT_ACTION_RESET_WINDOWS = QString("use_action_reset_windows");
+static const QString OGRE_SRC_DIR = QString("../common/ogre/"); // Ogre 1.9; Ogre source media depends on version
+static const QString OGRE_OUTPUT_DIR = QString("common/ogre/"); // Ogre 1.9; Ogre output media depends on version
+static const QString OGRE2_SRC_DIR = QString("../common/ogre/"); // Ogre 2.0; Ogre source media depends on version
+static const QString OGRE2_OUTPUT_DIR = QString("common/ogre/"); // Ogre 2.0; Ogre output media depends on version
+static const QString OGRE3_SRC_DIR = QString("../common/ogre3/"); // Ogre 2.1; Ogre source media depends on version
+static const QString OGRE3_OUTPUT_DIR = QString("common/ogre3/"); // Ogre 2.1; Ogre output media depends on version
 
 //****************************************************************************/
 // Mime types
@@ -188,6 +194,14 @@ static const QString FILE_OGRE_GL_DLL = QString("RenderSystem_GL.dll");
 static const QString FILE_OGRE_GL_D_DLL = QString("RenderSystem_GL_d.dll");
 static const QString FILE_OGRE_3D9_DLL = QString("RenderSystem_Direct3D9.dll");
 static const QString FILE_OGRE_3D9_D_DLL = QString("RenderSystem_Direct3D9_d.dll");
+static const QString FILE_OGRE_GL3PLUS_DLL = QString("RenderSystem_GL3Plus.dll");
+static const QString FILE_OGRE_GL3PLUS_D_DLL = QString("RenderSystem_GL3Plus_d.dll");
+static const QString FILE_OGRE_3D11_DLL = QString("RenderSystem_Direct3D11.dll");
+static const QString FILE_OGRE_3D11_D_DLL = QString("RenderSystem_Direct3D11_d.dll");
+static const QString FILE_OGRE_HLMS_PBS_DLL = QString("OgreHlmsPbs.dll");
+static const QString FILE_OGRE_HLMS_PBS_D_DLL = QString("OgreHlmsPbs_d.dll");
+static const QString FILE_OGRE_HLMS_UNLIT_DLL = QString("OgreHlmsUnlit.dll");
+static const QString FILE_OGRE_HLMS_UNLIT_D_DLL = QString("OgreHlmsUnlit_d.dll");
 static const QString FILE_OGRE_PLUGINS_D = QString("plugins_d.cfg");
 static const QString FILE_OGRE_PLUGINS = QString("plugins.cfg");
 static const QString FILE_OGRE_RESOURCES_D = QString("resources_d.cfg");
@@ -212,8 +226,8 @@ static const QString KEYWORD_MENU_EXIT = QString("Exit");
 static const QString KEYWORD_MENU_QUIT = QString("Quit");
 static const QString KEYWORD_MENU_ABOUT = QString("About");
 static const QString KEYWORD_MENU_RESET_WINDOWS = QString("Reset Window Layout");
-static const QString TEXT_USE_OGRE_ASSETS = QString("Use Ogre3d asset library");
-static const QString TEXT_USE_OGRE_ASSETS_DISABLED = QString("Use Ogre3d asset library (DISABLED! Ogre assets can only be used if Ogre3d itself is used)");
+static const QString TEXT_USE_OGRE_ASSETS = QString("Use Ogre3d asset library (Ogre version < 2.1)");
+static const QString TEXT_USE_OGRE_ASSETS_DISABLED = TEXT_USE_OGRE_ASSETS + QString(" - NOT AVAILABLE! Enable Ogre in one of the windows");
 
 //****************************************************************************/
 #endif

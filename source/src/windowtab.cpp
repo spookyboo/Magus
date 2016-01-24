@@ -1,7 +1,7 @@
 
 /****************************************************************************
 **
-** Copyright (C) 2015
+** Copyright (C) 2016
 **
 ** This file is part of the Magus toolkit
 **
@@ -751,10 +751,10 @@ void WindowTab::deleteThisWindow(void)
 //****************************************************************************/
 void WindowTab::ogreTargetChanged(int index)
 {
-    // Fill the target cpmbobox
+    // Fill the target combobox
     fillOgreTargetComboBox(1);
 
-    // Disable the checkbox for the Ogre assets
+    // Disable the checkbox of the Ogre assets
     if (mParent)
     {
         QCheckBox* checkBox = mParent->mGeneralTab->mUseOgreAssetWidgetCheckBox;

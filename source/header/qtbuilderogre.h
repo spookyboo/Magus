@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015
+** Copyright (C) 2016
 **
 ** This file is part of the Magus toolkit
 **
@@ -33,40 +33,40 @@ class QtOgreBuilder
     public:
         QtOgreBuilder();
         virtual ~QtOgreBuilder();
-        QString createInclude(const QString &s);
-        QString createPublicMemberForMainWindow(const QString &s);
-        QString createPrivateMemberForMainWindow(const QString &s);
-        QString createPrivateMemberQtOgreWidget(const QString &s);
-        QString createConstructorEntryForMainWindow(const QString &s);
-        QString createQtOgreWidgetForMainWindow(WindowProperties* windowProperties, const QString &s);
-        QString createQtOgreWidgetForDockWindow(WindowProperties* windowProperties, const QString &s);
-        QString createQtOgreWidgetForTab(WindowProperties* windowProperties, int index, const QString &s);
-        QString ogreCloseForMainWindow(const QString &s);
-        QString ogreCloseForDockWindow(const QString &s);
-        QString createDestructorEntryForMainWindow(const QString &s);
-        QString createUpdateEntryForMainWindow(const QString &s);
-        QString createRootForPro(const QString &ogreRoot, const QString &s);
-        QString createIncludeForPro(const QString &s);
-        QString createLibForPro(const QString &s);
-        QString createHeaderForPro(const QString &outputHeaderDir, const QString &s);
-        QString createSrcForPro(const QString &outputSrcDir, const QString &s);
-        QString createOgreAssetHeaderForPro(const QString& outputHeaderDir, const QString& s);
-        QString createOgreAssetSrcForPro(const QString& outputSrcDir, const QString& s);
-        void copyOgreAssetFiles(const QString& qtHeader,
-                                const QString& qtSrc,
-                                const QString& iconDir,
-                                const QString& fullOutputHeaderDir,
-                                const QString& fullOutputSrcDir,
-                                const QString& fullOutputIconDir);
-
-        void copyOgreFiles(const QString &ogreRoot,
-                           const QString &ogreDir,
-                           const QString &qtHeader,
-                           const QString &qtSrc,
-                           const QString &fullOutputHeaderDir,
-                           const QString &fullOutputSrcDir,
-                           const QString &fullOutputBinDir,
-                           const QString &fullOutputOgreDir);
+        virtual QString createInclude(const QString &s);
+        virtual QString createPublicMemberForMainWindow(const QString &s);
+        virtual QString createPrivateMemberForMainWindow(const QString &s);
+        virtual QString createPrivateMemberQtOgreWidget(const QString &s);
+        virtual QString createConstructorEntryForMainWindow(const QString &s);
+        virtual QString createQtOgreWidgetForMainWindow(WindowProperties* windowProperties, const QString &s);
+        virtual QString createQtOgreWidgetForDockWindow(WindowProperties* windowProperties, const QString &s);
+        virtual QString createQtOgreWidgetForTab(WindowProperties* windowProperties, int index, const QString &s);
+        //virtual QString ogreCloseForMainWindow(const QString &s);
+        //virtual QString ogreCloseForDockWindow(const QString &s);
+        virtual QString createDestructorEntryForMainWindow(const QString &s);
+        virtual QString createUpdateEntryForMainWindow(const QString &s);
+        virtual QString createInitializeEntryForMainWindow(const QString &s);
+        virtual QString createRootForPro(const QString &ogreRoot, const QString &s);
+        virtual QString createIncludeForPro(const QString &s);
+        virtual QString createLibForPro(const QString &s);
+        virtual QString createHeaderForPro(const QString &outputHeaderDir, const QString &s);
+        virtual QString createSrcForPro(const QString &outputSrcDir, const QString &s);
+        virtual QString createOgreAssetHeaderForPro(const QString& outputHeaderDir, const QString& s);
+        virtual QString createOgreAssetSrcForPro(const QString& outputSrcDir, const QString& s);
+        virtual void copyOgreAssetFiles(const QString& qtHeader,
+                                        const QString& qtSrc,
+                                        const QString& iconDir,
+                                        const QString& fullOutputHeaderDir,
+                                        const QString& fullOutputSrcDir,
+                                        const QString& fullOutputIconDir);
+        virtual void copyOgreFiles(const QString &ogreRoot,
+                                   const QString &ogreDir,
+                                   const QString &qtHeader,
+                                   const QString &qtSrc,
+                                   const QString &fullOutputHeaderDir,
+                                   const QString &fullOutputSrcDir,
+                                   const QString &fullOutputBinDir,
+                                   const QString &fullOutputOgreDir);
 };
 
 //****************************************************************************/

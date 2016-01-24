@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015
+** Copyright (C) 2016
 **
 ** This file is part of the Magus toolkit
 **
@@ -45,7 +45,7 @@ class Builder
         virtual void setOutputDir (const QString& outputDir) = 0;
 
         // Set Ogre location
-        virtual void setOgre (const QString& ogreRootEnv, const QString& ogreRoot) = 0;
+        virtual void setOgre (bool ogreRootUseEnv, const QString& ogreRootEnv, const QString& ogreRoot, const QString& ogreVersion) = 0;
 
         // Define which gui items are available
         virtual bool isMenuAvailable() = 0;

@@ -4,16 +4,13 @@ ${ogre_root}
 
 HEADERS       = \
     ${project.header}constants.h \
-    ${project.header}generic_funtions.h \
     ${project.header}magus_core.h \
-    ${project.header}magus_treewidget.h \
     ${project.header}mainwindow.h \
 ${project.additionalheader}
 
 SOURCES       = \
     ${project.src}main.cpp \
     ${project.src}mainwindow.cpp \
-    ${project.src}magus_treewidget.cpp \
 ${project.additionalsrc}
 
 INCLUDEPATH += "../${project.project}/${project.header}"

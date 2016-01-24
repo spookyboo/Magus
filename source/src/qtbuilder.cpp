@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015
+** Copyright (C) 2016
 **
 ** This file is part of the Magus toolkit
 **
@@ -30,6 +30,9 @@
 #include "qtbuildertoolbar.h"
 #include "qtbuildertab.h"
 #include "qtbuilderogre.h"
+#include "qtbuilderogre19.h"
+#include "qtbuilderogre20.h"
+#include "qtbuilderogre21.h"
 #include "mainwindow.h"
 #include "utils.h"
 
@@ -50,21 +53,14 @@ QtBuilder::QtBuilder()
     mOutputIconDir = globalSettings.value(CONFIG_KEY_OUTPUT_ICON_DIR).toString();
     mOutputHeaderDir = globalSettings.value(CONFIG_KEY_OUTPUT_HEADER_DIR).toString();
     mOutputSrcDir = globalSettings.value(CONFIG_KEY_OUTPUT_SRC_DIR).toString();
-    mOgreDir = globalSettings.value(CONFIG_KEY_OGRE_DIR).toString();
-    mOutputOgreDir = globalSettings.value(CONFIG_KEY_OUTPUT_OGRE_DIR).toString();
+    mOgreDir = "";
+    mOutputOgreDir = "";
+    bool ogreRootUseEnv = globalSettings.value(CONFIG_KEY_OGRE_ROOT_USE_ENV).toBool();
     QString ogreRootEnv = globalSettings.value(CONFIG_KEY_OGRE_ROOT_ENV).toString();
-    setOgre(ogreRootEnv, QString(""));
-//    if (!ogreRootEnv.isEmpty())
-//    {
-//        QByteArray value = qgetenv(ogreRootEnv.toUtf8().constData());
-//        mOgreRoot = QString (value.constData()).toUtf8();
-//    }
-//    else
-//    {
-//        mOgreRoot = globalSettings.value(CONFIG_KEY_OGRE_ROOT).toString();
-//    }
-//    mOgreRoot.remove(QRegExp(QString::fromUtf8("\""))); // Strip from double quotes
-//    mOgreRoot.replace(QChar('\\'), QChar('/')); // Change backslash into forward slash
+    QString ogreRoot = globalSettings.value(CONFIG_KEY_OGRE_ROOT).toString();
+    QString ogreVersion = globalSettings.value(CONFIG_KEY_OGRE_VERSION).toString();
+    mQtOgreBuilder = 0;
+    setOgre(ogreRootUseEnv, ogreRootEnv, ogreRoot, ogreVersion);
     mCurrentProject = QString("");
     mCurrentProjectSlash = QString("");
 }
@@ -72,6 +68,8 @@ QtBuilder::QtBuilder()
 //****************************************************************************/
 QtBuilder::~QtBuilder()
 {
+    if (mQtOgreBuilder)
+        delete mQtOgreBuilder;
 }
 
 //****************************************************************************/
@@ -81,27 +79,64 @@ void QtBuilder::setOutputDir (const QString& outputDir)
 }
 
 //****************************************************************************/
-void QtBuilder::setOgre (const QString& ogreRootEnv, const QString& ogreRoot)
+void QtBuilder::setOgre (bool ogreRootUseEnv, const QString& ogreRootEnv, const QString& ogreRoot, const QString& ogreVersion)
 {
-    if (!ogreRootEnv.isEmpty())
+    if (ogreRootUseEnv && !ogreRootEnv.isEmpty())
     {
         // Use the environment variable
         QByteArray value = qgetenv(ogreRootEnv.toUtf8().constData());
         mOgreRoot = QString (value.constData()).toUtf8();
     }
-    else if (ogreRoot.isEmpty())
-    {
-        // The second argument was empty, so get the ogre root from the global settings
-        QSettings globalSettings (GLOBAL_CONFIG_FILE,  QSettings::IniFormat);
-        mOgreRoot = globalSettings.value(CONFIG_KEY_OGRE_ROOT).toString();
-    }
-    else
-    {
-        // Use the second argument, since the environment variable was empty
-        mOgreRoot = ogreRoot;
+        else
+        {
+        if (ogreRoot.isEmpty())
+        {
+            // Use the value from the config file (if the environment variable was empty, use the value from the config file instead)
+            QSettings globalSettings (GLOBAL_CONFIG_FILE,  QSettings::IniFormat);
+            mOgreRoot = globalSettings.value(CONFIG_KEY_OGRE_ROOT).toString();
+        }
+        else
+        {
+            // Use the second argument, since the environment variable was empty
+            mOgreRoot = ogreRoot;
+        }
     }
     mOgreRoot.remove(QRegExp(QString::fromUtf8("\""))); // Strip from double quotes
     mOgreRoot.replace(QChar('\\'), QChar('/')); // Change backslash into forward slash
+
+    if (mQtOgreBuilder)
+        delete mQtOgreBuilder;
+
+    if (ogreVersion == "1.9")
+    {
+        mQtOgreBuilder = new QtOgre19Builder();
+        mOgreDir = OGRE_SRC_DIR;
+        mOutputOgreDir = OGRE_OUTPUT_DIR;
+    }
+    else
+    {
+        if (ogreVersion == "2.0")
+        {
+            mQtOgreBuilder = new QtOgre20Builder();
+            mOgreDir = OGRE2_SRC_DIR;
+            mOutputOgreDir = OGRE2_OUTPUT_DIR;
+        }
+        else
+        {
+            if (ogreVersion == "2.1")
+            {
+                mQtOgreBuilder = new QtOgre21Builder();
+                mOgreDir = OGRE3_SRC_DIR;
+                mOutputOgreDir = OGRE3_OUTPUT_DIR;
+            }
+            else
+            {
+                mQtOgreBuilder = new QtOgre21Builder(); // Just get the latest and see what happens
+                mOgreDir = OGRE3_SRC_DIR;
+                mOutputOgreDir = OGRE3_OUTPUT_DIR;
+            }
+        }
+    }
 }
 
 //****************************************************************************/
@@ -121,7 +156,6 @@ void QtBuilder::build(ApplicationTemplate* applicationTemplate)
     QtActionBuilder qtActionBuilder; // Delegate building action related code to the QtActionBuilder
     QtToolbarBuilder qtToolbarBuilder; // Delegate building toolbar related code to the QtToolbarBuilder
     QtTabBuilder qtTabBuilder; // Delegate building tab related code to the QtTabBuilder
-    QtOgreBuilder qtOgreBuilder; // Delegate building Ogre related code to the QtOgreBuilder
     QDir dirUtil;
     QFile fileUtil;
     QString project; // Content of <project>.pro
@@ -143,6 +177,7 @@ void QtBuilder::build(ApplicationTemplate* applicationTemplate)
     QString mainWindowOgreConstructor; // Used for Ogre-specific code in the constructor of mainwindow.cpp
     QString mainWindowOgreDestructor; // Used for Ogre-specific code in the destructor of mainwindow.cpp
     QString mainWindowOgreUpdate; // Used for Ogre-specific code in the update function of mainwindow.cpp
+    QString mainWindowOgreInitialize; // If Ogre is used, the rendermanager may be initialized
     QString mainWindowCreateDockWidgets; // Used to fill the createDockWidgets function in mainwindow.cpp
     QString mainWindowCreateMenu; // Used to fill the createMenu function in mainwindow.cpp
     QString mainWindowCreateActions; // Used to fill the createActions function in mainwindow.cpp
@@ -194,18 +229,16 @@ void QtBuilder::build(ApplicationTemplate* applicationTemplate)
     // Step 3: Copy the base files (that do not need to be changed)
     fileUtil.copy(mQtHeader + FILE_MAGUS_CORE_H, mFullOutputHeaderDir + FILE_MAGUS_CORE_H);
     fileUtil.copy(mQtHeader + FILE_CONSTANTS_HTP, mFullOutputHeaderDir + FILE_CONSTANTS_H);
-    fileUtil.copy(mQtHeader + FILE_MAGUS_TREE_WIDGET_H, mFullOutputHeaderDir + FILE_MAGUS_TREE_WIDGET_H);
     fileUtil.copy(mQtSrc + FILE_MAIN_CTP, mFullOutputSrcDir + FILE_MAIN_CPP);
-    fileUtil.copy(mQtSrc + FILE_MAGUS_TREE_WIDGET_CPP, mFullOutputSrcDir + FILE_MAGUS_TREE_WIDGET_CPP);
     fileUtil.copy(mQtDir + STYLE_DARK, mFullOutputBinDir + STYLE_DARK);
 
-    fileUtil.copy(FILE_QT_DLL_CORE, mFullOutputBinDir + FILE_QT_DLL_CORE);
-    fileUtil.copy(FILE_QT_DLL_WIDGETS, mFullOutputBinDir + FILE_QT_DLL_WIDGETS);
-    fileUtil.copy(FILE_QT_DLL_GUI, mFullOutputBinDir + FILE_QT_DLL_GUI);
-    fileUtil.copy(FILE_QT_DLL_ICUDT, mFullOutputBinDir + FILE_QT_DLL_ICUDT);
-    fileUtil.copy(FILE_QT_DLL_ICUIN, mFullOutputBinDir + FILE_QT_DLL_ICUIN);
-    fileUtil.copy(FILE_QT_DLL_ICUUC, mFullOutputBinDir + FILE_QT_DLL_ICUUC);
-    fileUtil.copy(PATH_QT_DLL_WINDOWS + FILE_QT_DLL_WINDOWS, mFullOutputBinDir + PATH_QT_DLL_WINDOWS + FILE_QT_DLL_WINDOWS);
+//    fileUtil.copy(FILE_QT_DLL_CORE, mFullOutputBinDir + FILE_QT_DLL_CORE);
+//    fileUtil.copy(FILE_QT_DLL_WIDGETS, mFullOutputBinDir + FILE_QT_DLL_WIDGETS);
+//    fileUtil.copy(FILE_QT_DLL_GUI, mFullOutputBinDir + FILE_QT_DLL_GUI);
+//    fileUtil.copy(FILE_QT_DLL_ICUDT, mFullOutputBinDir + FILE_QT_DLL_ICUDT);
+//    fileUtil.copy(FILE_QT_DLL_ICUIN, mFullOutputBinDir + FILE_QT_DLL_ICUIN);
+//    fileUtil.copy(FILE_QT_DLL_ICUUC, mFullOutputBinDir + FILE_QT_DLL_ICUUC);
+//    fileUtil.copy(PATH_QT_DLL_WINDOWS + FILE_QT_DLL_WINDOWS, mFullOutputBinDir + PATH_QT_DLL_WINDOWS + FILE_QT_DLL_WINDOWS);
 
     // --------------------------------------------------------------------------------------------------------------------
     // Step 4: Mark that the asset/node/tool widgets are used
@@ -278,7 +311,7 @@ void QtBuilder::build(ApplicationTemplate* applicationTemplate)
             if (windowProperties->mUseOgreControl)
             {
                 // Add the QtOgreWidget member
-                mainWindowAdditionalPrivate = qtOgreBuilder.createPrivateMemberQtOgreWidget(mainWindowAdditionalPrivate);
+                mainWindowAdditionalPrivate = mQtOgreBuilder->createPrivateMemberQtOgreWidget(mainWindowAdditionalPrivate);
             }
             mainWindowPrivateSlots = qtActionBuilder.createPrivateSlots(windowProperties,
                                                                         windowProperties->mWindowMenuProperties,
@@ -309,7 +342,7 @@ void QtBuilder::build(ApplicationTemplate* applicationTemplate)
             if (windowProperties->mUseOgreControl)
             {
                 // Create the Ogre widget in the mainwindow.cpp
-                mainWindowCreateOgreWidget = qtOgreBuilder.createQtOgreWidgetForMainWindow(windowProperties, mainWindowCreateOgreWidget);
+                mainWindowCreateOgreWidget = mQtOgreBuilder->createQtOgreWidgetForMainWindow(windowProperties, mainWindowCreateOgreWidget);
             }
         }
         else
@@ -351,8 +384,8 @@ void QtBuilder::build(ApplicationTemplate* applicationTemplate)
             // Create the Ogre entries in the dockwidget.h
             if (windowProperties->mUseOgreControl)
             {
-                dockWidgetHeaderAdditionalInclude = qtOgreBuilder.createInclude(dockWidgetHeaderAdditionalInclude);
-                dockWidgetHeaderAdditionalPrivate = qtOgreBuilder.createPrivateMemberQtOgreWidget(dockWidgetHeaderAdditionalPrivate);
+                dockWidgetHeaderAdditionalInclude = mQtOgreBuilder->createInclude(dockWidgetHeaderAdditionalInclude);
+                dockWidgetHeaderAdditionalPrivate = mQtOgreBuilder->createPrivateMemberQtOgreWidget(dockWidgetHeaderAdditionalPrivate);
             }
 
             // Replace the properties in the dockwidget.h file
@@ -413,14 +446,14 @@ void QtBuilder::build(ApplicationTemplate* applicationTemplate)
                 if (windowProperties->mOgreTarget == 0)
                 {
                     // Set it in the window
-                    dockWidgetCreateOgreWidget = qtOgreBuilder.createQtOgreWidgetForDockWindow(windowProperties, dockWidgetCreateOgreWidget);
+                    dockWidgetCreateOgreWidget = mQtOgreBuilder->createQtOgreWidgetForDockWindow(windowProperties, dockWidgetCreateOgreWidget);
                 }
                 else
                 {
                     // Set it in the tab
                     int index = windowProperties->mOgreTarget;
                     --index;
-                    dockWidgetCreateOgreWidget = qtOgreBuilder.createQtOgreWidgetForTab(windowProperties, index, dockWidgetCreateOgreWidget);
+                    dockWidgetCreateOgreWidget = mQtOgreBuilder->createQtOgreWidgetForTab(windowProperties, index, dockWidgetCreateOgreWidget);
                 }
             }
 
@@ -502,7 +535,7 @@ void QtBuilder::build(ApplicationTemplate* applicationTemplate)
 
     // --------------------------------------------------------------------------------------------------------------------
     // Step 8: If an QtOgreWidget is used, copy the h, cpp and Ogre dll files and update the .pro, mainindow.h and
-    // mainindow.cpp files
+    // mainndow.cpp files
     if (ogreControlWidget)
     {
         // Create the dir
@@ -510,27 +543,28 @@ void QtBuilder::build(ApplicationTemplate* applicationTemplate)
         dirUtil.mkpath(mFullOutputOgreDir);
 
         // Update the .pro file
-        projectAdditionalHeader = qtOgreBuilder.createHeaderForPro(mOutputHeaderDir, projectAdditionalHeader);
-        projectAdditionalSrc = qtOgreBuilder.createSrcForPro(mOutputSrcDir, projectAdditionalSrc);
-        projectOgreRoot = qtOgreBuilder.createRootForPro(mOgreRoot, projectOgreRoot);
-        ogreInclude = qtOgreBuilder.createIncludeForPro(ogreInclude);
-        ogreLib = qtOgreBuilder.createLibForPro(ogreLib);
+        projectAdditionalHeader = mQtOgreBuilder->createHeaderForPro(mOutputHeaderDir, projectAdditionalHeader);
+        projectAdditionalSrc = mQtOgreBuilder->createSrcForPro(mOutputSrcDir, projectAdditionalSrc);
+        projectOgreRoot = mQtOgreBuilder->createRootForPro(mOgreRoot, projectOgreRoot);
+        ogreInclude = mQtOgreBuilder->createIncludeForPro(ogreInclude);
+        ogreLib = mQtOgreBuilder->createLibForPro(ogreLib);
 
         // Update the mainwindow.h file
         // Add the Ogre Rendermanager #include
-        mainWindowAdditionalInclude = qtOgreBuilder.createInclude(mainWindowAdditionalInclude);
+        mainWindowAdditionalInclude = mQtOgreBuilder->createInclude(mainWindowAdditionalInclude);
 
         // Define public/private member in the mainwindow.h file
-        mainWindowAdditionalPublic = qtOgreBuilder.createPublicMemberForMainWindow(mainWindowAdditionalPublic);
-        mainWindowAdditionalPrivate = qtOgreBuilder.createPrivateMemberForMainWindow(mainWindowAdditionalPrivate);
+        mainWindowAdditionalPublic = mQtOgreBuilder->createPublicMemberForMainWindow(mainWindowAdditionalPublic);
+        mainWindowAdditionalPrivate = mQtOgreBuilder->createPrivateMemberForMainWindow(mainWindowAdditionalPrivate);
 
         // Update the mainwindow.cpp file
-        mainWindowOgreConstructor = qtOgreBuilder.createConstructorEntryForMainWindow(mainWindowOgreConstructor);
-        mainWindowOgreDestructor = qtOgreBuilder.createDestructorEntryForMainWindow(mainWindowOgreDestructor);
-        mainWindowOgreUpdate = qtOgreBuilder.createUpdateEntryForMainWindow(mainWindowOgreUpdate);
+        mainWindowOgreConstructor = mQtOgreBuilder->createConstructorEntryForMainWindow(mainWindowOgreConstructor);
+        mainWindowOgreDestructor = mQtOgreBuilder->createDestructorEntryForMainWindow(mainWindowOgreDestructor);
+        mainWindowOgreUpdate = mQtOgreBuilder->createUpdateEntryForMainWindow(mainWindowOgreUpdate);
+        mainWindowOgreInitialize = mQtOgreBuilder->createInitializeEntryForMainWindow(mainWindowOgreInitialize);
 
         // Copy the Ogre files
-        qtOgreBuilder.copyOgreFiles(mOgreRoot,
+        mQtOgreBuilder->copyOgreFiles(mOgreRoot,
                                     mOgreDir,
                                     mQtHeader,
                                     mQtSrc,
@@ -546,11 +580,11 @@ void QtBuilder::build(ApplicationTemplate* applicationTemplate)
     if (ogreControlWidget && ogreAssetWidgets)
     {
         // Update the .pro file
-        projectAdditionalHeader = qtOgreBuilder.createOgreAssetHeaderForPro(mOutputHeaderDir, projectAdditionalHeader);
-        projectAdditionalSrc = qtOgreBuilder.createOgreAssetSrcForPro(mOutputSrcDir, projectAdditionalSrc);
+        projectAdditionalHeader = mQtOgreBuilder->createOgreAssetHeaderForPro(mOutputHeaderDir, projectAdditionalHeader);
+        projectAdditionalSrc = mQtOgreBuilder->createOgreAssetSrcForPro(mOutputSrcDir, projectAdditionalSrc);
 
         // Copy the Ogre asset files
-        qtOgreBuilder.copyOgreAssetFiles(mQtHeader, mQtSrc, mIconDir, mFullOutputHeaderDir, mFullOutputSrcDir, mFullOutputIconDir);
+        mQtOgreBuilder->copyOgreAssetFiles(mQtHeader, mQtSrc, mIconDir, mFullOutputHeaderDir, mFullOutputSrcDir, mFullOutputIconDir);
 
         useAssetWidget = true; // Generic assets
     }
@@ -619,6 +653,7 @@ void QtBuilder::build(ApplicationTemplate* applicationTemplate)
     mainWindowSrc.replace(MAINWINDOW_OGRE_CONSTRUCTOR, mainWindowOgreConstructor);
     mainWindowSrc.replace(MAINWINDOW_OGRE_DESTRUCTOR, mainWindowOgreDestructor);
     mainWindowSrc.replace(MAINWINDOW_OGRE_UPDATE, mainWindowOgreUpdate);
+    mainWindowSrc.replace(MAINWINDOW_OGRE_INITIALIZE, mainWindowOgreInitialize);
     mainWindowSrc.replace(MAINWINDOW_CREATEACTIONS, mainWindowCreateActions);
     mainWindowSrc.replace(MAINWINDOW_CREATEMENUS, mainWindowCreateMenu);
     mainWindowSrc.replace(MAINWINDOW_CREATETOOLBARS, mainWindowCreateToolbars);
@@ -1137,6 +1172,7 @@ QString QtBuilder::createToolHeaderForPro(const QString& additionalHeader)
 {
     QString str = additionalHeader;
     QFile fileUtil;
+    fileUtil.copy(mQtHeader + FILE_MAGUS_TREE_WIDGET_H, mFullOutputHeaderDir + FILE_MAGUS_TREE_WIDGET_H);
     fileUtil.copy(mQtHeader + FILE_TOOL_GRADIENT_H, mFullOutputHeaderDir + FILE_TOOL_GRADIENT_H);
     fileUtil.copy(mQtHeader + FILE_TOOL_GRADIENT_MARKER_H, mFullOutputHeaderDir + FILE_TOOL_GRADIENT_MARKER_H);
     fileUtil.copy(mQtHeader + FILE_TOOL_GRADIENT_WIDGET_H, mFullOutputHeaderDir + FILE_TOOL_GRADIENT_WIDGET_H);
@@ -1178,6 +1214,12 @@ QString QtBuilder::createToolHeaderForPro(const QString& additionalHeader)
 
     // Add to the project file
     // Headers
+    str = str +
+        TAB +
+        mOutputHeaderDir +
+        FILE_MAGUS_TREE_WIDGET_H +
+        QString(" \\ ") +
+        QString("\n");
     str = str +
         TAB +
         mOutputHeaderDir +
@@ -1310,6 +1352,7 @@ QString QtBuilder::createToolSrcForPro(const QString& additionalSrc)
 {
     QString str = additionalSrc;
     QFile fileUtil;
+    fileUtil.copy(mQtSrc + FILE_MAGUS_TREE_WIDGET_CPP, mFullOutputSrcDir + FILE_MAGUS_TREE_WIDGET_CPP);
     fileUtil.copy(mQtSrc + FILE_TOOL_GRADIENT_CPP, mFullOutputSrcDir + FILE_TOOL_GRADIENT_CPP);
     fileUtil.copy(mQtSrc + FILE_TOOL_GRADIENT_MARKER_CPP, mFullOutputSrcDir + FILE_TOOL_GRADIENT_MARKER_CPP);
     fileUtil.copy(mQtSrc + FILE_TOOL_GRADIENT_WIDGET_CPP, mFullOutputSrcDir + FILE_TOOL_GRADIENT_WIDGET_CPP);
@@ -1333,6 +1376,12 @@ QString QtBuilder::createToolSrcForPro(const QString& additionalSrc)
 
     // Add to the project file
     // Src
+    str = str +
+        TAB +
+        mOutputSrcDir +
+        FILE_MAGUS_TREE_WIDGET_CPP +
+        QString(" \\ ") +
+        QString("\n");
     str = str +
         TAB +
         mOutputSrcDir +

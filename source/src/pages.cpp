@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015
+** Copyright (C) 2016
 **
 ** This file is part of the Magus toolkit
 **
@@ -178,42 +178,64 @@ OgrePage::OgrePage(QWidget *parent)
 {
     // Create widgets
     QGroupBox* packagesGroup = new QGroupBox(tr("Ogre settings"));
-    QGroupBox* radioGroupBox = new QGroupBox(QString("Use enviroment variable or enter Ogre root"));
-    mOgreRootEnvRadio = new QRadioButton(QString("Ogre root env. variable"));
-    mOgreRootEnvRadio->setChecked(true);
-    mOgreRootRadio = new QRadioButton(QString("Ogre rootdirectory"));
 
+    // Version
+    QGroupBox* radioGroupBoxVersion = new QGroupBox(QString("Ogre version"));
+    mOgreVersion19Radio = new QRadioButton(QString("Version 1.9"));
+    mOgreVersion20Radio = new QRadioButton(QString("Version 2.0"));
+    mOgreVersion21Radio = new QRadioButton(QString("Version 2.1"));
+    mOgreVersion = "2.1";
+
+    // Root
+    QGroupBox* radioGroupBoxRoot = new QGroupBox(QString("Use enviroment variable or enter Ogre root"));
+    mOgreRootEnvRadio = new QRadioButton(QString("Ogre root env. variable"));
+    mOgreRootRadio = new QRadioButton(QString("Ogre rootdirectory"));
     mOgreRootEnvEdit = new QLineEdit;
     mOgreRootEdit = new QLineEdit;
     mOgreRootEdit->setStyleSheet(QString("color : darkgray;"));
     mOgreRootEdit->setEnabled(false);
+
+    // Misc
     mRestoreButton = new QPushButton(tr("Restore to original values"));
 
     // Set initial values
     restoreValues(GLOBAL_CONFIG_FILE);
 
-    // Connect
-    connect(mOgreRootEnvRadio, SIGNAL(toggled(bool)), this, SLOT(toggled(bool)));
+    // Connect Version
+    connect(mOgreVersion19Radio, SIGNAL(toggled(bool)), this, SLOT(toggledOgreVersion19(bool)));
+    connect(mOgreVersion20Radio, SIGNAL(toggled(bool)), this, SLOT(toggledOgreVersion20(bool)));
+    connect(mOgreVersion21Radio, SIGNAL(toggled(bool)), this, SLOT(toggledOgreVersion21(bool)));
+
+    // Connect Root
+    connect(mOgreRootEnvRadio, SIGNAL(toggled(bool)), this, SLOT(toggledOgreRoot(bool)));
     connect(mOgreRootEnvEdit, SIGNAL(textEdited(QString)), this, SLOT(textEdited()));
     connect(mOgreRootEdit, SIGNAL(textEdited(QString)), this, SLOT(textEdited()));
     connect(mRestoreButton, SIGNAL(clicked()), this, SLOT(restorePushed()));
 
-    // Layout
-    QVBoxLayout* radioLayout = new QVBoxLayout;
+    // Layout Version
+    QVBoxLayout* radioLayoutVersion = new QVBoxLayout;
+    radioLayoutVersion->addWidget(mOgreVersion19Radio, 1);
+    radioLayoutVersion->addWidget(mOgreVersion20Radio, 1);
+    radioLayoutVersion->addWidget(mOgreVersion21Radio, 1);
+
+    // Layout Root
+    QVBoxLayout* radioLayoutRoot = new QVBoxLayout;
     QHBoxLayout* rootEnvLayout = new QHBoxLayout;
     QHBoxLayout* rootLayout = new QHBoxLayout;
     rootEnvLayout->addWidget(mOgreRootEnvRadio, 1);
     rootEnvLayout->addWidget(mOgreRootEnvEdit, 3);
     rootLayout->addWidget(mOgreRootRadio, 1);
     rootLayout->addWidget(mOgreRootEdit, 3);
-    radioLayout->addLayout(rootEnvLayout);
-    radioLayout->addLayout(rootLayout);
-    radioGroupBox->setLayout(radioLayout);
 
+    // Layout General
+    radioLayoutRoot->addLayout(rootEnvLayout);
+    radioLayoutRoot->addLayout(rootLayout);
+    radioGroupBoxRoot->setLayout(radioLayoutRoot);
+    radioGroupBoxVersion->setLayout(radioLayoutVersion);
     QGridLayout *packagesLayout = new QGridLayout;
-    packagesLayout->addWidget(radioGroupBox);
+    packagesLayout->addWidget(radioGroupBoxVersion);
+    packagesLayout->addWidget(radioGroupBoxRoot);
     packagesGroup->setLayout(packagesLayout);
-
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(packagesGroup);
     mainLayout->addSpacing(12);
@@ -225,23 +247,25 @@ OgrePage::OgrePage(QWidget *parent)
 //****************************************************************************/
 const QString& OgrePage::getOgreRootEnv(void)
 {
-    // Only return the value if this option is selected
-    mRet.clear();
-    if (mOgreRootEnvRadio->isChecked())
-        mRet = mOgreRootEnv;
+    return mOgreRootEnv;
+}
 
-    return mRet;
+//****************************************************************************/
+bool OgrePage::isOgreRootUseEnv(void)
+{
+    return mOgreRootUseEnv;
 }
 
 //****************************************************************************/
 const QString& OgrePage::getOgreRoot(void)
 {
-    // Only return the value if this option is selected
-    mRet.clear();
-    if (mOgreRootRadio->isChecked())
-        mRet = mOgreRoot;
+    return mOgreRoot;
+}
 
-    return mRet;
+//****************************************************************************/
+const QString& OgrePage::getOgreVersion(void)
+{
+    return mOgreVersion;
 }
 
 //****************************************************************************/
@@ -249,10 +273,19 @@ void OgrePage::restoreValues(const QString& configFileName)
 {
     QSettings globalSettings (configFileName,  QSettings::IniFormat);
     mOgreRootEnv = globalSettings.value(CONFIG_KEY_OGRE_ROOT_ENV).toString();
+    mOgreRootUseEnv = globalSettings.value(CONFIG_KEY_OGRE_ROOT_USE_ENV).toBool();
     mOgreRootEnvEdit->setText(mOgreRootEnv);
     mOgreRoot = globalSettings.value(CONFIG_KEY_OGRE_ROOT).toString();
     mOgreRootEdit->setText(mOgreRoot);
-    toggled(true);
+    mOgreVersion = globalSettings.value(CONFIG_KEY_OGRE_VERSION).toString();
+    if (mOgreVersion == "2.1")
+         mOgreVersion21Radio->setChecked(true);
+    else if (mOgreVersion == "2.0")
+        mOgreVersion20Radio->setChecked(true);
+    else
+        mOgreVersion19Radio->setChecked(true);
+
+    toggledOgreRoot(mOgreRootUseEnv);
 }
 
 //****************************************************************************/
@@ -269,7 +302,25 @@ void OgrePage::restorePushed(void)
 }
 
 //****************************************************************************/
-void OgrePage::toggled(bool on)
+void OgrePage::toggledOgreVersion19(bool on)
+{
+    mOgreVersion = "1.9";
+}
+
+//****************************************************************************/
+void OgrePage::toggledOgreVersion20(bool on)
+{
+    mOgreVersion = "2.0";
+}
+
+//****************************************************************************/
+void OgrePage::toggledOgreVersion21(bool on)
+{
+    mOgreVersion = "2.1";
+}
+
+//****************************************************************************/
+void OgrePage::toggledOgreRoot(bool on)
 {
     if (on)
     {
@@ -278,6 +329,8 @@ void OgrePage::toggled(bool on)
         mOgreRootEnvEdit->setText(mOgreRootEnv);
         mOgreRootEdit->setStyleSheet(QString("color : darkgray;"));
         mOgreRootEdit->setEnabled(false);
+        mOgreRootEnvRadio->setChecked(true);
+        mOgreRootUseEnv = true;
     }
     else
     {
@@ -285,5 +338,7 @@ void OgrePage::toggled(bool on)
         mOgreRootEnvEdit->setEnabled(false);
         mOgreRootEdit->setStyleSheet(QString("color : black;"));
         mOgreRootEdit->setEnabled(true);
+        mOgreRootRadio->setChecked(true);
+        mOgreRootUseEnv = false;
     }
 }

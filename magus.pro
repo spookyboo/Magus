@@ -29,7 +29,10 @@ HEADERS       = \
     source/header/qtbuildertab.h \
     source/header/qtbuilderogre.h \
     source/header/configdialog.h \
-    source/header/pages.h
+    source/header/pages.h \
+    source/header/qtbuilderogre19.h \
+    source/header/qtbuilderogre20.h \
+    source/header/qtbuilderogre21.h
 
 SOURCES       = \
     source/src/customtreeitem.cpp \
@@ -55,9 +58,12 @@ SOURCES       = \
     source/src/qtbuilderaction.cpp \
     source/src/qtbuildertoolbar.cpp \
     source/src/qtbuildertab.cpp \
-    source/src/qtbuilderogre.cpp \
     source/src/configdialog.cpp \
-    source/src/pages.cpp
+    source/src/pages.cpp \
+    source/src/qtbuilderogre19.cpp \
+    source/src/qtbuilderogre20.cpp \
+    source/src/qtbuilderogre.cpp \
+    source/src/qtbuilderogre21.cpp
 
 Release:DESTDIR = ../magus/bin
 Debug:DESTDIR = ../magus/bin

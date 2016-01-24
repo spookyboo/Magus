@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015
+** Copyright (C) 2016
 **
 ** This file is part of the Magus toolkit
 **
@@ -22,6 +22,7 @@
 #define MAGUS_QTBUILDER_H
 
 #include "builder.h"
+#include "qtbuilderogre.h"
 
 //****************************************************************************/
 // Keywords in configuration file
@@ -108,13 +109,23 @@ static const QString FILE_OGRE_ASSET_LIGHT_H = QString("ogre_asset_light.h");
 static const QString FILE_OGRE_ASSET_LIGHT_CPP = QString("ogre_asset_light.cpp");
 
 // Ogre filenames
-static const QString FILE_OGRE_WIDGET_PREREQ_H = QString("ogre_prereqs.h");
-static const QString FILE_OGRE_WIDGET_H = QString("ogre_widget.h");
-static const QString FILE_OGRE_WIDGET_CAMERAMAN_H = QString("ogre_cameraman.h");
-static const QString FILE_OGRE_WIDGET_COLRECT_H = QString("ogre_colouredrectangle.h");
-static const QString FILE_OGRE_WIDGET_CPP = QString("ogre_widget.cpp");
-static const QString FILE_OGRE_RENDERMAN_H = QString("ogre_renderman.h");
-static const QString FILE_OGRE_RENDERMAN_CPP = QString("ogre_renderman.cpp");
+static const QString FILE_OGRE_WIDGET_PREREQ_H = QString("ogre_prereqs.h"); // Generic
+static const QString FILE_OGRE_WIDGET_H = QString("ogre_widget.h"); // Ogre 1.9
+static const QString FILE_OGRE2_WIDGET_H = QString("ogre2_widget.h"); // Ogre 2.0
+static const QString FILE_OGRE3_WIDGET_H = QString("ogre3_widget.h"); // Ogre 2.1
+static const QString FILE_OGRE_WIDGET_CAMERAMAN_H = QString("ogre_cameraman.h"); // Ogre 1.9
+static const QString FILE_OGRE2_WIDGET_CAMERAMAN_H = QString("ogre2_cameraman.h"); // Ogre 2.0
+static const QString FILE_OGRE3_WIDGET_CAMERAMAN_H = QString("ogre3_cameraman.h"); // Ogre 2.1
+static const QString FILE_OGRE_WIDGET_COLRECT_H = QString("ogre_colouredrectangle.h");  // Ogre 1.9 + 2.0
+static const QString FILE_OGRE_WIDGET_CPP = QString("ogre_widget.cpp"); // Ogre 1.9
+static const QString FILE_OGRE2_WIDGET_CPP = QString("ogre2_widget.cpp"); // Ogre 2.0
+static const QString FILE_OGRE3_WIDGET_CPP = QString("ogre3_widget.cpp"); // Ogre 2.1
+static const QString FILE_OGRE_RENDERMAN_H = QString("ogre_renderman.h"); // Ogre 1.9
+static const QString FILE_OGRE_RENDERMAN_CPP = QString("ogre_renderman.cpp"); // Ogre 1.9
+static const QString FILE_OGRE2_RENDERMAN_H = QString("ogre2_renderman.h"); // Ogre 2.0
+static const QString FILE_OGRE2_RENDERMAN_CPP = QString("ogre2_renderman.cpp"); // Ogre 2.0
+static const QString FILE_OGRE3_RENDERMAN_H = QString("ogre3_renderman.h"); // Ogre 2.1
+static const QString FILE_OGRE3_RENDERMAN_CPP = QString("ogre3_renderman.cpp"); // Ogre 2.1
 
 // Node filenames
 static const QString FILE_NODE_COMPOUND_H = QString("node_compound.h");
@@ -206,6 +217,7 @@ static const QString MAINWINDOW_PRIVATE = QString("${MainWindow.private}");
 static const QString MAINWINDOW_OGRE_CONSTRUCTOR = QString("${MainWindow::ogreConstructor}");
 static const QString MAINWINDOW_OGRE_DESTRUCTOR = QString("${MainWindow::ogreDestructor}");
 static const QString MAINWINDOW_OGRE_UPDATE = QString("${MainWindow::ogreUpdate}");
+static const QString MAINWINDOW_OGRE_INITIALIZE = QString("${MainWindow::ogreInitialize}");
 static const QString MAINWINDOW_OGRE_CREATE_WIDGET = QString("${MainWindow::createOgreWidget}");
 
 //****************************************************************************/
@@ -247,7 +259,7 @@ class QtBuilder : public Builder
 
         const QString getType(void) const {return BUILDER_TYPE_QT;};
         void setOutputDir (const QString& outputDir);
-        void setOgre (const QString& ogreRootEnv, const QString& ogreRoot);
+        void setOgre (bool ogreRootUseEnv, const QString& ogreRootEnv, const QString& ogreRoot, const QString& ogreVersion);
         bool isMenuAvailable(){return true;};
         bool isHorizontalToolbarAvailable(){return true;};
         bool isVerticalToolbarAvailable(){return true;};
@@ -288,6 +300,7 @@ class QtBuilder : public Builder
         QString mFullOutputIconDir;
         QString mFullOutputSrcDir;
         QString mFullOutputOgreDir;
+        QtOgreBuilder* mQtOgreBuilder; // Delegate building Ogre related code to the QtOgreBuilder
 };
 
 //****************************************************************************/

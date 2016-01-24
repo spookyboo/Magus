@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015
+** Copyright (C) 2016
 **
 ** This file is part of the Magus toolkit
 **
@@ -80,18 +80,28 @@ class OgrePage : public QWidget
 public:
     OgrePage(QWidget *parent = 0);
     const QString& getOgreRootEnv(void);
+    bool isOgreRootUseEnv(void);
     const QString& getOgreRoot(void);
+    const QString& getOgreVersion(void);
 
 private slots:
     void textEdited(void);
     void restorePushed(void);
-    void toggled(bool on);
+    void toggledOgreVersion19(bool on);
+    void toggledOgreVersion20(bool on);
+    void toggledOgreVersion21(bool on);
+    void toggledOgreRoot(bool on);
 
 private:
     void restoreValues(const QString& configFileName);
     QString mOgreRootEnv;
+    bool mOgreRootUseEnv;
     QString mOgreRoot;
+    QString mOgreVersion;
     QString mRet;
+    QRadioButton* mOgreVersion19Radio;
+    QRadioButton* mOgreVersion20Radio;
+    QRadioButton* mOgreVersion21Radio;
     QRadioButton* mOgreRootEnvRadio;
     QRadioButton* mOgreRootRadio;
     QLineEdit* mOgreRootEnvEdit;
