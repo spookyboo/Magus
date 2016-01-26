@@ -19,7 +19,6 @@
 ****************************************************************************/
 
 // Include
-#include "constants.h"
 #include "asset_curve_dialog.h"
 #include <QBrush>
 #include <QFrame>
@@ -131,7 +130,6 @@ namespace Magus
         mHToolBar = new QToolBar();
         mHToolBar->setMovable(false);
         mInnerMain->addToolBar(Qt::TopToolBarArea, mHToolBar);
-        //mHToolBar->setMinimumHeight(TB_ICON_AND_SPACING);
         mHToolBar->setMinimumHeight(64);
         mHToolBar->setMinimumWidth(CURVE_DIALOG_WIDTH);
         mHToolBar->addAction(mCurveFitHorToolbarAction);

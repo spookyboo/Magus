@@ -23,7 +23,6 @@
 
 #include <QCloseEvent>
 #include <QMainWindow>
-#include "constants.h"
 ${mainwindow.includes}
 
 QT_BEGIN_NAMESPACE

@@ -3,7 +3,6 @@ ${modules}
 ${ogre_root}
 
 HEADERS       = \
-    ${project.header}constants.h \
     ${project.header}magus_core.h \
     ${project.header}mainwindow.h \
 ${project.additionalheader}

@@ -22,7 +22,6 @@
 #define ${dockwidget.title}DOCWIDGET_H
 
 #include <QtWidgets>
-#include "constants.h"
 ${dockwidget.include}
 
 QT_BEGIN_NAMESPACE

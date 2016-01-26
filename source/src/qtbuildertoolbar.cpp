@@ -135,7 +135,7 @@ QString QtToolbarBuilder::createToolbarsForMainWindow(WindowProperties* windowPr
         // Set the height of the toolbar to a fixed size
         str = str +
             TAB +
-            QString("mHToolBar->setMinimumHeight(TB_ICON_AND_SPACING);") +
+            QString("mHToolBar->setMinimumHeight(32);") +
             QString("\n");
 
         // Set the width of the toolbar to a fixed size
@@ -143,7 +143,7 @@ QString QtToolbarBuilder::createToolbarsForMainWindow(WindowProperties* windowPr
             TAB +
             QString("mHToolBar->setMinimumWidth(") +
             QVariant(windowProperties->mHToolbarPropertiesList.size()).toString() +
-            QString(" * TB_ICON_AND_SPACING);") +
+            QString(" * 32);") +
             QString("\n");
     }
     if (!windowProperties->mHToolbarPropertiesList.empty())
@@ -201,13 +201,13 @@ QString QtToolbarBuilder::createToolbarsForMainWindow(WindowProperties* windowPr
             TAB +
             QString("mVToolBar->setMinimumHeight(") +
             QVariant(windowProperties->mVToolbarPropertiesList.size()).toString() +
-            QString(" * TB_ICON_AND_SPACING);") +
+            QString(" * 32);") +
             QString("\n");
 
         // Set the width of the toolbar to a fixed size
         str = str +
             TAB +
-            QString("mVToolBar->setMinimumWidth(TB_ICON_AND_SPACING);") +
+            QString("mVToolBar->setMinimumWidth(32);") +
             QString("\n");
 
         ToolbarProperties* toolbarProperties = 0;
@@ -272,7 +272,7 @@ QString QtToolbarBuilder::createToolbarsForDockWindow(WindowProperties* windowPr
         // Set the height of the toolbar to a fixed size
         str = str +
             TAB +
-            QString("mHToolBar->setMinimumHeight(TB_ICON_AND_SPACING);") +
+            QString("mHToolBar->setMinimumHeight(32);") +
             QString("\n");
 
         // Set the width of the toolbar to a fixed size
@@ -280,7 +280,7 @@ QString QtToolbarBuilder::createToolbarsForDockWindow(WindowProperties* windowPr
             TAB +
             QString("mHToolBar->setMinimumWidth(") +
             QVariant(windowProperties->mHToolbarPropertiesList.size()).toString() +
-            QString(" * TB_ICON_AND_SPACING);") +
+            QString(" * 32);") +
             QString("\n");
     }
     if (!windowProperties->mHToolbarPropertiesList.empty())
@@ -338,13 +338,13 @@ QString QtToolbarBuilder::createToolbarsForDockWindow(WindowProperties* windowPr
             TAB +
             QString("mVToolBar->setMinimumHeight(") +
             QVariant(windowProperties->mVToolbarPropertiesList.size()).toString() +
-            QString(" * TB_ICON_AND_SPACING);") +
+            QString(" * 32);") +
             QString("\n");
 
         // Set the width of the toolbar to a fixed size
         str = str +
             TAB +
-            QString("mVToolBar->setMinimumWidth(TB_ICON_AND_SPACING);") +
+            QString("mVToolBar->setMinimumWidth(32);") +
             QString("\n");
 
         ToolbarProperties* toolbarProperties = 0;

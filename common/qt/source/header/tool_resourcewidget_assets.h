@@ -22,7 +22,6 @@
 #define MAGUS_TOOL_RESOURCES_ASSETS_H
 
 #include <QtWidgets>
-#include "constants.h"
 #include <QMenu>
 #include <QAction>
 #include <QMessageBox>

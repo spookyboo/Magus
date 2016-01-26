@@ -21,7 +21,6 @@
 // Include
 #include "mainwindow.h"
 #include "Asset_dockwidget.h"
-#include "constants.h"
 
 //****************************************************************************/
 AssetDockWidget::AssetDockWidget(QString title, MainWindow* parent, Qt::WindowFlags flags) : 

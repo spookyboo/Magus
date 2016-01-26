@@ -23,7 +23,6 @@
 
 #include <QCloseEvent>
 #include <QMainWindow>
-#include "constants.h"
 #include <QMenu>
 #include <QAction>
 #include <QMessageBox>

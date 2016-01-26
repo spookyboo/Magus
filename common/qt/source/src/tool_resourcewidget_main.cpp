@@ -96,8 +96,8 @@ namespace Magus
     {
         mHToolBar = new QToolBar();
         addToolBar(Qt::TopToolBarArea, mHToolBar);
-        mHToolBar->setMinimumHeight(TB_ICON_AND_SPACING);
-        mHToolBar->setMinimumWidth(4 * TB_ICON_AND_SPACING);
+        mHToolBar->setMinimumHeight(32);
+        mHToolBar->setMinimumWidth(4 * 32);
         mHToolBar->addAction(mNewHToolbarAction);
         mHToolBar->addAction(mLoadHToolbarAction);
         mHToolBar->addAction(mSaveHToolbarAction);
