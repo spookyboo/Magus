@@ -1,6 +1,6 @@
 QT += widgets
 
-OGREHOME = "C:/Users/Henry/Documents/Visual Studio 2010/Projects/ogre1.9"
+OGREHOME = "C:\Users\Henry\Documents\Visual Studio 2015\Projects\Ogre1.9"
 
 
 HEADERS       = \
@@ -50,7 +50,7 @@ HEADERS       = \
     source/header/sme_asset_texture_unit.h \
     source/header/node_compound.h \
     source/header/node_scene.h \
-    source/header/magus_core.h
+    source/header/generic_funtions.h
 
 
 SOURCES       = \

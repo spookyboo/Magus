@@ -27,7 +27,7 @@
 #include <QImageReader>
 #include <QFileDialog>
 #include "asset_propertywidget_texture.h"
-#include "magus_core.h"
+#include "generic_funtions.h"
 
 namespace Magus
 {
@@ -72,7 +72,7 @@ namespace Magus
     void QtTextureProperty::setTextureFileName(const QString& fileNameTexture)
     {
         // Check whether the file is an image (based on the extension)
-        if (!isTypeBasedOnExtension(fileNameTexture, MAGUS_SUPPORTED_IMAGE_FORMATS, MAGUS_SUPPORTED_IMAGE_FORMATS_LENGTH))
+        if (!isImageBasedOnExtension(fileNameTexture))
             return;
 
         QFile f(fileNameTexture);
