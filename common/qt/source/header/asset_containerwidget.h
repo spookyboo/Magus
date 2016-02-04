@@ -51,6 +51,10 @@ namespace Magus
             QtContainerWidget(const QString& title, bool line = true, QWidget* parent = 0);
             virtual ~QtContainerWidget(void){};
 
+            // Hide or display the header of a container. If the header is hidden, only the properties are
+            // visible, so it is not possible to collapse or expand the container.
+            void setHeaderHidden(bool hidden);
+
             // Function to set the title in bold or normal style
             void setTitleBold(bool bold = true);
 

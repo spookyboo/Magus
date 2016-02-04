@@ -141,6 +141,12 @@ namespace Magus
     }
 
     //****************************************************************************/
+    void QtContainerWidget::setHeaderHidden(bool hidden)
+    {
+        mHeader->setHidden(hidden);
+    }
+
+    //****************************************************************************/
     void QtContainerWidget::setTitleIcon(const QString& fileNameIcon)
     {
         mTitleFileNameIcon = fileNameIcon;

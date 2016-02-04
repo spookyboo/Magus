@@ -1,0 +1,152 @@
+[GENERAL]
+project = "HLMS-Editor"
+icon = HLMS-Editor.png
+description = "HLMS-Editor - Main window with menu, three docking windows and Ogre3d widget"
+type = qt
+style = dark
+
+use_asset_widget = true
+
+ogre_asset = false
+use_node_editor = true
+
+use_tools = true
+
+[WINDOWS]
+window[0] = MAIN
+window[1] = DOCK1
+window[2] = DOCK2
+window[3] = DOCK3
+
+
+################################################################
+[MAIN]
+title = "HLMS editor"
+display_title = true
+order = 0
+use_action_quit = true
+use_action_exit = false
+use_action_about = false
+use_action_reset_windows = true
+transformation_widget = false
+ogre_control = false
+ogre_target = 0
+ogre_control_visuals = false
+menu_group = MAIN.MENU
+
+#--------------------------------------------------------------#
+[MAIN.MENU]
+menu[0] = MAIN.MENU.FILE
+menu[1] = MAIN.MENU.WINDOW
+
+[MAIN.MENU.FILE]
+item = "&File"
+subitem[0] = "Clear"
+subitem[1] = "Open Datablock"
+subitem[2] = "Save Datablock"
+subitem[3] = "Quit"
+
+[MAIN.MENU.WINDOW]
+item = "Window"
+subitem[0] = "Reset Window Layout"
+
+
+################################################################
+[DOCK1]
+title = "Renderwindow"
+display_title = true
+order = 1
+use_action_quit = false
+use_action_exit = false
+use_action_about = false
+use_action_reset_windows = false
+transformation_widget = false
+area = left
+ogre_control = true
+ogre_target = 0
+ogre_control_visuals = false
+
+################################################################
+[DOCK2]
+title = "Properties"
+display_title = true
+order = 2
+use_action_quit = false
+use_action_exit = false
+use_action_about = false
+use_action_reset_windows = false
+transformation_widget = false
+area = left
+ogre_control = false
+ogre_target = 0
+ogre_control_visuals = false
+
+################################################################
+[DOCK3]
+title = "NodeEditor"
+display_title = true
+order = 3
+use_action_quit = false
+use_action_exit = false
+use_action_about = false
+use_action_reset_windows = false
+transformation_widget = false
+area = center
+ogre_control = false
+ogre_target = 0
+ogre_control_visuals = false
+htoolbar_group = DOCK3.HTOOLBAR
+menu_group = DOCK3.MENU
+
+#--------------------------------------------------------------#
+[DOCK3.MENU]
+menu[0] = Datablock
+menu[1] = Otherblocks
+
+[Datablock]
+item = "Datablock"
+subitem[0] = "New Hlms Pbs Datablock"
+subitem[1] = "New Hlms Unlit Datablock"
+
+[Otherblocks]
+item = "Other blocks"
+subitem[0] = "New Samplerblock"
+subitem[1] = "New Blendblock"
+subitem[2] = "New Macroblock"
+
+
+#--------------------------------------------------------------#
+[DOCK3.HTOOLBAR]
+icon[0] = DOCK3.HTOOLBAR.TEXTURE
+icon[1] = DOCK3.HTOOLBAR.TEXTURE_BOLD
+icon[2] = DOCK3.HTOOLBAR.SEPARATOR_VERTICAL
+icon[3] = DOCK3.HTOOLBAR.COLOR_BOLD
+icon[4] = DOCK3.HTOOLBAR.RENDERING_BOLD
+icon[5] = DOCK3.HTOOLBAR.TECHNIQUE_BOLD
+icon[6] = DOCK3.HTOOLBAR.SEPARATOR_VERTICAL
+icon[7] = DOCK3.HTOOLBAR.COG
+
+[DOCK3.HTOOLBAR.TEXTURE]
+icon = texture.png
+
+[DOCK3.HTOOLBAR.TEXTURE_BOLD]
+icon = texture_bold.png
+
+[DOCK3.HTOOLBAR.SEPARATOR_VERTICAL]
+icon = separator_vertical.png
+
+[DOCK3.HTOOLBAR.COLOR_BOLD]
+icon = color_bold.png
+
+[DOCK3.HTOOLBAR.RENDERING_BOLD]
+icon = rendering_bold.png
+
+[DOCK3.HTOOLBAR.TECHNIQUE_BOLD]
+icon = technique_bold.png
+
+[DOCK3.HTOOLBAR.SEPARATOR_VERTICAL]
+icon = separator_vertical.png
+
+[DOCK3.HTOOLBAR.COG]
+icon = cog.png
+
