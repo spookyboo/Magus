@@ -38,6 +38,8 @@ namespace Magus
     {
         QVBoxLayout* mainLayout = new QVBoxLayout;
         mView = new QGraphicsView(this);
+        QRect rcontent = mView->contentsRect();
+        mView->setSceneRect(0, 0, rcontent.width(), rcontent.height()); // Prevent unwanted jumping and scrollbars
         mScene = new QtNodeGraphicsScene();
         mScene->installEventFilter(this);
         mView->setScene(mScene);

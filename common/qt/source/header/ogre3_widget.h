@@ -28,6 +28,7 @@
 #include "OgreString.h"
 #include "OgreCamera.h"
 #include "OgreColourValue.h"
+#include "OgreItem.h"
 #include "ogre3_cameraman.h"
 #include "ogre_prereqs.h"
 
@@ -49,6 +50,7 @@ namespace Magus
             void updateOgre(float timeSinceLastFrame);
             void createRenderWindow(OgreManager* ogreManager);
             void createScene();
+            Ogre::Item* getItem(void) {return mItem;}
 
         protected:
             Ogre::Root* mRoot;
@@ -62,6 +64,7 @@ namespace Magus
             Ogre::Vector2 mAbsolute;
             Ogre::Vector2 mRelative;
             bool mSystemInitialized;
+            Ogre::Item* mItem;
 
             virtual void createCompositor();
             virtual void paintEvent(QPaintEvent *e);

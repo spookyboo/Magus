@@ -91,7 +91,13 @@ namespace Magus
             bool isAutoSize (void) const;
 
             // Return the title of the node
-            const QString& getTitle(void) const {return mTitle;};
+            const QString& getTitle(void) const {return mTitle;}
+
+            // Set the type of the node
+            void setType(unsigned int nodeType) {mNodeType = nodeType;}
+
+            // Return the type of the node
+            unsigned int getType(void) const {return mNodeType;}
 
             // Although the width of the node is automatically adjusted to its content, it is possible
             // to change (override) the width manually
@@ -163,6 +169,9 @@ namespace Magus
 
             // Add an image to the node; the node is adjusted to the size of the image
             void createImage(const QString& fileNameImage, QSize size);
+
+            // Return all nodes connected to this node
+            QVector<QtNode*> getNodes (void);
 
             // Return the port, based on the name
             QtPort* getPort (const QString& portName);
@@ -310,6 +319,7 @@ namespace Magus
             void setPortAlignedPos(QtPort* port, qreal height);
             void redraw(void);
 
+            unsigned int mNodeType;
             bool mAutoSize;
             QtPort* getCheckedPortConnectedToPort(QtPort* port);
             qreal mZoom;

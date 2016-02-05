@@ -48,6 +48,7 @@ namespace Magus
             void setSearchPath(const QString& searchPath); // Used by the texture dialog to search for textures
             const QString& getTextureFileName(void);
             const QString& getTextureBaseFileName(void);
+            const QString& getPathTexture(void);
             void setTextureSize(const QSize& size);
 
         private slots:
@@ -57,6 +58,7 @@ namespace Magus
         private:
             QString mFileNameTexture; // Fully qualified filename (path + filename)
             QString mBaseFileNameTexture; // Filename without path
+            QString mPathTexture; // Path without filename
             QString mSearchPath;
             QLabel* mTextureLabel;
             QLineEdit* mTextureNameLabel;

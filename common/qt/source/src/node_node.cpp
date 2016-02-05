@@ -35,12 +35,14 @@
 namespace Magus
 {
     //****************************************************************************/
-    QtNode::QtNode(QString title, QGraphicsItem* parent) : QGraphicsPathItem(parent)
+    QtNode::QtNode(QString title, QGraphicsItem* parent) :
+        QGraphicsPathItem(parent),
+        mNodeType(0),
+        mZoom(1.0f),
+        mActiveConnection(0),
+        mUserData(0)
     {
         // Header
-        mZoom = 1.0f;
-        mActiveConnection = 0;
-        mUserData = 0;
         mPixmapItem = new QGraphicsPixmapItem(this);
         mImageSet = false;
         mAutoSize = true;
@@ -803,6 +805,15 @@ namespace Magus
         return 0;
     }
 
+    //****************************************************************************/
+    QVector<QtNode*> QtNode::getNodes (void)
+    {
+        QVector<QtNode*> nodes;
+        foreach(QtPort* port, mPortList)
+            nodes.append(getNodeConnectedToPort(port));
+
+        return nodes;
+    }
 
     //****************************************************************************/
     QVector<QtPort*> QtNode::getPorts (void)

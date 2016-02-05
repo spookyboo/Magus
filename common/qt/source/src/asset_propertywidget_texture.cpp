@@ -36,6 +36,7 @@ namespace Magus
     {
         mFileNameTexture = QString("");
         mBaseFileNameTexture = QString("");
+        mPathTexture = QString("");
         mSearchPath = QString("");
         QVBoxLayout* mainLayout = new QVBoxLayout;
         QHBoxLayout* horizontalLayout = new QHBoxLayout;
@@ -76,6 +77,7 @@ namespace Magus
             // Clear the current image
             mFileNameTexture = QString("");
             mBaseFileNameTexture = QString("");
+            mPathTexture = QString("");
             mTextureNameLabel->setText(mBaseFileNameTexture);
             mTextureLabel->clear();
             return;
@@ -89,6 +91,7 @@ namespace Magus
         QFileInfo fileInfo(f.fileName());
         mFileNameTexture = fileNameTexture;
         mBaseFileNameTexture = fileInfo.fileName();
+        mPathTexture = fileInfo.absolutePath();
         mTextureNameLabel->setText(mBaseFileNameTexture);
         mTexturePixmap = QPixmap(fileNameTexture).scaled(mTextureSize.width(),
                                                          mTextureSize.height(),
@@ -109,6 +112,12 @@ namespace Magus
     const QString& QtTextureProperty::getTextureBaseFileName(void)
     {
         return mBaseFileNameTexture;
+    }
+
+    //****************************************************************************/
+    const QString& QtTextureProperty::getPathTexture(void)
+    {
+        return mPathTexture;
     }
 
     //****************************************************************************/

@@ -25,7 +25,6 @@
 #include "OgreCommon.h"
 #include "OgreTextureManager.h"
 #include "OgreTimer.h"
-#include "OgreItem.h"
 
 namespace Magus
 {
@@ -37,6 +36,7 @@ namespace Magus
         mCamera(0),
         mCameraManager(0),
         mTimeSinceLastFrame (0.0f),
+        mItem(0),
         mSceneCreated(false),
         mSystemInitialized(false)
     {
@@ -146,16 +146,16 @@ namespace Magus
     void QOgreWidget::createScene()
     {
         // Create an item
-        Ogre::Item *item = mSceneManager->createItem( "Cube_d.mesh",
-                                                     Ogre::ResourceGroupManager::
-                                                     AUTODETECT_RESOURCE_GROUP_NAME,
-                                                     Ogre::SCENE_DYNAMIC );
+        mItem = mSceneManager->createItem( "Cube_d.mesh",
+                                           Ogre::ResourceGroupManager::
+                                           AUTODETECT_RESOURCE_GROUP_NAME,
+                                           Ogre::SCENE_DYNAMIC );
 
         Ogre::SceneNode* sceneNode = mSceneManager->getRootSceneNode( Ogre::SCENE_DYNAMIC )->
                 createChildSceneNode( Ogre::SCENE_DYNAMIC );
 
         sceneNode->setPosition(0.0, 0.0, 0.0);
-        sceneNode->attachObject( item );
+        sceneNode->attachObject( mItem );
         sceneNode->setScale(15, 15, 15);
         mCameraManager->setTarget(sceneNode);
 
