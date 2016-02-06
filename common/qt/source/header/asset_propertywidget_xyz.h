@@ -49,6 +49,9 @@ namespace Magus
             const qreal getX (void) const;
             const qreal getY (void) const;
             const qreal getZ (void) const;
+            void enableX (bool enabled);
+            void enableY (bool enabled);
+            void enableZ (bool enabled);
 
         private slots:
             void propertyValueChanged(void);

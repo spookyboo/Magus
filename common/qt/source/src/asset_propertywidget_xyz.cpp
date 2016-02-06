@@ -75,6 +75,33 @@ namespace Magus
     }
 
     //****************************************************************************/
+    void QtXYZProperty::enableX (bool enabled)
+    {
+        mXEdit->setEnabled(enabled);
+        QFont font;
+        font.setItalic(!enabled); // Italic when no selected items available
+        mXEdit->setFont(font);
+    }
+
+    //****************************************************************************/
+    void QtXYZProperty::enableY (bool enabled)
+    {
+        mYEdit->setEnabled(enabled);
+        QFont font;
+        font.setItalic(!enabled); // Italic when disabled
+        mYEdit->setFont(font);
+    }
+
+    //****************************************************************************/
+    void QtXYZProperty::enableZ (bool enabled)
+    {
+        mZEdit->setEnabled(enabled);
+        QFont font;
+        font.setItalic(!enabled); // Italic when disabled
+        mZEdit->setFont(font);
+    }
+
+    //****************************************************************************/
     void QtXYZProperty::setXYZ (qreal x, qreal y, qreal z)
     {
         setX(x);
