@@ -1000,6 +1000,47 @@ namespace Magus
     }
 
     //****************************************************************************/
+    void QtNodeEditor::setZoom(qreal zoom, qreal delta)
+    {
+        mZoom = zoom;
+        QtNode* node;
+        QPointF averagePos;
+        QPointF posF;
+        unsigned int i = 0;
+        if (delta < 0)
+            delta = 0.2f;
+        else
+            delta = -0.2f;
+
+        // Get the average position
+        QList<QGraphicsItem*> items = mScene->items();
+        foreach(QGraphicsItem* item, items)
+        {
+            if (isNode(item) && item->isVisible())
+            {
+                node = static_cast<QtNode*>(item);
+                averagePos += node->pos();
+                ++i;
+            }
+        }
+
+        averagePos /= i;
+
+        // Zoom
+        foreach(QGraphicsItem* item, items)
+        {
+            if (isNode(item) && item->isVisible())
+            {
+                node = static_cast<QtNode*>(item);
+                node->setZoom(zoom);
+                posF = node->pos();
+                posF = posF + delta * zoom * (averagePos - posF);
+                node->setPos(posF);
+            }
+        }
+    }
+
+    //****************************************************************************/
     bool QtNodeEditor::ctrlPressed(void)
     {
         Qt::KeyboardModifiers modifiers = QGuiApplication::keyboardModifiers();
@@ -1330,7 +1371,8 @@ namespace Magus
     {
         if ((event->delta() > 0 && mZoom < 3.0f) ||
             (event->delta() < 0 && mZoom > 0.25f))
-                setZoom(mZoom + 0.001 * event->delta());
+                setZoom(mZoom + 0.001f * event->delta(), event->delta());
+                //setZoom(mZoom + 0.001 * event->delta());
 
         mScene->update();
     }

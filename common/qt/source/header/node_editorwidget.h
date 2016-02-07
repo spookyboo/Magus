@@ -133,6 +133,9 @@ namespace Magus
             // Scale all nodes with the zoom factor.
             void setZoom(qreal zoom);
 
+            // Scale all nodes with the zoom factor and reposition the nodes relative to each other
+            void setZoom(qreal zoom, qreal delta);
+
             // Scale all nodes with the zoom factor.
             void setFisheyeView(bool enabled, qreal maxZoom = 1.0f, unsigned int steps = 5);
 
