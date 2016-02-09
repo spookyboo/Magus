@@ -243,7 +243,7 @@ namespace Magus
             // Create an active connection that must be connected to another node (using the mouse)
             // port = The base port to which the connection is attached; this is also the start position
             // pos = End position
-            void createActiveConnection(QtPort* port, QPointF pos);
+            QtConnection* createActiveConnection(QtPort* port, QPointF pos);
 
             // Delete the connection that is currently active
             void deleteActiveConnection(void);

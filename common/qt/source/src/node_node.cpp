@@ -564,12 +564,13 @@ namespace Magus
     }
 
     //****************************************************************************/
-    void QtNode::createActiveConnection(QtPort* port, QPointF pos)
+    QtConnection* QtNode::createActiveConnection(QtPort* port, QPointF pos)
     {
         mActiveConnection = port->createConnection();
         mScene->addItem(mActiveConnection);
         mActiveConnection->updatePath(pos);
         emit connectionStarted(this, port, mActiveConnection);
+        return mActiveConnection;
     }
 
     //****************************************************************************/
