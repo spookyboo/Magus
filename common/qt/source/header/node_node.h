@@ -179,6 +179,9 @@ namespace Magus
             // Return the port, based on the id
             QtPort* getPort (unsigned int portId);
 
+            // Return a port that has no connection. The first free port from portIdFrom to portIdTo (included) is returned
+            QtPort* getFirstFreePort (unsigned int portIdFrom, unsigned int portIdTo);
+
             // Return the port, based on the name
             // In case there are multiple ports with the same name, the first occurence is returned; use the occurence
             // argument in case of more than one port with the same name; occurence starts with 1

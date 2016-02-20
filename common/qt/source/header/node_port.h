@@ -99,9 +99,12 @@ namespace Magus
             // The porttype of each port is compared.
             bool isConnectionAllowed(QtPort* portToConnect);
 
+            // Returns true if the port is connected to another node
+            bool isPortConnected(void);
+
             // Return true is this port is the base port of a connection
             bool isBasePort(void);
-            \
+
             // Return true is this port is the target port of a connection
             bool isTargetPort(void);
 

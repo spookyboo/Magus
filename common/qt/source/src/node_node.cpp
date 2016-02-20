@@ -787,6 +787,22 @@ namespace Magus
     }
 
     //****************************************************************************/
+    QtPort* QtNode::getFirstFreePort (unsigned int portIdFrom, unsigned int portIdTo)
+    {
+        // 1. Run through all of the ports in this node
+        // 2. Return the n-th occurence of the port that is free
+        unsigned int portId;
+        foreach(QtPort* port, mPortList)
+        {
+            portId = port->getPortId();
+            if (portId >= portIdFrom && portId <= portIdTo && !port->isPortConnected())
+                return port;
+        }
+
+        return 0;
+    }
+
+    //****************************************************************************/
     QtPort* QtNode::getPort (const QString& portName, unsigned int occurence)
     {
         // 1. Run through all of the ports in this node

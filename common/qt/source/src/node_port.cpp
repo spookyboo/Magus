@@ -300,6 +300,12 @@ namespace Magus
     }
 
     //****************************************************************************/
+    bool QtPort::isPortConnected(void)
+    {
+        return mConnection;
+    }
+
+    //****************************************************************************/
     bool QtPort::isBasePort(void)
     {
         if (mConnection)
