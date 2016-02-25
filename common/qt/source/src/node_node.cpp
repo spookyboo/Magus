@@ -1068,4 +1068,89 @@ namespace Magus
         QGraphicsPathItem::setVisible(visible);
     }
 
+    //****************************************************************************/
+    bool QtNode::connect(unsigned int portIdFrom,
+                         unsigned int portIdTo,
+                         QtNode* targetNode,
+                         unsigned int targetPortId)
+    {
+        // Get the ports and check whether it is allowed to connect
+        QtPort* port = getFirstFreePort(portIdFrom, portIdTo);
+        QtPort* targetPort = targetNode->getPort(targetPortId);
+        if (!port->isConnectionAllowed(targetPort))
+            return false;
+
+        QtConnection* connection = createActiveConnection(port, targetPort->pos());
+        targetPort->createConnection(connection);
+        mActiveConnection = 0;
+        return true;
+    }
+
+    //****************************************************************************/
+    bool QtNode::connect(unsigned int portId,
+                         QtNode* targetNode,
+                         unsigned int targetPortId)
+    {
+        // Get the ports and check whether it is allowed to connect
+        QtPort* port = getPort(portId);
+        QtPort* targetPort = targetNode->getPort(targetPortId);
+        if (!port->isConnectionAllowed(targetPort))
+            return false;
+
+        QtConnection* connection = createActiveConnection(port, targetPort->pos());
+        targetPort->createConnection(connection);
+        mActiveConnection = 0;
+        return true;
+    }
+
+    //****************************************************************************/
+    bool QtNode::connect(const QString& portName,
+                         QtNode* targetNode,
+                         const QString& targetPortName)
+    {
+        // Get the ports and check whether it is allowed to connect
+        QtPort* port = getPort(portName);
+        QtPort* targetPort = targetNode->getPort(targetPortName);
+        if (!port->isConnectionAllowed(targetPort))
+            return false;
+
+        QtConnection* connection = createActiveConnection(port, targetPort->pos());
+        targetPort->createConnection(connection);
+        mActiveConnection = 0;
+        return true;
+    }
+
+    //****************************************************************************/
+    bool QtNode::connect(unsigned int portId,
+                         QtNode* targetNode,
+                         const QString& targetPortName)
+    {
+        // Get the ports and check whether it is allowed to connect
+        QtPort* port = getPort(portId);
+        QtPort* targetPort = targetNode->getPort(targetPortName);
+        if (!port->isConnectionAllowed(targetPort))
+            return false;
+
+        QtConnection* connection = createActiveConnection(port, targetPort->pos());
+        targetPort->createConnection(connection);
+        mActiveConnection = 0;
+        return true;
+    }
+
+    //****************************************************************************/
+    bool QtNode::connect(const QString& portName,
+                         QtNode* targetNode,
+                         unsigned int targetPortId)
+    {
+        // Get the ports and check whether it is allowed to connect
+        QtPort* port = getPort(portName);
+        QtPort* targetPort = targetNode->getPort(targetPortId);
+        if (!port->isConnectionAllowed(targetPort))
+            return false;
+
+        QtConnection* connection = createActiveConnection(port, targetPort->pos());
+        targetPort->createConnection(connection);
+        mActiveConnection = 0;
+        return true;
+    }
 }

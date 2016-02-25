@@ -257,6 +257,22 @@ namespace Magus
             // Select or deselect all connections; this only applies to finalized (established) connections
             void selectConnections(bool selected);
 
+            // Make a connection between nodes.
+            // This function makes a connection between to the first free port in the range portIdFrom-portIdTo
+            // and the port defined with targetPortId. Only ports that are allowed to be connected are actually
+            // connected.
+            bool connect (unsigned int portIdFrom,
+                          unsigned int portIdTo,
+                          QtNode* targetNode,
+                          unsigned int targetPortId);
+
+            // Make a connection between nodes. These functions do not use a range of port id's,
+            // but the identification of a specific port id.
+            bool connect (unsigned int portId, QtNode* targetNode, unsigned int targetPortId);
+            bool connect (const QString& portName, QtNode* targetNode, const QString& targetPortName);
+            bool connect (unsigned int portId, QtNode* targetNode, const QString& targetPortName);
+            bool connect (const QString& portName, QtNode* targetNode, unsigned int targetPortId);
+
             // Called from the QNodeEditor when either a left mouse click on the action1 or action2 button
             // has been done. This handler function performs default behaviour, but it is possible to overload
             // these functions. Default behaviour:

@@ -338,7 +338,7 @@ void QtOgre20Builder::copyOgreFiles(const QString &ogreRoot,
     fileUtil.copy(qtSrc + FILE_OGRE2_WIDGET_CPP, fullOutputSrcDir + FILE_OGRE2_WIDGET_CPP); // Differentiates from Ogre 1.9
     fileUtil.copy(qtSrc + FILE_OGRE2_RENDERMAN_CPP, fullOutputSrcDir + FILE_OGRE2_RENDERMAN_CPP); // Differentiates from Ogre 1.9
 
-    // Copy the Ogre DLL's (MUST be present, otherwise the application crashes)
+    // Copy the Ogre DLL's (MUST be present, otherwise the generated application crashes)
     fileUtil.copy(ogreRoot + DIR_OGRE_BIN_RELEASE + FILE_OGRE_MAIN_DLL, fullOutputBinDir + FILE_OGRE_MAIN_DLL);
     fileUtil.copy(ogreRoot + DIR_OGRE_BIN_DEBUG + FILE_OGRE_MAIN_D_DLL, fullOutputBinDir + FILE_OGRE_MAIN_D_DLL);
     fileUtil.copy(ogreRoot + DIR_OGRE_BIN_RELEASE + FILE_OGRE_GL_DLL, fullOutputBinDir + FILE_OGRE_GL_DLL);
