@@ -65,9 +65,8 @@ SOURCES       = \
     source/src/qtbuilderogre.cpp \
     source/src/qtbuilderogre21.cpp
 
-Release:DESTDIR = ../magus/bin
-Debug:DESTDIR = ../magus/bin
-
+Release:DESTDIR = ../Magus/bin
+Debug:DESTDIR = ../Magus/bin
 target.path = $$[QTDIR]/
 INSTALLS += target
 
