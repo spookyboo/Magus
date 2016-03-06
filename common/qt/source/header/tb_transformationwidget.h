@@ -32,48 +32,51 @@ class QComboBox;
 class QStringListModel;
 class QLineEdit;
 
-/****************************************************************************
- Widget used for entering position, (Euler) transformation and scaling
-****************************************************************************/
-class TransformationWidget : public QWidget
+namespace Magus
 {
-    Q_OBJECT
+    /****************************************************************************
+    Widget used for entering position, (Euler) transformation and scaling
+    ****************************************************************************/
+    class TransformationWidget : public QWidget
+    {
+        Q_OBJECT
 
-    public:
-        enum Transformation {POSITION, ROTATION, SCALE};
-        TransformationWidget(QWidget* parent = 0);
-        virtual ~TransformationWidget(void);
-        const Transformation getCurrentTransformation(void) const;
-        const QVector3D getCurrentXYZ(void);
-        const QVector3D getPosition(void) const;
-        const QVector3D getRotation(void) const;
-        const QVector3D getScale(void) const;
-        void setPosition(const QVector3D& position);
-        void setRotation(const QVector3D& rotation);
-        void setScale(const QVector3D& scale);
+        public:
+            enum Transformation {POSITION, ROTATION, SCALE};
+            TransformationWidget(QWidget* parent = 0);
+            virtual ~TransformationWidget(void);
+            const Transformation getCurrentTransformation(void) const;
+            const QVector3D getCurrentXYZ(void);
+            const QVector3D getPosition(void) const;
+            const QVector3D getRotation(void) const;
+            const QVector3D getScale(void) const;
+            void setPosition(const QVector3D& position);
+            void setRotation(const QVector3D& rotation);
+            void setScale(const QVector3D& scale);
 
-    signals:
-        void valueChanged(void);
+        signals:
+            void valueChanged(void);
 
-    protected slots:
-        void handleSelectionChanged(int index);
-        void handleXchanged(const QString &x);
-        void handleYchanged(const QString &y);
-        void handleZchanged(const QString &z);
+        protected slots:
+            void handleSelectionChanged(int index);
+            void handleXchanged(const QString &x);
+            void handleYchanged(const QString &y);
+            void handleZchanged(const QString &z);
 
-    private:
-        void sync(void);
-        QComboBox* mTransformationCombobox;
-        QStringListModel* mModel;
-        QLineEdit* mXedit;
-        QLineEdit* mYedit;
-        QLineEdit* mZedit;
-        QVector3D mPosition;
-        QVector3D mRotation;
-        QVector3D mScale;
-        Transformation mTransformation;
-        bool selectionChanged;
-};
+        private:
+            void sync(void);
+            QComboBox* mTransformationCombobox;
+            QStringListModel* mModel;
+            QLineEdit* mXedit;
+            QLineEdit* mYedit;
+            QLineEdit* mZedit;
+            QVector3D mPosition;
+            QVector3D mRotation;
+            QVector3D mScale;
+            Transformation mTransformation;
+            bool selectionChanged;
+    };
+}
 
 //****************************************************************************/
 #endif

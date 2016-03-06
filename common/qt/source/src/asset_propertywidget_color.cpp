@@ -128,6 +128,15 @@ namespace Magus
     }
 
     //****************************************************************************/
+    void QtColorProperty::setColor (const QColor& color)
+    {
+        mColorValue = color;
+        updateRGBAWithCurrentColor();
+        updateHexWithCurrentColor();
+        updateColorFill();
+    }
+
+    //****************************************************************************/
     const QColor& QtColorProperty::getColor (void) const
     {
         return mColorValue;

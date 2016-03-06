@@ -46,6 +46,7 @@ namespace Magus
             virtual ~QtColorProperty(void) {}
             void setAlphaVisible(bool enabled);
             void setColor (unsigned int r, unsigned int g, unsigned int b, unsigned int a);
+            void setColor (const QColor& color);
             const QColor& getColor (void) const;
             unsigned int getRed (void) const;
             unsigned int getGreen (void) const;

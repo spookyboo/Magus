@@ -1069,10 +1069,10 @@ namespace Magus
     }
 
     //****************************************************************************/
-    bool QtNode::connect(unsigned int portIdFrom,
-                         unsigned int portIdTo,
-                         QtNode* targetNode,
-                         unsigned int targetPortId)
+    bool QtNode::connectNode(unsigned int portIdFrom,
+                             unsigned int portIdTo,
+                             QtNode* targetNode,
+                             unsigned int targetPortId)
     {
         // Get the ports and check whether it is allowed to connect
         QtPort* port = getFirstFreePort(portIdFrom, portIdTo);
@@ -1087,9 +1087,9 @@ namespace Magus
     }
 
     //****************************************************************************/
-    bool QtNode::connect(unsigned int portId,
-                         QtNode* targetNode,
-                         unsigned int targetPortId)
+    bool QtNode::connectNode(unsigned int portId,
+                             QtNode* targetNode,
+                             unsigned int targetPortId)
     {
         // Get the ports and check whether it is allowed to connect
         QtPort* port = getPort(portId);
@@ -1104,9 +1104,9 @@ namespace Magus
     }
 
     //****************************************************************************/
-    bool QtNode::connect(const QString& portName,
-                         QtNode* targetNode,
-                         const QString& targetPortName)
+    bool QtNode::connectNode(const QString& portName,
+                             QtNode* targetNode,
+                             const QString& targetPortName)
     {
         // Get the ports and check whether it is allowed to connect
         QtPort* port = getPort(portName);
@@ -1121,9 +1121,9 @@ namespace Magus
     }
 
     //****************************************************************************/
-    bool QtNode::connect(unsigned int portId,
-                         QtNode* targetNode,
-                         const QString& targetPortName)
+    bool QtNode::connectNode(unsigned int portId,
+                             QtNode* targetNode,
+                             const QString& targetPortName)
     {
         // Get the ports and check whether it is allowed to connect
         QtPort* port = getPort(portId);
@@ -1138,9 +1138,9 @@ namespace Magus
     }
 
     //****************************************************************************/
-    bool QtNode::connect(const QString& portName,
-                         QtNode* targetNode,
-                         unsigned int targetPortId)
+    bool QtNode::connectNode(const QString& portName,
+                             QtNode* targetNode,
+                             unsigned int targetPortId)
     {
         // Get the ports and check whether it is allowed to connect
         QtPort* port = getPort(portName);

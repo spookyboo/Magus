@@ -42,7 +42,6 @@ namespace Magus
     void QtCompoundNode::_prepareDelete(void)
     {
         // First release the nodes
-        QtCompoundNode* compound;
         foreach(QtNode* node, mNodeList)
             removeNode(node);
 

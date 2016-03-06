@@ -392,7 +392,7 @@ QString QtToolbarBuilder::createHToolbarWidgets(WindowProperties* windowProperti
     {
         str = str +
             TAB +
-            QString("mTransformationWidget = new TransformationWidget(mHToolBar);") +
+            QString("mTransformationWidget = new Magus::TransformationWidget(mHToolBar);") +
             QString("\n");
 
         str = str +

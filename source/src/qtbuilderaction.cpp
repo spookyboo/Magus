@@ -212,7 +212,7 @@ QString QtActionBuilder::updatePrivateMembersToolbar(WindowProperties* windowPro
         str = str +
             TAB +
             TAB +
-            QString("TransformationWidget* mTransformationWidget;") +
+            QString("Magus::TransformationWidget* mTransformationWidget;") +
             QString("\n");
     }
 
@@ -661,7 +661,7 @@ QString QtActionBuilder::createDoActionsForToolbar(WindowProperties* windowPrope
 
         str = str +
             TAB + TAB +
-            QString("case TransformationWidget::POSITION:") +
+            QString("case Magus::TransformationWidget::POSITION:") +
             QString("\n");
 
         str = str +
@@ -706,7 +706,7 @@ QString QtActionBuilder::createDoActionsForToolbar(WindowProperties* windowPrope
 
         str = str +
             TAB + TAB +
-            QString("case TransformationWidget::ROTATION:") +
+            QString("case Magus::TransformationWidget::ROTATION:") +
             QString("\n");
 
         str = str +
@@ -756,7 +756,7 @@ QString QtActionBuilder::createDoActionsForToolbar(WindowProperties* windowPrope
 
         str = str +
             TAB + TAB +
-            QString("case TransformationWidget::SCALE:") +
+            QString("case Magus::TransformationWidget::SCALE:") +
             QString("\n");
 
         str = str +

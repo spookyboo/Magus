@@ -290,7 +290,6 @@ namespace Magus
 
         QtCompoundNode* compound;
         QList<QGraphicsItem*> items = mScene->items();
-        int subType;
         qreal halfWidth;
         foreach(QGraphicsItem* item, items)
         {
@@ -318,7 +317,6 @@ namespace Magus
     bool QtNodeEditor::eventFilter(QObject* object, QEvent* event)
     {
         QGraphicsSceneMouseEvent* mouseEvent = (QGraphicsSceneMouseEvent*) event;
-        QGraphicsItem* item = 0;
         switch ((int) event->type())
         {
             case QEvent::GraphicsSceneMousePress:

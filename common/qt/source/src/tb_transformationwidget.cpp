@@ -26,244 +26,247 @@
 #include <QLineEdit>
 #include "tb_transformationwidget.h"
 
-//****************************************************************************/
-TransformationWidget::TransformationWidget(QWidget* parent) : QWidget(parent)
+namespace Magus
 {
-    selectionChanged = false;
-    mPosition = QVector3D(0, 0, 0);
-    mRotation = QVector3D(0, 0, 0);
-    mScale = QVector3D(0, 0, 0);
-    mTransformation = POSITION;
-    QHBoxLayout* transformationLayout = new QHBoxLayout;
-    QHBoxLayout* xLayout = new QHBoxLayout;
-    QHBoxLayout* yLayout = new QHBoxLayout;
-    QHBoxLayout* zLayout = new QHBoxLayout;
-
-    // Combobox
-    QStringList list;
-    list << QString("Position") << QString("Rotation") << QString("Scale");
-    mModel = new QStringListModel(list);
-    mTransformationCombobox = new QComboBox(parent);
-    mTransformationCombobox->setModel(mModel);
-    mTransformationCombobox->setMaxVisibleItems(3);
-
-    // X, Y, Z
-    QLabel* xLabel = new QLabel(QString("<b>X</b>"));
-    xLabel->setMaximumWidth(24);
-    xLabel->setAutoFillBackground(true);
-    xLabel->setStyleSheet("QLabel {background-color : rgb(255, 0, 0); margin-left: 0px; margin-right: 0px; spacing: 0px;}");
-    mXedit = new QLineEdit;
-    mXedit->setText(QVariant(mPosition.x()).toString());
-    mXedit->setStyleSheet("QLineEdit {margin-right: 0px; margin-left: 5px; width: 24px; spacing: 0px;}");
-
-    QLabel* yLabel = new QLabel(QString("<b>Y</b>"));
-    yLabel->setMaximumWidth(24);
-    yLabel->setAutoFillBackground(true);
-    yLabel->setStyleSheet("QLabel {background-color : rgb(0, 255, 0); margin-left: 0px; margin-right: 0px;}");
-    mYedit = new QLineEdit;
-    mYedit->setText(QVariant(mPosition.y()).toString());
-    mYedit->setStyleSheet("QLineEdit {margin-right: 0px; margin-left: 0px; width: 24px; spacing: 0px;}");
-
-    QLabel* zLabel = new QLabel(QString("<b>Z</b>"));
-    zLabel->setMaximumWidth(24);
-    zLabel->setAutoFillBackground(true);
-    zLabel->setStyleSheet("QLabel {background-color : rgb(100, 100, 255); margin-left: 0px; margin-right: 0px;}");
-    mZedit = new QLineEdit;
-    mZedit->setText(QVariant(mPosition.z()).toString());
-    mZedit->setStyleSheet("QLineEdit {margin-right: 0px; margin-left: 0px; width: 24px; spacing: 0px;}");
-
-    // Layout
-    transformationLayout->addWidget(mTransformationCombobox);
-    xLayout->addWidget(xLabel, 0, Qt::AlignRight);
-    xLayout->addWidget(mXedit, 100, Qt::AlignLeft);
-    yLayout->addWidget(yLabel, 0, Qt::AlignRight);
-    yLayout->addWidget(mYedit, 0, Qt::AlignLeft);
-    zLayout->addWidget(zLabel, 0, Qt::AlignRight);
-    zLayout->addWidget(mZedit, 0, Qt::AlignLeft);
-    transformationLayout->addLayout(xLayout);
-    transformationLayout->addLayout(yLayout);
-    transformationLayout->addLayout(zLayout);
-    setLayout(transformationLayout);
-    connect(mTransformationCombobox, SIGNAL(currentIndexChanged(int)), this, SLOT(handleSelectionChanged(int)));
-    connect(mXedit, SIGNAL(textEdited(const QString &)), this, SLOT(handleXchanged(const QString &)));
-    connect(mYedit, SIGNAL(textEdited(const QString &)), this, SLOT(handleYchanged(const QString &)));
-    connect(mZedit, SIGNAL(textEdited(const QString &)), this, SLOT(handleZchanged(const QString &)));
-}
-
-//****************************************************************************/
-TransformationWidget::~TransformationWidget(void)
-{
-}
-
-//****************************************************************************/
-void TransformationWidget::handleSelectionChanged(int index)
-{
-    if (!mXedit || !mYedit || !mZedit)
-        return;
-
-    selectionChanged = true;
-    switch (index)
+    //****************************************************************************/
+    TransformationWidget::TransformationWidget(QWidget* parent) : QWidget(parent)
     {
-        case 0:
-        {
-            mTransformation = POSITION; // Must be changed before the edit widgets are set
-            mXedit->setText(QVariant(mPosition.x()).toString());
-            mYedit->setText(QVariant(mPosition.y()).toString());
-            mZedit->setText(QVariant(mPosition.z()).toString());
-        }
-        break;
+        selectionChanged = false;
+        mPosition = QVector3D(0, 0, 0);
+        mRotation = QVector3D(0, 0, 0);
+        mScale = QVector3D(0, 0, 0);
+        mTransformation = POSITION;
+        QHBoxLayout* transformationLayout = new QHBoxLayout;
+        QHBoxLayout* xLayout = new QHBoxLayout;
+        QHBoxLayout* yLayout = new QHBoxLayout;
+        QHBoxLayout* zLayout = new QHBoxLayout;
 
-        case 1:
-        {
-            mTransformation = ROTATION; // Must be changed before the edit widgets are set
-            mXedit->setText(QVariant(mRotation.x()).toString());
-            mYedit->setText(QVariant(mRotation.y()).toString());
-            mZedit->setText(QVariant(mRotation.z()).toString());
-        }
-        break;
+        // Combobox
+        QStringList list;
+        list << QString("Position") << QString("Rotation") << QString("Scale");
+        mModel = new QStringListModel(list);
+        mTransformationCombobox = new QComboBox(parent);
+        mTransformationCombobox->setModel(mModel);
+        mTransformationCombobox->setMaxVisibleItems(3);
 
-        case 2:
-        {
-            mTransformation = SCALE; // Must be changed before the edit widgets are set
-            mXedit->setText(QVariant(mScale.x()).toString());
-            mYedit->setText(QVariant(mScale.y()).toString());
-            mZedit->setText(QVariant(mScale.z()).toString());
-        }
-        break;
-    }
-    selectionChanged = false;
-}
+        // X, Y, Z
+        QLabel* xLabel = new QLabel(QString("<b>X</b>"));
+        xLabel->setMaximumWidth(24);
+        xLabel->setAutoFillBackground(true);
+        xLabel->setStyleSheet("QLabel {background-color : rgb(255, 0, 0); margin-left: 0px; margin-right: 0px; spacing: 0px;}");
+        mXedit = new QLineEdit;
+        mXedit->setText(QVariant(mPosition.x()).toString());
+        mXedit->setStyleSheet("QLineEdit {margin-right: 0px; margin-left: 5px; width: 24px; spacing: 0px;}");
 
-//****************************************************************************/
-void TransformationWidget::sync(void)
-{
-    if (selectionChanged)
-        return;
+        QLabel* yLabel = new QLabel(QString("<b>Y</b>"));
+        yLabel->setMaximumWidth(24);
+        yLabel->setAutoFillBackground(true);
+        yLabel->setStyleSheet("QLabel {background-color : rgb(0, 255, 0); margin-left: 0px; margin-right: 0px;}");
+        mYedit = new QLineEdit;
+        mYedit->setText(QVariant(mPosition.y()).toString());
+        mYedit->setStyleSheet("QLineEdit {margin-right: 0px; margin-left: 0px; width: 24px; spacing: 0px;}");
 
-    if (!mXedit || !mYedit || !mZedit)
-        return;
+        QLabel* zLabel = new QLabel(QString("<b>Z</b>"));
+        zLabel->setMaximumWidth(24);
+        zLabel->setAutoFillBackground(true);
+        zLabel->setStyleSheet("QLabel {background-color : rgb(100, 100, 255); margin-left: 0px; margin-right: 0px;}");
+        mZedit = new QLineEdit;
+        mZedit->setText(QVariant(mPosition.z()).toString());
+        mZedit->setStyleSheet("QLineEdit {margin-right: 0px; margin-left: 0px; width: 24px; spacing: 0px;}");
 
-    float x = mXedit->text().toFloat();
-    float y = mYedit->text().toFloat();
-    float z = mZedit->text().toFloat();
-    switch (mTransformation)
-    {
-        case POSITION:
-        {
-            mPosition.setX(x);
-            mPosition.setY(y);
-            mPosition.setZ(z);
-        }
-        break;
-
-        case ROTATION:
-        {
-            mRotation.setX(x);
-            mRotation.setY(y);
-            mRotation.setZ(z);
-        }
-        break;
-
-        case SCALE:
-        {
-            mScale.setX(x);
-            mScale.setY(y);
-            mScale.setZ(z);
-        }
-        break;
-    }
-    emit valueChanged();
-}
-
-//****************************************************************************/
-void TransformationWidget::handleXchanged(const QString &x)
-{
-    sync();
-}
-
-//****************************************************************************/
-void TransformationWidget::handleYchanged(const QString &y)
-{
-    sync();
-}
-
-//****************************************************************************/
-void TransformationWidget::handleZchanged(const QString &z)
-{
-    sync();
-}
-
-//****************************************************************************/
-const TransformationWidget::Transformation TransformationWidget::getCurrentTransformation(void) const
-{
-    return mTransformation;
-}
-
-//****************************************************************************/
-const QVector3D TransformationWidget::getCurrentXYZ(void)
-{
-    switch (mTransformation)
-    {
-        case POSITION:
-        {
-            return mPosition;
-        }
-        break;
-
-        case ROTATION:
-        {
-            return mRotation;
-        }
-        break;
-
-        case SCALE:
-        {
-            return mScale;
-        }
-        break;
+        // Layout
+        transformationLayout->addWidget(mTransformationCombobox);
+        xLayout->addWidget(xLabel, 0, Qt::AlignRight);
+        xLayout->addWidget(mXedit, 100, Qt::AlignLeft);
+        yLayout->addWidget(yLabel, 0, Qt::AlignRight);
+        yLayout->addWidget(mYedit, 0, Qt::AlignLeft);
+        zLayout->addWidget(zLabel, 0, Qt::AlignRight);
+        zLayout->addWidget(mZedit, 0, Qt::AlignLeft);
+        transformationLayout->addLayout(xLayout);
+        transformationLayout->addLayout(yLayout);
+        transformationLayout->addLayout(zLayout);
+        setLayout(transformationLayout);
+        connect(mTransformationCombobox, SIGNAL(currentIndexChanged(int)), this, SLOT(handleSelectionChanged(int)));
+        connect(mXedit, SIGNAL(textEdited(const QString &)), this, SLOT(handleXchanged(const QString &)));
+        connect(mYedit, SIGNAL(textEdited(const QString &)), this, SLOT(handleYchanged(const QString &)));
+        connect(mZedit, SIGNAL(textEdited(const QString &)), this, SLOT(handleZchanged(const QString &)));
     }
 
-    return mPosition;
-}
+    //****************************************************************************/
+    TransformationWidget::~TransformationWidget(void)
+    {
+    }
 
-//****************************************************************************/
-const QVector3D TransformationWidget::getPosition(void) const
-{
-    return mPosition;
-}
+    //****************************************************************************/
+    void TransformationWidget::handleSelectionChanged(int index)
+    {
+        if (!mXedit || !mYedit || !mZedit)
+            return;
 
-//****************************************************************************/
-const QVector3D TransformationWidget::getRotation(void) const
-{
-    return mRotation;
-}
+        selectionChanged = true;
+        switch (index)
+        {
+            case 0:
+            {
+                mTransformation = POSITION; // Must be changed before the edit widgets are set
+                mXedit->setText(QVariant(mPosition.x()).toString());
+                mYedit->setText(QVariant(mPosition.y()).toString());
+                mZedit->setText(QVariant(mPosition.z()).toString());
+            }
+            break;
 
-//****************************************************************************/
-const QVector3D TransformationWidget::getScale(void) const
-{
-    return mScale;
-}
+            case 1:
+            {
+                mTransformation = ROTATION; // Must be changed before the edit widgets are set
+                mXedit->setText(QVariant(mRotation.x()).toString());
+                mYedit->setText(QVariant(mRotation.y()).toString());
+                mZedit->setText(QVariant(mRotation.z()).toString());
+            }
+            break;
 
-//****************************************************************************/
-void TransformationWidget::setPosition(const QVector3D& position)
-{
-    mPosition = position;
-    if (mTransformation == POSITION)
-        handleSelectionChanged(0);
-}
+            case 2:
+            {
+                mTransformation = SCALE; // Must be changed before the edit widgets are set
+                mXedit->setText(QVariant(mScale.x()).toString());
+                mYedit->setText(QVariant(mScale.y()).toString());
+                mZedit->setText(QVariant(mScale.z()).toString());
+            }
+            break;
+        }
+        selectionChanged = false;
+    }
 
-//****************************************************************************/
-void TransformationWidget::setRotation(const QVector3D& rotation)
-{
-    mRotation = rotation;
-    if (mTransformation == ROTATION)
-        handleSelectionChanged(1);
-}
+    //****************************************************************************/
+    void TransformationWidget::sync(void)
+    {
+        if (selectionChanged)
+            return;
 
-//****************************************************************************/
-void TransformationWidget::setScale(const QVector3D& scale)
-{
-    mScale = scale;
-    if (mTransformation == SCALE)
-        handleSelectionChanged(2);
+        if (!mXedit || !mYedit || !mZedit)
+            return;
+
+        float x = mXedit->text().toFloat();
+        float y = mYedit->text().toFloat();
+        float z = mZedit->text().toFloat();
+        switch (mTransformation)
+        {
+            case POSITION:
+            {
+                mPosition.setX(x);
+                mPosition.setY(y);
+                mPosition.setZ(z);
+            }
+            break;
+
+            case ROTATION:
+            {
+                mRotation.setX(x);
+                mRotation.setY(y);
+                mRotation.setZ(z);
+            }
+            break;
+
+            case SCALE:
+            {
+                mScale.setX(x);
+                mScale.setY(y);
+                mScale.setZ(z);
+            }
+            break;
+        }
+        emit valueChanged();
+    }
+
+    //****************************************************************************/
+    void TransformationWidget::handleXchanged(const QString &x)
+    {
+        sync();
+    }
+
+    //****************************************************************************/
+    void TransformationWidget::handleYchanged(const QString &y)
+    {
+        sync();
+    }
+
+    //****************************************************************************/
+    void TransformationWidget::handleZchanged(const QString &z)
+    {
+        sync();
+    }
+
+    //****************************************************************************/
+    const TransformationWidget::Transformation TransformationWidget::getCurrentTransformation(void) const
+    {
+        return mTransformation;
+    }
+
+    //****************************************************************************/
+    const QVector3D TransformationWidget::getCurrentXYZ(void)
+    {
+        switch (mTransformation)
+        {
+            case POSITION:
+            {
+                return mPosition;
+            }
+            break;
+
+            case ROTATION:
+            {
+                return mRotation;
+            }
+            break;
+
+            case SCALE:
+            {
+                return mScale;
+            }
+            break;
+        }
+
+        return mPosition;
+    }
+
+    //****************************************************************************/
+    const QVector3D TransformationWidget::getPosition(void) const
+    {
+        return mPosition;
+    }
+
+    //****************************************************************************/
+    const QVector3D TransformationWidget::getRotation(void) const
+    {
+        return mRotation;
+    }
+
+    //****************************************************************************/
+    const QVector3D TransformationWidget::getScale(void) const
+    {
+        return mScale;
+    }
+
+    //****************************************************************************/
+    void TransformationWidget::setPosition(const QVector3D& position)
+    {
+        mPosition = position;
+        if (mTransformation == POSITION)
+            handleSelectionChanged(0);
+    }
+
+    //****************************************************************************/
+    void TransformationWidget::setRotation(const QVector3D& rotation)
+    {
+        mRotation = rotation;
+        if (mTransformation == ROTATION)
+            handleSelectionChanged(1);
+    }
+
+    //****************************************************************************/
+    void TransformationWidget::setScale(const QVector3D& scale)
+    {
+        mScale = scale;
+        if (mTransformation == SCALE)
+            handleSelectionChanged(2);
+    }
 }
