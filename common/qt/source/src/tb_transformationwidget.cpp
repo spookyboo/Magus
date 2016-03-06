@@ -32,6 +32,7 @@ namespace Magus
     TransformationWidget::TransformationWidget(QWidget* parent) : QWidget(parent)
     {
         selectionChanged = false;
+        mPrecision = 2;
         mPosition = QVector3D(0, 0, 0);
         mRotation = QVector3D(0, 0, 0);
         mScale = QVector3D(0, 0, 0);
@@ -50,29 +51,41 @@ namespace Magus
         mTransformationCombobox->setMaxVisibleItems(3);
 
         // X, Y, Z
+        QString s;
         QLabel* xLabel = new QLabel(QString("<b>X</b>"));
         xLabel->setMaximumWidth(24);
         xLabel->setAutoFillBackground(true);
         xLabel->setStyleSheet("QLabel {background-color : rgb(255, 0, 0); margin-left: 0px; margin-right: 0px; spacing: 0px;}");
+        QRegExp regularExpression("[+-]?([0-9]+\\.([0-9]+)?|\\.[0-9]+)([eE][+-]?[0-9]+)?"); // floating point
+        QRegExpValidator* validator = new QRegExpValidator(regularExpression);
         mXedit = new QLineEdit;
-        mXedit->setText(QVariant(mPosition.x()).toString());
-        mXedit->setStyleSheet("QLineEdit {margin-right: 0px; margin-left: 5px; width: 24px; spacing: 0px;}");
+        mXedit->setValidator(validator);
+        s = QVariant(mPosition.x()).toString();
+        s = s.left(getLeftStringIndex(s));
+        mXedit->setText(s);
+        mXedit->setStyleSheet("QLineEdit {margin-right: 0px; margin-left: 5px; width: 32px; spacing: 0px;}");
 
         QLabel* yLabel = new QLabel(QString("<b>Y</b>"));
         yLabel->setMaximumWidth(24);
         yLabel->setAutoFillBackground(true);
         yLabel->setStyleSheet("QLabel {background-color : rgb(0, 255, 0); margin-left: 0px; margin-right: 0px;}");
         mYedit = new QLineEdit;
-        mYedit->setText(QVariant(mPosition.y()).toString());
-        mYedit->setStyleSheet("QLineEdit {margin-right: 0px; margin-left: 0px; width: 24px; spacing: 0px;}");
+        mYedit->setValidator(validator);
+        s = QVariant(mPosition.y()).toString();
+        s = s.left(getLeftStringIndex(s));
+        mYedit->setText(s);
+        mYedit->setStyleSheet("QLineEdit {margin-right: 0px; margin-left: 0px; width: 32px; spacing: 0px;}");
 
         QLabel* zLabel = new QLabel(QString("<b>Z</b>"));
         zLabel->setMaximumWidth(24);
         zLabel->setAutoFillBackground(true);
         zLabel->setStyleSheet("QLabel {background-color : rgb(100, 100, 255); margin-left: 0px; margin-right: 0px;}");
         mZedit = new QLineEdit;
-        mZedit->setText(QVariant(mPosition.z()).toString());
-        mZedit->setStyleSheet("QLineEdit {margin-right: 0px; margin-left: 0px; width: 24px; spacing: 0px;}");
+        mZedit->setValidator(validator);
+        s = QVariant(mPosition.z()).toString();
+        s = s.left(getLeftStringIndex(s));
+        mZedit->setText(s);
+        mZedit->setStyleSheet("QLineEdit {margin-right: 0px; margin-left: 0px; width: 32px; spacing: 0px;}");
 
         // Layout
         transformationLayout->addWidget(mTransformationCombobox);
@@ -104,32 +117,52 @@ namespace Magus
             return;
 
         selectionChanged = true;
+        QString s;
+        unsigned int i;
         switch (index)
         {
             case 0:
             {
                 mTransformation = POSITION; // Must be changed before the edit widgets are set
-                mXedit->setText(QVariant(mPosition.x()).toString());
-                mYedit->setText(QVariant(mPosition.y()).toString());
-                mZedit->setText(QVariant(mPosition.z()).toString());
+                s = QVariant(mPosition.x()).toString();
+                s = s.left(getLeftStringIndex(s));
+                mXedit->setText(s);
+                s = QVariant(mPosition.y()).toString();
+                s = s.left(getLeftStringIndex(s));
+                mYedit->setText(s);
+                s = QVariant(mPosition.z()).toString();
+                s = s.left(getLeftStringIndex(s));
+                mZedit->setText(s);
             }
             break;
 
             case 1:
             {
                 mTransformation = ROTATION; // Must be changed before the edit widgets are set
-                mXedit->setText(QVariant(mRotation.x()).toString());
-                mYedit->setText(QVariant(mRotation.y()).toString());
-                mZedit->setText(QVariant(mRotation.z()).toString());
+                s = QVariant(mRotation.x()).toString();
+                s = s.left(getLeftStringIndex(s));
+                mXedit->setText(s);
+                s = QVariant(mRotation.y()).toString();
+                s = s.left(getLeftStringIndex(s));
+                mYedit->setText(s);
+                s = QVariant(mRotation.z()).toString();
+                s = s.left(getLeftStringIndex(s));
+                mZedit->setText(s);
             }
             break;
 
             case 2:
             {
                 mTransformation = SCALE; // Must be changed before the edit widgets are set
-                mXedit->setText(QVariant(mScale.x()).toString());
-                mYedit->setText(QVariant(mScale.y()).toString());
-                mZedit->setText(QVariant(mScale.z()).toString());
+                s = QVariant(mScale.x()).toString();
+                s = s.left(getLeftStringIndex(s));
+                mXedit->setText(s);
+                s = QVariant(mScale.y()).toString();
+                s = s.left(getLeftStringIndex(s));
+                mYedit->setText(s);
+                s = QVariant(mScale.z()).toString();
+                s = s.left(getLeftStringIndex(s));
+                mZedit->setText(s);
             }
             break;
         }
@@ -268,5 +301,29 @@ namespace Magus
         mScale = scale;
         if (mTransformation == SCALE)
             handleSelectionChanged(2);
+    }
+
+    //****************************************************************************/
+    void TransformationWidget::setListEnabled(bool enabled)
+    {
+        mTransformationCombobox->setEnabled(enabled);
+    }
+
+    //****************************************************************************/
+    void TransformationWidget::setCurrentIndex(unsigned int index)
+    {
+        mTransformationCombobox->setCurrentIndex(index);
+    }
+
+    //****************************************************************************/
+    unsigned int TransformationWidget::getLeftStringIndex(const QString& s)
+    {
+        unsigned int index = s.lastIndexOf(".");
+        if (index == -1)
+            index = s.length() + 1;
+        else
+            index += 1 + mPrecision;
+
+        return index;
     }
 }

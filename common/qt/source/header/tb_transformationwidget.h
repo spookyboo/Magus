@@ -53,6 +53,10 @@ namespace Magus
             void setPosition(const QVector3D& position);
             void setRotation(const QVector3D& rotation);
             void setScale(const QVector3D& scale);
+            void setListEnabled(bool enabled);
+            void setCurrentIndex(unsigned int index);
+            unsigned int getPrecision (void) const {return mPrecision;}
+            void setPrecision (unsigned int precision) {mPrecision = precision;}
 
         signals:
             void valueChanged(void);
@@ -75,6 +79,8 @@ namespace Magus
             QVector3D mScale;
             Transformation mTransformation;
             bool selectionChanged;
+            unsigned int mPrecision;
+            unsigned int getLeftStringIndex(const QString& s);
     };
 }
 
