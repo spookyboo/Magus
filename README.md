@@ -11,6 +11,9 @@ Currently, only Qt projects are supported. Magus generates the C++ code, a Qt pr
 
 Note, the Git repo also contains some Windows Dll's. These are VC2015 Qt Dll's (64bit). Their purpose is more as a reference (to show which Dll's are needed for the executable).
 
+**Installation:**  
+See 'Magus manual.pdf' in the 'docs' drectory  
+
 Some examples made with Magus:
 ![Material editor](/materialeditor.png)
 ![Resource widget](/resource_widget.png)
