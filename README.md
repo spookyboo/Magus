@@ -3,7 +3,7 @@ Magus Gui wizzard
 
 Magus is a (Qt) application that generates code (eg. C++) for GUI applications and offers a set of standard widgets to quickly create an application (focussed on game/3D editors). 
 
-![Magus overview](/Magus.png)
+![Magus overview](/Magus.png)  
 The basic framework of a GUI application in Magus is specified in a template file (.ide). This template file is loaded into Magus, which displays a graphical representation of the
 GUI framework. The graphical representation of the framework can be modified in Magus before it is build. Building the GUI applications means that Magus generates all the 
 relevant application code and all related resources.
