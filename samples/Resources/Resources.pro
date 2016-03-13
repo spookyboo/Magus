@@ -5,7 +5,7 @@ HEADERS       = \
     source/header/constants.h \
     source/header/mainwindow.h \
     source/header/dock1_dockwidget.h \ 
-    source/header/dock2_dockwidget.h \ 
+    source/header/dock2_dockwidget.h \
     source/header/tool_resourcetree_widget.h \
     source/header/tool_default_texturewidget.h \
     source/header/tool_filereader.h \
@@ -17,8 +17,7 @@ HEADERS       = \
     source/header/tool_resourcewidget_collections.h \
     source/header/tool_resourcewidget_assets.h \
     source/header/tool_resourcewidget_main.h \
-    source/header/tool_generic_assetwidget.h
-
+    source/header/tool_generic_assetwidget.h \
 
 SOURCES       = \
     source/src/main.cpp \
@@ -37,11 +36,7 @@ SOURCES       = \
     source/src/tool_resourcewidget_main.cpp \
     source/src/tool_generic_assetwidget.cpp
 
-
 INCLUDEPATH += "../Resources/source/header/"
-
-
-
 
 Release:DESTDIR = ../Resources/bin
 Debug:DESTDIR = ../Resources/bin
