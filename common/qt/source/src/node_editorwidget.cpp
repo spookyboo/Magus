@@ -846,10 +846,11 @@ namespace Magus
         QList<QGraphicsItem*> items = mScene->items();
         foreach(QGraphicsItem* item, items)
         {
-            if (isNode(item) && item->isVisible() && nodeType == node->getType())
+            if (isNode(item) && item->isVisible())
             {
                 node = static_cast<QtNode*>(item);
-                nodeList.append(node);
+                if (nodeType == node->getType())
+                    nodeList.append(node);
             }
         }
 
