@@ -718,6 +718,7 @@ namespace Magus
             mCurrentlySelectedConnections.append(connection);
             connection->setSelected(true);
         }
+
     }
 
     //****************************************************************************/
@@ -816,6 +817,7 @@ namespace Magus
         node->_setEditor(this);
         node->_setScene(mScene);
         mScene->addItem(node);
+        mScene->update();
         node->setZoom(mZoom);
         emit nodeAdded(node);
     }
@@ -973,7 +975,7 @@ namespace Magus
         // Put the connections of the node in front of the node and the other connections behind the node
         foreach(QGraphicsItem* item, items)
         {
-            if (isNode(item))
+            if (isConnection(item))
             {
                 QtConnection* connection = static_cast<QtConnection*>(item);
                 if (node->isConnectionConnectedToThisNode(connection))
@@ -982,6 +984,8 @@ namespace Magus
                     item->stackBefore(node);
             }
         }
+
+        mScene->update();
     }
 
     //****************************************************************************/
@@ -998,6 +1002,8 @@ namespace Magus
             if (node != item && isNode(item) && item->isVisible())
                 node->stackBefore(item);
         }
+
+        mScene->update();
     }
 
     //****************************************************************************/
