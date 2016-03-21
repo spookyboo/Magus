@@ -28,6 +28,7 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QLabel>
+#include <QMap>
 #include "magus_treewidget.h"
 
 QT_BEGIN_NAMESPACE
@@ -54,6 +55,7 @@ namespace Magus
     static const QString TOOL_RESOURCETREE_ACTION_IMPORT_ASSET = QString("Import asset(s)");
     static const QString TOOL_RESOURCETREE_ACTION_DUPLICATE_ASSET = QString("Duplicate an asset");
     static const QString TOOL_RESOURCETREE_ACTION_DELETE_RESOURCE = QString("Delete selected item");
+    static const QString TOOL_RESOURCETREE_ACTION_COLLAPSE_EXPAND = QString("Collapse / expand");
     static const QString TOOL_RESOURCETREE_WARNING_1 = QString("Toplevel groups may not be moved");
     static const QString TOOL_RESOURCETREE_WARNING_2 = QString("Attaching a subgroup to an asset is not allowed");
     static const QString TOOL_RESOURCETREE_WARNING_3 = QString("Attaching an asset to another asset is not allowed");
@@ -65,6 +67,7 @@ namespace Magus
     ***************************************************************************/
     struct QtResourceInfo
     {
+        int topLevelId;
         int resourceId;
         int parentId;
         QString iconName;
@@ -78,6 +81,11 @@ namespace Magus
     resources:
     - Groups (or folders) in the most top-level and subgroups in deeper levels.
     - Assets are located in the lowest levels.
+
+    IMPORTANT:
+    =========
+    This class is changed to facilitate the HLMS editor. Do not use it as a
+    generic Magus class.
     ***************************************************************************/
     class QtResourceTreeWidget : public QWidget
     {
@@ -153,6 +161,10 @@ namespace Magus
             void setDeleteResourceContextMenuItemEnabled(bool enabled);
             bool isDeleteResourceContextMenuItemEnabled(void);
 
+            // If true, the context menu is extended with an option to collapse and expand the resource tree
+            void setCollapseExpandContextMenuItemEnabled(bool enabled);
+            bool isCollapseExpandContextMenuItemEnabled(void);
+
             // If true, the asset items can be editted (false is the default)
             void setAssetItemEditable(bool editable);
             bool isAssetItemEditable(void);
@@ -169,7 +181,8 @@ namespace Magus
             // An optional icon can be provided; the iconName is the name of the imagefile
             // If isAsset is false, the resource is a toplevel group or a subgroup
             // If suppressSignal is true, no signal is emitted, indicating that the resource was added
-            void addResource (int resourceId,
+            void addResource (int topLevelId,
+                              int resourceId,
                               int parentId,
                               const QString& resourceName,
                               const QString& fullQualifiedName,
@@ -225,8 +238,12 @@ namespace Magus
             // Select a resource in the resource tree of the current mouse position
             void selectResourceFromCursor (bool emitSignal = true);
 
+            // A resource in the resource tree of the current mouse position is double clicked
+            void doubleClickResourceFromCursor (bool emitSignal = true);
+
             // Return the currently selected resource
             int getSelectedResource (void);
+            QTreeWidgetItem* getSelectedResourceItem (void);
 
             // Return the first resource of a parent. If resourceId == 0, the first top-level resource is returned
             int getFirstInParent (int parentId);
@@ -335,6 +352,20 @@ namespace Magus
             // Returns true if all the child items are hidden
             bool allChildrenHidden(int parentId);
 
+            // Get/Set the name of the icon of the subgroup
+            // If setInheritSubGroupIconFromParent is set to true, the icon of the subgroup can be set different
+            const QString& getSubgroupIconName (void) const {return mSubgroupIconName;}
+            void setSubgroupIconName (const QString& subgroupIconName) {mSubgroupIconName = subgroupIconName;}
+
+            // Determine whether the contextmenu item is enabled/disable when a toplevel group is selected
+            void enableContextMenuItemForTopLevelGroup(const QString& menuItemText, bool enabled);
+
+            // Determine whether the contextmenu item is enabled/disable when a subgroup is selected
+            void enableContextMenuItemForSubGroup(const QString& menuItemText, bool enabled);
+
+            // Determine whether the contextmenu item is enabled/disable when an asset is selected
+            void enableContextMenuItemForAsset(const QString& menuItemText, bool enabled);
+
         public slots:
             // Activated when a contextmenu item is selected
             void contextMenuItemSelected(QAction* action);
@@ -363,6 +394,9 @@ namespace Magus
 
             // Emitted when a resource is selected; the (current) resource is undetermined at that moment
             void resourceSelected (void);
+
+            // Emitted when a resource is double clicked
+            void resourceDoubleClicked (int resourceId);
 
             // Emitted when a resource is imported
             void resourceImported (int resourceId);
@@ -393,6 +427,7 @@ namespace Magus
             void enableContextMenuItem(const QString& menuItemText, bool enabled);
             QAction* getContextMenuAction(const QString& menuItemText);
             void mouseClickHandler(QMouseEvent* event);
+            void mouseDoubleClickHandler(QMouseEvent* event);
             void dragMoveHandler(QObject* object, QEvent* event);
             void dropHandler(QObject* object, QEvent* event);
             void resetSearch(void);
@@ -414,6 +449,7 @@ namespace Magus
             bool mImportAssetContextMenuItemEnabled;
             bool mDuplicateAssetContextMenuItemEnabled;
             bool mDeleteResourceContextMenuItemEnabled;
+            bool mCollapseExpandContextMenuItemEnabled;
             bool mAssetItemEditable;
             int mMaxDepth;
             QString mIconDir;
@@ -421,6 +457,9 @@ namespace Magus
             QVector<int> mChildIdVector;
             QVector<QtResourceInfo*> mRegisteredResources;
             QVector<QtResourceInfo*> mResourceInfoVec;
+            QMap<QString, bool> mToplevelGroupContextMenuItemEnabled;
+            QMap<QString, bool> mSubGroupContextMenuItemEnabled;
+            QMap<QString, bool> mAssetContextMenuItemEnabled;
             QString mTempString;
             QMenu* mContextMenu;
             QMenu* mToplevelGroupSubMenu;
@@ -429,6 +468,8 @@ namespace Magus
             QLineEdit* mSearchLine;
             QLabel* mSearchLabel;
             QPushButton* mSearchClearButton;
+            QString mSubgroupIconName;
+            bool mCollapsed;
     };
 }
 

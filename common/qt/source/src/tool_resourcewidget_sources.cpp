@@ -69,7 +69,7 @@ namespace Magus
         QtSourcesInfo info;
 
         // Audio
-        mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_AUDIO, 0, QString("Audio"), QString(""), TOOL_RESOURCE_ICON_AUDIO);
+        mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_AUDIO, TOOL_SOURCES_LEVEL_X000_AUDIO, 0, QString("Audio"), QString(""), TOOL_RESOURCE_ICON_AUDIO);
         info.toplevelId = TOOL_SOURCES_LEVEL_X000_AUDIO;
         info.resourceId = TOOL_SOURCES_LEVEL_X000_AUDIO;
         info.parentId = 0;
@@ -80,7 +80,7 @@ namespace Magus
         mSourceInfo[TOOL_SOURCES_LEVEL_X000_AUDIO] = info;
 
         // Materials
-        mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_MATERIALS, 0, QString("Materials"), QString(""), TOOL_RESOURCE_ICON_MATERIAL);
+        mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_MATERIALS, TOOL_SOURCES_LEVEL_X000_MATERIALS, 0, QString("Materials"), QString(""), TOOL_RESOURCE_ICON_MATERIAL);
         info.toplevelId = TOOL_SOURCES_LEVEL_X000_MATERIALS;
         info.resourceId = TOOL_SOURCES_LEVEL_X000_MATERIALS;
         info.fileName = QString("Materials");
@@ -90,7 +90,7 @@ namespace Magus
         mSourceInfo[TOOL_SOURCES_LEVEL_X000_MATERIALS] = info;
 
         // Meshes
-        mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_MESHES, 0, QString("Meshes"), QString(""), TOOL_RESOURCE_ICON_MESH);
+        mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_MESHES, TOOL_SOURCES_LEVEL_X000_MESHES, 0, QString("Meshes"), QString(""), TOOL_RESOURCE_ICON_MESH);
         info.toplevelId = TOOL_SOURCES_LEVEL_X000_MESHES;
         info.resourceId = TOOL_SOURCES_LEVEL_X000_MESHES;
         info.fileName = QString("Meshes");
@@ -100,7 +100,7 @@ namespace Magus
         mSourceInfo[TOOL_SOURCES_LEVEL_X000_MESHES] = info;
 
         // Scripts
-        mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_SCRIPTS, 0, QString("Scripts"), QString(""), TOOL_RESOURCE_ICON_SCRIPT);
+        mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_SCRIPTS, TOOL_SOURCES_LEVEL_X000_SCRIPTS, 0, QString("Scripts"), QString(""), TOOL_RESOURCE_ICON_SCRIPT);
         info.toplevelId = TOOL_SOURCES_LEVEL_X000_SCRIPTS;
         info.resourceId = TOOL_SOURCES_LEVEL_X000_SCRIPTS;
         info.fileName = QString("Scripts");
@@ -110,7 +110,7 @@ namespace Magus
         mSourceInfo[TOOL_SOURCES_LEVEL_X000_SCRIPTS] = info;
 
         // Textures
-        mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_TEXTURES, 0, QString("Textures"), QString(""), TOOL_RESOURCE_ICON_TEXTURE);
+        mResourceTreeWidget->addResource (TOOL_SOURCES_LEVEL_X000_TEXTURES, TOOL_SOURCES_LEVEL_X000_TEXTURES, 0, QString("Textures"), QString(""), TOOL_RESOURCE_ICON_TEXTURE);
         info.toplevelId = TOOL_SOURCES_LEVEL_X000_TEXTURES;
         info.resourceId = TOOL_SOURCES_LEVEL_X000_TEXTURES;
         info.fileName = QString("Textures");
@@ -118,6 +118,30 @@ namespace Magus
         info.fileDialogTitle = QString("Textures");
         info.filter = TOOL_SOURCES_FORMAT_TEXTURES;
         mSourceInfo[TOOL_SOURCES_LEVEL_X000_TEXTURES] = info;
+
+        // Determine what is enabled/disabled if a toplevelgroup is selected
+        mResourceTreeWidget->enableContextMenuItemForTopLevelGroup(TOOL_RESOURCETREE_ACTION_CREATE_TOPLEVEL_GROUP, false);
+        mResourceTreeWidget->enableContextMenuItemForTopLevelGroup(TOOL_RESOURCETREE_ACTION_CREATE_SUBGROUP, true);
+        mResourceTreeWidget->enableContextMenuItemForTopLevelGroup(TOOL_RESOURCETREE_ACTION_CREATE_ASSET, true);
+        mResourceTreeWidget->enableContextMenuItemForTopLevelGroup(TOOL_RESOURCETREE_ACTION_IMPORT_ASSET, true);
+        mResourceTreeWidget->enableContextMenuItemForTopLevelGroup(TOOL_RESOURCETREE_ACTION_DUPLICATE_ASSET, false);
+        mResourceTreeWidget->enableContextMenuItemForTopLevelGroup(TOOL_RESOURCETREE_ACTION_DELETE_RESOURCE, false);
+
+        // Determine what is enabled/disabled if a subgroup is selected
+        mResourceTreeWidget->enableContextMenuItemForSubGroup(TOOL_RESOURCETREE_ACTION_CREATE_TOPLEVEL_GROUP, false);
+        mResourceTreeWidget->enableContextMenuItemForSubGroup(TOOL_RESOURCETREE_ACTION_CREATE_SUBGROUP, true);
+        mResourceTreeWidget->enableContextMenuItemForSubGroup(TOOL_RESOURCETREE_ACTION_CREATE_ASSET, true);
+        mResourceTreeWidget->enableContextMenuItemForSubGroup(TOOL_RESOURCETREE_ACTION_IMPORT_ASSET, true);
+        mResourceTreeWidget->enableContextMenuItemForSubGroup(TOOL_RESOURCETREE_ACTION_DUPLICATE_ASSET, false);
+        mResourceTreeWidget->enableContextMenuItemForSubGroup(TOOL_RESOURCETREE_ACTION_DELETE_RESOURCE, true);
+
+        // Determine what is enabled/disabled if an asset is selected
+        mResourceTreeWidget->enableContextMenuItemForAsset(TOOL_RESOURCETREE_ACTION_CREATE_TOPLEVEL_GROUP, false);
+        mResourceTreeWidget->enableContextMenuItemForAsset(TOOL_RESOURCETREE_ACTION_CREATE_SUBGROUP, false);
+        mResourceTreeWidget->enableContextMenuItemForAsset(TOOL_RESOURCETREE_ACTION_CREATE_ASSET, false);
+        mResourceTreeWidget->enableContextMenuItemForAsset(TOOL_RESOURCETREE_ACTION_IMPORT_ASSET, false);
+        mResourceTreeWidget->enableContextMenuItemForAsset(TOOL_RESOURCETREE_ACTION_DUPLICATE_ASSET, true);
+        mResourceTreeWidget->enableContextMenuItemForAsset(TOOL_RESOURCETREE_ACTION_DELETE_RESOURCE, true);
 
         // Set 'Audio' selected
         mResourceTreeWidget->selectResource(TOOL_SOURCES_LEVEL_X000_AUDIO, false);

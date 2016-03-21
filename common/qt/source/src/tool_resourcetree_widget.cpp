@@ -38,6 +38,8 @@ namespace Magus
         QVBoxLayout* mainLayout = new QVBoxLayout;
         mIconDir = iconDir;
         mMaxDepth = 4;
+        mCollapsed = true;
+        mSubgroupIconName = QString("");
         mTopLevelGroupItemEditable = false;
         mSubLevelGroupItemEditable = false;
         mAssetItemEditable = false;
@@ -50,6 +52,29 @@ namespace Magus
         mResourceTree->setDragDropOverwriteMode(true);
         mResourceTree->viewport()->installEventFilter(this);
         mResourceTree->header()->hide();
+
+
+        // Set default values for contextmenu
+        mToplevelGroupContextMenuItemEnabled [TOOL_RESOURCETREE_ACTION_CREATE_TOPLEVEL_GROUP] = true;
+        mToplevelGroupContextMenuItemEnabled [TOOL_RESOURCETREE_ACTION_CREATE_SUBGROUP] = true;
+        mToplevelGroupContextMenuItemEnabled [TOOL_RESOURCETREE_ACTION_CREATE_ASSET] = true;
+        mToplevelGroupContextMenuItemEnabled [TOOL_RESOURCETREE_ACTION_IMPORT_ASSET] = true;
+        mToplevelGroupContextMenuItemEnabled [TOOL_RESOURCETREE_ACTION_DUPLICATE_ASSET] = true;
+        mToplevelGroupContextMenuItemEnabled [TOOL_RESOURCETREE_ACTION_DELETE_RESOURCE] = true;
+        mSubGroupContextMenuItemEnabled [TOOL_RESOURCETREE_ACTION_CREATE_TOPLEVEL_GROUP] = true;
+        mSubGroupContextMenuItemEnabled [TOOL_RESOURCETREE_ACTION_CREATE_SUBGROUP] = true;
+        mSubGroupContextMenuItemEnabled [TOOL_RESOURCETREE_ACTION_CREATE_ASSET] = true;
+        mSubGroupContextMenuItemEnabled [TOOL_RESOURCETREE_ACTION_IMPORT_ASSET] = true;
+        mSubGroupContextMenuItemEnabled [TOOL_RESOURCETREE_ACTION_DUPLICATE_ASSET] = true;
+        mSubGroupContextMenuItemEnabled [TOOL_RESOURCETREE_ACTION_DELETE_RESOURCE] = true;
+        mAssetContextMenuItemEnabled [TOOL_RESOURCETREE_ACTION_CREATE_TOPLEVEL_GROUP] = true;
+        mAssetContextMenuItemEnabled [TOOL_RESOURCETREE_ACTION_CREATE_SUBGROUP] = true;
+        mAssetContextMenuItemEnabled [TOOL_RESOURCETREE_ACTION_CREATE_ASSET] = true;
+        mAssetContextMenuItemEnabled [TOOL_RESOURCETREE_ACTION_IMPORT_ASSET] = true;
+        mAssetContextMenuItemEnabled [TOOL_RESOURCETREE_ACTION_DUPLICATE_ASSET] = true;
+        mAssetContextMenuItemEnabled [TOOL_RESOURCETREE_ACTION_DELETE_RESOURCE] = true;
+
+        // Create signal/slot connection
         connect(mResourceTree, SIGNAL(itemChanged(QTreeWidgetItem*,int)), this, SLOT(handleItemChanged(QTreeWidgetItem*,int)));
 
         // Create edit
@@ -86,6 +111,7 @@ namespace Magus
         mImportAssetContextMenuItemEnabled = true;
         mDuplicateAssetContextMenuItemEnabled = true;
         mDeleteResourceContextMenuItemEnabled = true;
+        mCollapseExpandContextMenuItemEnabled = true;
         buildContextMenu();
 
         // Layout
@@ -127,7 +153,11 @@ namespace Magus
                 emit resourceSelected();
             break;
 
-            case QEvent::Drop:
+            case QEvent::MouseButtonDblClick:
+                mouseDoubleClickHandler(mouseEvent);
+            break;
+
+        case QEvent::Drop:
                 dropHandler(object, event);
             break;
         }
@@ -163,6 +193,37 @@ namespace Magus
     }
 
     //****************************************************************************/
+    void QtResourceTreeWidget::mouseDoubleClickHandler(QMouseEvent* event)
+    {
+        switch ((int) event->button())
+        {
+            case Qt::LeftButton:
+            {
+                doubleClickResourceFromCursor();
+            }
+            break;
+        }
+    }
+
+    //****************************************************************************/
+    void QtResourceTreeWidget::enableContextMenuItemForTopLevelGroup(const QString& menuItemText, bool enabled)
+    {
+        mToplevelGroupContextMenuItemEnabled [menuItemText] = enabled;
+    }
+
+    //****************************************************************************/
+    void QtResourceTreeWidget::enableContextMenuItemForSubGroup(const QString& menuItemText, bool enabled)
+    {
+        mSubGroupContextMenuItemEnabled [menuItemText] = enabled;
+    }
+
+    //****************************************************************************/
+    void QtResourceTreeWidget::enableContextMenuItemForAsset(const QString& menuItemText, bool enabled)
+    {
+        mAssetContextMenuItemEnabled [menuItemText] = enabled;
+    }
+
+    //****************************************************************************/
     void QtResourceTreeWidget::enableContextMenuItemsForSelectedResource(void)
     {
         QTreeWidgetItem* item = mResourceTree->currentItem();
@@ -171,30 +232,48 @@ namespace Magus
 
         if (isItemAsset(item))
         {
-            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_CREATE_TOPLEVEL_GROUP, false);
-            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_CREATE_SUBGROUP, false);
-            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_CREATE_ASSET, false);
-            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_IMPORT_ASSET, false);
-            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_DUPLICATE_ASSET, true);
-            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_DELETE_RESOURCE, true);
+            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_CREATE_TOPLEVEL_GROUP,
+                                  mAssetContextMenuItemEnabled[TOOL_RESOURCETREE_ACTION_CREATE_TOPLEVEL_GROUP]);
+            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_CREATE_SUBGROUP,
+                                  mAssetContextMenuItemEnabled[TOOL_RESOURCETREE_ACTION_CREATE_SUBGROUP]);
+            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_CREATE_ASSET,
+                                  mAssetContextMenuItemEnabled[TOOL_RESOURCETREE_ACTION_CREATE_ASSET]);
+            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_IMPORT_ASSET,
+                                  mAssetContextMenuItemEnabled[TOOL_RESOURCETREE_ACTION_IMPORT_ASSET]);
+            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_DUPLICATE_ASSET,
+                                  mAssetContextMenuItemEnabled[TOOL_RESOURCETREE_ACTION_DUPLICATE_ASSET]);
+            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_DELETE_RESOURCE,
+                                  mAssetContextMenuItemEnabled[TOOL_RESOURCETREE_ACTION_DELETE_RESOURCE]);
         }
         else if (isItemSubGroup(item))
         {
-            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_CREATE_TOPLEVEL_GROUP, false);
-            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_CREATE_SUBGROUP, true);
-            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_CREATE_ASSET, true);
-            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_IMPORT_ASSET, true);
-            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_DUPLICATE_ASSET, false);
-            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_DELETE_RESOURCE, true);
+            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_CREATE_TOPLEVEL_GROUP,
+                                  mSubGroupContextMenuItemEnabled[TOOL_RESOURCETREE_ACTION_CREATE_TOPLEVEL_GROUP]);
+            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_CREATE_SUBGROUP,
+                                  mSubGroupContextMenuItemEnabled[TOOL_RESOURCETREE_ACTION_CREATE_SUBGROUP]);
+            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_CREATE_ASSET,
+                                  mSubGroupContextMenuItemEnabled[TOOL_RESOURCETREE_ACTION_CREATE_ASSET]);
+            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_IMPORT_ASSET,
+                                  mSubGroupContextMenuItemEnabled[TOOL_RESOURCETREE_ACTION_IMPORT_ASSET]);
+            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_DUPLICATE_ASSET,
+                                  mSubGroupContextMenuItemEnabled[TOOL_RESOURCETREE_ACTION_DUPLICATE_ASSET]);
+            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_DELETE_RESOURCE,
+                                  mSubGroupContextMenuItemEnabled[TOOL_RESOURCETREE_ACTION_DELETE_RESOURCE]);
         }
         else if (isItemToplevelGroup(item))
         {
-            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_CREATE_TOPLEVEL_GROUP, true);
-            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_CREATE_SUBGROUP, true);
-            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_CREATE_ASSET, true);
-            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_IMPORT_ASSET, true);
-            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_DUPLICATE_ASSET, false);
-            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_DELETE_RESOURCE, mDeleteTopLevelGroupEnabled);
+            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_CREATE_TOPLEVEL_GROUP,
+                                  mToplevelGroupContextMenuItemEnabled[TOOL_RESOURCETREE_ACTION_CREATE_TOPLEVEL_GROUP]);
+            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_CREATE_SUBGROUP,
+                                  mToplevelGroupContextMenuItemEnabled[TOOL_RESOURCETREE_ACTION_CREATE_SUBGROUP]);
+            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_CREATE_ASSET,
+                                  mToplevelGroupContextMenuItemEnabled[TOOL_RESOURCETREE_ACTION_CREATE_ASSET]);
+            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_IMPORT_ASSET,
+                                  mToplevelGroupContextMenuItemEnabled[TOOL_RESOURCETREE_ACTION_IMPORT_ASSET]);
+            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_DUPLICATE_ASSET,
+                                  mToplevelGroupContextMenuItemEnabled[TOOL_RESOURCETREE_ACTION_DUPLICATE_ASSET]);
+            enableContextMenuItem(TOOL_RESOURCETREE_ACTION_DELETE_RESOURCE,
+                                  mToplevelGroupContextMenuItemEnabled[TOOL_RESOURCETREE_ACTION_DELETE_RESOURCE]);
         }
     }
 
@@ -244,7 +323,6 @@ namespace Magus
 
         // Get item to be dropped on
         QPoint pos = mResourceTree->mapFromGlobal(QCursor::pos());
-        //QPoint pos = QCursor::pos();
         QTreeWidgetItem* itemDropped = mResourceTree->itemAt(pos);
         if (!itemDropped)
             return;
@@ -279,6 +357,7 @@ namespace Magus
                                                  const QString& iconName)
     {
         QtResourceInfo* info = new QtResourceInfo();
+        info->topLevelId = 0;
         info->resourceId = resourceId;
         info->resourceName = resourceName;
         info->fullQualifiedName = fullQualifiedName;
@@ -458,9 +537,22 @@ namespace Magus
     }
 
     //****************************************************************************/
+    void QtResourceTreeWidget::setCollapseExpandContextMenuItemEnabled(bool enabled)
+    {
+        mCollapseExpandContextMenuItemEnabled = enabled;
+        buildContextMenu();
+    }
+
+    //****************************************************************************/
     bool QtResourceTreeWidget::isDeleteResourceContextMenuItemEnabled(void)
     {
         return mDeleteResourceContextMenuItemEnabled;
+    }
+
+    //****************************************************************************/
+    bool QtResourceTreeWidget::isCollapseExpandContextMenuItemEnabled(void)
+    {
+        return mCollapseExpandContextMenuItemEnabled;
     }
 
     //****************************************************************************/
@@ -528,10 +620,15 @@ namespace Magus
         // Menu item for deleting an item from the resource tree
         if (mDeleteResourceContextMenuItemEnabled)
             mContextMenu->addAction(new QAction(TOOL_RESOURCETREE_ACTION_DELETE_RESOURCE, mResourceTree));
+
+        // Menu item for collapse/expand
+        if (mCollapseExpandContextMenuItemEnabled)
+            mContextMenu->addAction(new QAction(TOOL_RESOURCETREE_ACTION_COLLAPSE_EXPAND, mResourceTree));
     }
 
     //****************************************************************************/
-    void QtResourceTreeWidget::addResource (int resourceId,
+    void QtResourceTreeWidget::addResource (int topLevelId,
+                                            int resourceId,
                                             int parentId,
                                             const QString& resourceName,
                                             const QString& fullQualifiedName,
@@ -622,7 +719,8 @@ namespace Magus
                                            bool suppressSignal)
     {
         int resourceId = generateUniqueResourceId();
-        addResource (resourceId, parentId, resourceName, fullQualifiedName, iconName, isAsset, suppressSignal);
+        int topLevelId = getToplevelParentId(resourceId);
+        addResource (topLevelId, resourceId, parentId, resourceName, fullQualifiedName, iconName, isAsset, suppressSignal);
         return resourceId;
     }
 
@@ -634,6 +732,7 @@ namespace Magus
         while (*it)
         {
             QtResourceInfo* info = new QtResourceInfo();
+            info->topLevelId = getToplevelParentIdFromItem(*it);
             info->resourceId = getResourceIdFromItem(*it);
             info->parentId = getParentIdFromItem(*it);
             info->resourceName = (*it)->text(0);
@@ -662,7 +761,8 @@ namespace Magus
         {
             info = it.next();
             isAsset = (info->resourceType == TOOL_RESOURCETREE_KEY_TYPE_ASSET);
-            addResource (info->resourceId,
+            addResource (info->topLevelId,
+                         info->resourceId,
                          info->parentId,
                          info->resourceName,
                          info->fullQualifiedName,
@@ -684,6 +784,7 @@ namespace Magus
             type = getTypeFromItem(*it);
             if (type == TOOL_RESOURCETREE_KEY_TYPE_ASSET)
             {
+                info->topLevelId = getToplevelParentIdFromItem(*it);
                 info->resourceId = getResourceIdFromItem(*it);
                 info->parentId = getParentIdFromItem(*it);
                 info->resourceName = (*it)->text(0);
@@ -710,6 +811,7 @@ namespace Magus
             type = getTypeFromItem(*it);
             if (type == TOOL_RESOURCETREE_KEY_TYPE_TOPLEVEL_GROUP || type == TOOL_RESOURCETREE_KEY_TYPE_TOPLEVEL_GROUP)
             {
+                info->resourceId = getToplevelParentIdFromItem(*it);
                 info->resourceId = getResourceIdFromItem(*it);
                 info->parentId = getParentIdFromItem(*it);
                 info->resourceName = (*it)->text(0);
@@ -824,6 +926,20 @@ namespace Magus
     }
 
     //****************************************************************************/
+    void QtResourceTreeWidget::doubleClickResourceFromCursor (bool emitSignal)
+    {
+        QPoint pos = mResourceTree->mapFromGlobal(QCursor::pos());
+        QTreeWidgetItem* item = mResourceTree->itemAt(pos);
+        if (item)
+        {
+            mResourceTree->setCurrentItem(item);
+
+            if (emitSignal)
+                emit resourceDoubleClicked(getResourceIdFromItem(item));
+        }
+    }
+
+    //****************************************************************************/
     int QtResourceTreeWidget::getSelectedResource (void)
     {
         QTreeWidgetItem* item = mResourceTree->currentItem();
@@ -831,6 +947,12 @@ namespace Magus
             return getResourceIdFromItem(item);
 
         return 0;
+    }
+
+    //****************************************************************************/
+    QTreeWidgetItem* QtResourceTreeWidget::getSelectedResourceItem (void)
+    {
+        return mResourceTree->currentItem();
     }
 
     //****************************************************************************/
@@ -943,6 +1065,7 @@ namespace Magus
     void QtResourceTreeWidget::expandAll (void)
     {
         mResourceTree->expandAll();
+        mCollapsed = false;
     }
 
     //****************************************************************************/
@@ -960,6 +1083,7 @@ namespace Magus
     void QtResourceTreeWidget::collapseAll (void)
     {
         mResourceTree->collapseAll();
+        mCollapsed = true;
     }
 
     //****************************************************************************/
@@ -1186,15 +1310,15 @@ namespace Magus
             if (info)
             {
                 // Add toplevel group and disable it
-                addResource (info->resourceId, 0, info->resourceName, info->fullQualifiedName, info->iconName);
+                addResource (info->resourceId, info->resourceId, 0, info->resourceName, info->fullQualifiedName, info->iconName);
                 action->setCheckable(false);
                 action->setEnabled(false);
             }
             return;
         }
         else if (mSubGroupSubMenu &&
-                 action->parent() == mSubGroupSubMenu &&
-                 mCreateSubGroupContextMenuItemEnabled)
+                action->parent() == mSubGroupSubMenu &&
+                mCreateSubGroupContextMenuItemEnabled)
         {
             // ---------- Create subgroup, with the icon from the submenu ----------
             QtResourceInfo* info = getRegisteredResourceInfo (action->data().toInt());
@@ -1202,14 +1326,17 @@ namespace Magus
             {
                 // Add sublevel group
                 int parentId = getSelectedResource();
+                int topLevelId = getToplevelParentId(parentId);
                 if (parentId != 0)
                 {
                     // A subgroup may not be added to the toplevel
                     int resourceId = generateUniqueResourceId();
-                    addResource (resourceId,
+                    QString name = QString("<") + info->resourceName + QString(" subgroup>");
+                    addResource (topLevelId,
+                                 resourceId,
                                  parentId,
-                                 QString("<") + info->resourceName + QString(" subgroup>"),
-                                 info->fullQualifiedName,
+                                 name,
+                                 name,
                                  info->iconName);
                     expand(parentId);
                 }
@@ -1231,11 +1358,16 @@ namespace Magus
                 {
                     // A subgroup may not be added to the toplevel
                     int resourceId = generateUniqueResourceId();
-                    addResource (resourceId,
+                    int topLevelId = getToplevelParentId(resourceId);
+                    if (mSubgroupIconName.isEmpty())
+                        mSubgroupIconName = getIconNameFromItem(item);
+                    QString name = QString("<") + item->text(0) + QString(" subgroup>");
+                    addResource (topLevelId,
+                                 resourceId,
                                  parentId,
-                                 QString("<") + item->text(0) + QString(" subgroup>"),
-                                 QString(""),
-                                 getIconNameFromItem(item));
+                                 name,
+                                 name,
+                                 mSubgroupIconName);
                     expand(parentId);
                 }
             }
@@ -1251,11 +1383,13 @@ namespace Magus
             if (item)
             {
                 int parentId = getResourceIdFromItem(item);
+                int toplevelId = getToplevelParentIdFromItem(item);
                 if (parentId != 0)
                 {
                     // A subgroup may not be added to the toplevel
                     int resourceId = generateUniqueResourceId();
-                    addResource (resourceId,
+                    addResource (toplevelId,
+                                 resourceId,
                                  parentId,
                                  QString("<Asset>"),
                                  QString(""),
@@ -1290,9 +1424,11 @@ namespace Magus
             if (item)
             {
                 int parentId = getParentIdFromItem(item);
+                int toplevelId = getToplevelParentIdFromItem(item);
                 QString fullName = getFullQualifiedNameFromItem(item);
                 int duplicateResourceId = generateUniqueResourceId();
-                addResource (duplicateResourceId,
+                addResource (toplevelId,
+                             duplicateResourceId,
                              parentId,
                              QString("Copy of ") + item->text(0),
                              fullName,
@@ -1329,6 +1465,13 @@ namespace Magus
                 }
             }
             return;
+        }
+        else if (action->text() == TOOL_RESOURCETREE_ACTION_COLLAPSE_EXPAND)
+        {
+            if (mCollapsed)
+                expandAll();
+            else
+                collapseAll();
         }
     }
 
