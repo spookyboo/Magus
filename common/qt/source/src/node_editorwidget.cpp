@@ -19,7 +19,7 @@
 ****************************************************************************/
 
 // Include
-#include <QVBoxLayout>
+#include <QVBoxLayout>mview
 #include <QMessageBox>
 #include <QLabel>
 #include <QGraphicsSceneMouseEvent>
@@ -37,7 +37,9 @@ namespace Magus
     QtNodeEditor::QtNodeEditor(QWidget* parent) : QWidget(parent)
     {
         QVBoxLayout* mainLayout = new QVBoxLayout;
-        mView = new QGraphicsView(this);
+        mView = new QtNodeGraphicsView(this);
+        connect(mView, SIGNAL(dropped()), this, SLOT(handleDropped())); // Check if something is dropped
+
         QRect rcontent = mView->contentsRect();
         mView->setSceneRect(0, 0, rcontent.width(), rcontent.height()); // Prevent unwanted jumping and scrollbars
         mScene = new QtNodeGraphicsScene();
@@ -50,6 +52,7 @@ namespace Magus
         mLastRemovedNode = 0;
         mRubberBand = 0;
         mZoom = 1.0f;
+        mPanEnabled = false;
         mFisheyeViewEnabled = false;
         mFisheyeMaxZoom = 1.0f;
         mFisheyeSteps = 5;
@@ -315,6 +318,21 @@ namespace Magus
     //****************************************************************************/
     bool QtNodeEditor::eventFilter(QObject* object, QEvent* event)
     {
+        if (!mPanEnabled && event->type() == QEvent::KeyPress)
+        {
+            QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
+            if (keyEvent->modifiers() == Qt::ShiftModifier)
+            {
+                mPanEnabled = true;
+                setCursor(Qt::SizeAllCursor);
+            }
+        }
+        else if (event->type() == QEvent::KeyRelease)
+        {
+            mPanEnabled = false;
+            setCursor(Qt::ArrowCursor);
+        }
+
         QGraphicsSceneMouseEvent* mouseEvent = (QGraphicsSceneMouseEvent*) event;
         switch ((int) event->type())
         {
@@ -348,6 +366,9 @@ namespace Magus
         {
             case Qt::LeftButton:
             {
+                if (mPanEnabled)
+                    return true;
+
                 QGraphicsItem* item = itemAtExceptActiveConnection(mouseEvent->scenePos());
                 if (!item)
                 {
@@ -456,6 +477,27 @@ namespace Magus
     //****************************************************************************/
     bool QtNodeEditor::mouseMoveHandler(QGraphicsSceneMouseEvent* mouseEvent)
     {
+        // Check if panning is applied
+        if (mPanEnabled)
+        {
+            if (mouseEvent->buttons() & Qt::LeftButton)
+            {
+                QtNode* node;
+                QList<QGraphicsItem*> items = mScene->items();
+                foreach(QGraphicsItem* item, items)
+                {
+                    if (isNode(item) && item->isVisible())
+                    {
+                        node = static_cast<QtNode*>(item);
+                        QPointF diff = mouseEvent->scenePos() - mouseEvent->lastScenePos();
+                        node->setPos(node->pos() + diff);
+                        node->mouseMoveHandler(mouseEvent, item);
+                    }
+                }
+            }
+            return true;
+        }
+
         // If a Fisheye view is enabled, apply it
         if (mFisheyeViewEnabled)
         {
@@ -1398,5 +1440,11 @@ namespace Magus
                 //setZoom(mZoom + 0.001 * event->delta());
 
         mScene->update();
+    }
+
+    //****************************************************************************/
+    void QtNodeEditor::handleDropped (void)
+    {
+        emit dropped();
     }
 }
