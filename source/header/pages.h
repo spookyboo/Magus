@@ -82,6 +82,7 @@ public:
     const QString& getOgreRootEnv(void);
     bool isOgreRootUseEnv(void);
     const QString& getOgreRoot(void);
+    const QString& getOgreBuildDir(void);
     const QString& getOgreVersion(void);
 
 private slots:
@@ -97,6 +98,7 @@ private:
     QString mOgreRootEnv;
     bool mOgreRootUseEnv;
     QString mOgreRoot;
+    QString mOgreBuildDir;
     QString mOgreVersion;
     QString mRet;
     QRadioButton* mOgreVersion19Radio;
@@ -106,6 +108,7 @@ private:
     QRadioButton* mOgreRootRadio;
     QLineEdit* mOgreRootEnvEdit;
     QLineEdit* mOgreRootEdit;
+    QLineEdit* mOgreBuildDirEdit;
     QPushButton* mRestoreButton;
 };
 

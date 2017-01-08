@@ -31,7 +31,7 @@ class QtOgre20Builder : public QtOgreBuilder
     public:
         QtOgre20Builder();
         virtual ~QtOgre20Builder();
-        virtual QString createLibForPro(const QString &s);
+        virtual QString createLibForPro(const QString &ogreBuildDir, const QString &s);
         virtual QString createHeaderForPro(const QString &outputHeaderDir, const QString &s);
         virtual QString createSrcForPro(const QString &outputSrcDir, const QString &s);
         virtual QString createInclude(const QString &s);
@@ -44,6 +44,7 @@ class QtOgre20Builder : public QtOgreBuilder
         virtual QString createQtOgreWidgetForDockWindow(WindowProperties* windowProperties, const QString &s);
         virtual QString createQtOgreWidgetForTab(WindowProperties* windowProperties, int index, const QString &s);
         virtual void copyOgreFiles(const QString &ogreRoot,
+                                   const QString &ogreBuildDir,
                                    const QString &ogreDir,
                                    const QString &qtHeader,
                                    const QString &qtSrc,

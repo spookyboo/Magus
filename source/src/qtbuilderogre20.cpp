@@ -35,13 +35,17 @@ QtOgre20Builder::~QtOgre20Builder()
 }
 
 //****************************************************************************/
-QString QtOgre20Builder::createLibForPro(const QString &s)
+QString QtOgre20Builder::createLibForPro(const QString &ogreBuildDir, const QString &s)
 {
     QString str = s;
     str =
-        QString("Debug:LIBS += -L\"$$OGREHOME/VCBuild/lib/Debug\"") +
+        QString("Debug:LIBS += -L\"$$OGREHOME/") +
+        ogreBuildDir +
+        QString("/lib/Debug\"") +
         QString("\n") +
-        QString("Release:LIBS += -L\"$$OGREHOME/VCBuild/lib/Release\"") +
+        QString("Release:LIBS += -L\"$$OGREHOME/") +
+        ogreBuildDir +
+        QString("/lib/Release\"") +
         QString("\n\n");
 
     str = str +
@@ -319,6 +323,7 @@ QString QtOgre20Builder::createQtOgreWidgetForTab(WindowProperties* windowProper
 
 //****************************************************************************/
 void QtOgre20Builder::copyOgreFiles(const QString &ogreRoot,
+                                    const QString &ogreBuildDir,
                                     const QString &ogreDir,
                                     const QString &qtHeader,
                                     const QString &qtSrc,
@@ -339,12 +344,18 @@ void QtOgre20Builder::copyOgreFiles(const QString &ogreRoot,
     fileUtil.copy(qtSrc + FILE_OGRE2_RENDERMAN_CPP, fullOutputSrcDir + FILE_OGRE2_RENDERMAN_CPP); // Differentiates from Ogre 1.9
 
     // Copy the Ogre DLL's (MUST be present, otherwise the generated application crashes)
-    fileUtil.copy(ogreRoot + DIR_OGRE_BIN_RELEASE + FILE_OGRE_MAIN_DLL, fullOutputBinDir + FILE_OGRE_MAIN_DLL);
-    fileUtil.copy(ogreRoot + DIR_OGRE_BIN_DEBUG + FILE_OGRE_MAIN_D_DLL, fullOutputBinDir + FILE_OGRE_MAIN_D_DLL);
-    fileUtil.copy(ogreRoot + DIR_OGRE_BIN_RELEASE + FILE_OGRE_GL_DLL, fullOutputBinDir + FILE_OGRE_GL_DLL);
-    fileUtil.copy(ogreRoot + DIR_OGRE_BIN_DEBUG + FILE_OGRE_GL_D_DLL, fullOutputBinDir + FILE_OGRE_GL_D_DLL);
-    fileUtil.copy(ogreRoot + DIR_OGRE_BIN_RELEASE + FILE_OGRE_3D9_DLL, fullOutputBinDir + FILE_OGRE_3D9_DLL);
-    fileUtil.copy(ogreRoot + DIR_OGRE_BIN_DEBUG + FILE_OGRE_3D9_D_DLL, fullOutputBinDir + FILE_OGRE_3D9_D_DLL);
+    //fileUtil.copy(ogreRoot + DIR_OGRE_BIN_RELEASE + FILE_OGRE_MAIN_DLL, fullOutputBinDir + FILE_OGRE_MAIN_DLL);
+    //fileUtil.copy(ogreRoot + DIR_OGRE_BIN_DEBUG + FILE_OGRE_MAIN_D_DLL, fullOutputBinDir + FILE_OGRE_MAIN_D_DLL);
+    //fileUtil.copy(ogreRoot + DIR_OGRE_BIN_RELEASE + FILE_OGRE_GL_DLL, fullOutputBinDir + FILE_OGRE_GL_DLL);
+    //fileUtil.copy(ogreRoot + DIR_OGRE_BIN_DEBUG + FILE_OGRE_GL_D_DLL, fullOutputBinDir + FILE_OGRE_GL_D_DLL);
+    //fileUtil.copy(ogreRoot + DIR_OGRE_BIN_RELEASE + FILE_OGRE_3D9_DLL, fullOutputBinDir + FILE_OGRE_3D9_DLL);
+    //fileUtil.copy(ogreRoot + DIR_OGRE_BIN_DEBUG + FILE_OGRE_3D9_D_DLL, fullOutputBinDir + FILE_OGRE_3D9_D_DLL);
+    fileUtil.copy(ogreRoot + "/" + ogreBuildDir + DIR_OGRE_BIN_RELEASE + FILE_OGRE_MAIN_DLL, fullOutputBinDir + FILE_OGRE_MAIN_DLL);
+    fileUtil.copy(ogreRoot + "/" + ogreBuildDir + DIR_OGRE_BIN_DEBUG + FILE_OGRE_MAIN_D_DLL, fullOutputBinDir + FILE_OGRE_MAIN_D_DLL);
+    fileUtil.copy(ogreRoot + "/" + ogreBuildDir + DIR_OGRE_BIN_RELEASE + FILE_OGRE_GL_DLL, fullOutputBinDir + FILE_OGRE_GL_DLL);
+    fileUtil.copy(ogreRoot + "/" + ogreBuildDir + DIR_OGRE_BIN_DEBUG + FILE_OGRE_GL_D_DLL, fullOutputBinDir + FILE_OGRE_GL_D_DLL);
+    fileUtil.copy(ogreRoot + "/" + ogreBuildDir + DIR_OGRE_BIN_RELEASE + FILE_OGRE_3D9_DLL, fullOutputBinDir + FILE_OGRE_3D9_DLL);
+    fileUtil.copy(ogreRoot + "/" + ogreBuildDir + DIR_OGRE_BIN_DEBUG + FILE_OGRE_3D9_D_DLL, fullOutputBinDir + FILE_OGRE_3D9_D_DLL);
 
     // Copy the plugin and resourcefiles and the media
     fileUtil.copy(ogreDir + FILE_OGRE_PLUGINS_D, fullOutputBinDir + FILE_OGRE_PLUGINS_D);

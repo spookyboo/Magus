@@ -257,7 +257,11 @@ class QtBuilder : public Builder
 
         const QString getType(void) const {return BUILDER_TYPE_QT;};
         void setOutputDir (const QString& outputDir);
-        void setOgre (bool ogreRootUseEnv, const QString& ogreRootEnv, const QString& ogreRoot, const QString& ogreVersion);
+        void setOgre (bool ogreRootUseEnv,
+                      const QString& ogreRootEnv,
+                      const QString& ogreRoot,
+                      const QString& ogreBuildDir,
+                      const QString& ogreVersion);
         bool isMenuAvailable(){return true;};
         bool isHorizontalToolbarAvailable(){return true;};
         bool isVerticalToolbarAvailable(){return true;};
@@ -291,6 +295,7 @@ class QtBuilder : public Builder
         QString mOutputOgreDir;
         QString mOgreDir;
         QString mOgreRoot;
+        QString mOgreBuildDir;
         QString mCurrentProject;
         QString mCurrentProjectSlash;
         QString mFullOutputHeaderDir;

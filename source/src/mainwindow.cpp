@@ -335,6 +335,7 @@ void MainWindow::config(void)
         QString ogreRootEnv = dialog.mOgrePage->getOgreRootEnv();
         bool ogreRootUseEnv = dialog.mOgrePage->isOgreRootUseEnv();
         QString ogreRoot = dialog.mOgrePage->getOgreRoot();
+        QString ogreBuildDir = dialog.mOgrePage->getOgreBuildDir();
         QString ogreVersion = dialog.mOgrePage->getOgreVersion();
 
         // Update the configuration file
@@ -345,7 +346,9 @@ void MainWindow::config(void)
         globalSettings.setValue(CONFIG_KEY_OUTPUT_DIR, outputDir);
         globalSettings.setValue(CONFIG_KEY_OGRE_ROOT_ENV, ogreRootEnv);
         globalSettings.setValue(CONFIG_KEY_OGRE_ROOT_USE_ENV, ogreRootUseEnv);
+        globalSettings.setValue(CONFIG_KEY_OGRE_BUILD_DIR, ogreBuildDir);
         globalSettings.setValue(CONFIG_KEY_OGRE_ROOT, ogreRoot);
+        globalSettings.setValue(CONFIG_KEY_OGRE_BUILD_DIR, ogreBuildDir);
         globalSettings.setValue(CONFIG_KEY_OGRE_VERSION, ogreVersion);
 
         // Activate the new settings
@@ -353,7 +356,7 @@ void MainWindow::config(void)
         //mLayoutDir = layoutDir;
         //mTemplateDir = templateDir;
         getCurrentBuilder()->setOutputDir(outputDir);
-        getCurrentBuilder()->setOgre(ogreRootUseEnv, ogreRootEnv, ogreRoot, ogreVersion);
+        getCurrentBuilder()->setOgre(ogreRootUseEnv, ogreRootEnv, ogreRoot, ogreBuildDir, ogreVersion);
     }
 }
 

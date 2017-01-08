@@ -98,6 +98,24 @@ QString Utils::stripSpecialCharacters(const QString &str)
 }
 
 //****************************************************************************/
+QString Utils::stripLeadingCharacter(const QString &str, const QChar &ch)
+{
+    QString s = str;
+    if (str.startsWith(ch))
+        s.remove(0, 1);
+    return s;
+}
+
+//****************************************************************************/
+QString Utils::stripTrailingCharacter(const QString &str, const QChar &ch)
+{
+    QString s = str;
+    if (str.endsWith(ch))
+        s.chop(1);
+    return s;
+}
+
+//****************************************************************************/
 QString Utils::firstCapital(const QString &str)
 {
     QString s = str;

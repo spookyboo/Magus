@@ -179,14 +179,14 @@ OgrePage::OgrePage(QWidget *parent)
     // Create widgets
     QGroupBox* packagesGroup = new QGroupBox(tr("Ogre settings"));
 
-    // Version
+    // Ogre Version (1.9, 2.0 and 2.1)
     QGroupBox* radioGroupBoxVersion = new QGroupBox(QString("Ogre version"));
     mOgreVersion19Radio = new QRadioButton(QString("Version 1.9"));
     mOgreVersion20Radio = new QRadioButton(QString("Version 2.0"));
     mOgreVersion21Radio = new QRadioButton(QString("Version 2.1"));
     mOgreVersion = "2.1";
 
-    // Root
+    // Ogre root environment variable / root directory
     QGroupBox* radioGroupBoxRoot = new QGroupBox(QString("Use enviroment variable or enter Ogre root"));
     mOgreRootEnvRadio = new QRadioButton(QString("Ogre root env. variable"));
     mOgreRootRadio = new QRadioButton(QString("Ogre rootdirectory"));
@@ -194,6 +194,15 @@ OgrePage::OgrePage(QWidget *parent)
     mOgreRootEdit = new QLineEdit;
     mOgreRootEdit->setStyleSheet(QString("color : darkgray;"));
     mOgreRootEdit->setEnabled(false);
+
+    // Ogre build directory
+    QGroupBox* groupBoxBuild = new QGroupBox(QString("Ogre build directory (subdirectory of ogre root)"));
+    QLabel* buildDirLabel = new QLabel(tr("Ogre buid directory (eg. \"VCBuild\"):"));
+    mOgreBuildDirEdit = new QLineEdit;
+    mOgreBuildDirEdit->setStyleSheet(QString("color : black;"));
+    QGridLayout *ogreBuildLayout = new QGridLayout;
+    ogreBuildLayout->addWidget(buildDirLabel, 0, 0);
+    ogreBuildLayout->addWidget(mOgreBuildDirEdit, 0, 1);
 
     // Misc
     mRestoreButton = new QPushButton(tr("Restore to original values"));
@@ -210,6 +219,7 @@ OgrePage::OgrePage(QWidget *parent)
     connect(mOgreRootEnvRadio, SIGNAL(toggled(bool)), this, SLOT(toggledOgreRoot(bool)));
     connect(mOgreRootEnvEdit, SIGNAL(textEdited(QString)), this, SLOT(textEdited()));
     connect(mOgreRootEdit, SIGNAL(textEdited(QString)), this, SLOT(textEdited()));
+    connect(mOgreBuildDirEdit, SIGNAL(textEdited(QString)), this, SLOT(textEdited()));
     connect(mRestoreButton, SIGNAL(clicked()), this, SLOT(restorePushed()));
 
     // Layout Version
@@ -227,14 +237,16 @@ OgrePage::OgrePage(QWidget *parent)
     rootLayout->addWidget(mOgreRootRadio, 1);
     rootLayout->addWidget(mOgreRootEdit, 3);
 
-    // Layout General
+    // Layout Main
     radioLayoutRoot->addLayout(rootEnvLayout);
     radioLayoutRoot->addLayout(rootLayout);
     radioGroupBoxRoot->setLayout(radioLayoutRoot);
     radioGroupBoxVersion->setLayout(radioLayoutVersion);
+    groupBoxBuild->setLayout(ogreBuildLayout);
     QGridLayout *packagesLayout = new QGridLayout;
     packagesLayout->addWidget(radioGroupBoxVersion);
     packagesLayout->addWidget(radioGroupBoxRoot);
+    packagesLayout->addWidget(groupBoxBuild);
     packagesGroup->setLayout(packagesLayout);
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(packagesGroup);
@@ -263,6 +275,12 @@ const QString& OgrePage::getOgreRoot(void)
 }
 
 //****************************************************************************/
+const QString& OgrePage::getOgreBuildDir(void)
+{
+    return mOgreBuildDir;
+}
+
+//****************************************************************************/
 const QString& OgrePage::getOgreVersion(void)
 {
     return mOgreVersion;
@@ -274,9 +292,11 @@ void OgrePage::restoreValues(const QString& configFileName)
     QSettings globalSettings (configFileName,  QSettings::IniFormat);
     mOgreRootEnv = globalSettings.value(CONFIG_KEY_OGRE_ROOT_ENV).toString();
     mOgreRootUseEnv = globalSettings.value(CONFIG_KEY_OGRE_ROOT_USE_ENV).toBool();
+    mOgreBuildDir = globalSettings.value(CONFIG_KEY_OGRE_BUILD_DIR).toString();
     mOgreRootEnvEdit->setText(mOgreRootEnv);
     mOgreRoot = globalSettings.value(CONFIG_KEY_OGRE_ROOT).toString();
     mOgreRootEdit->setText(mOgreRoot);
+    mOgreBuildDirEdit->setText(mOgreBuildDir);
     mOgreVersion = globalSettings.value(CONFIG_KEY_OGRE_VERSION).toString();
     if (mOgreVersion == "2.1")
          mOgreVersion21Radio->setChecked(true);
@@ -293,6 +313,7 @@ void OgrePage::textEdited(void)
 {
     mOgreRootEnv = mOgreRootEnvEdit->text();
     mOgreRoot = mOgreRootEdit->text();
+    mOgreBuildDir = mOgreBuildDirEdit->text();
 }
 
 //****************************************************************************/

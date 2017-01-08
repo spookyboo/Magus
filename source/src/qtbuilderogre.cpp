@@ -251,13 +251,15 @@ QString QtOgreBuilder::createRootForPro(const QString &ogreRoot, const QString &
 }
 
 //****************************************************************************/
-QString QtOgreBuilder::createIncludeForPro(const QString &s)
+QString QtOgreBuilder::createIncludeForPro(const QString &ogreBuildDir, const QString &s)
 {
     QString str = s;
     str =
         QString("INCLUDEPATH += \"$$OGREHOME/OgreMain/include\"") +
         QString("\n") +
-        QString("INCLUDEPATH += \"$$OGREHOME/VCBuild/include\"") +
+        QString("INCLUDEPATH += \"$$OGREHOME/") +
+        ogreBuildDir +
+        QString("/include\"") +
         QString("\n") +
         QString("INCLUDEPATH += .") +
         QString("\n");
@@ -266,13 +268,17 @@ QString QtOgreBuilder::createIncludeForPro(const QString &s)
 }
 
 //****************************************************************************/
-QString QtOgreBuilder::createLibForPro(const QString &s)
+QString QtOgreBuilder::createLibForPro(const QString &ogreBuildDir, const QString &s)
 {
     QString str = s;
     str =
-        QString("Debug:LIBS += -L\"$$OGREHOME/VCBuild/lib/Debug\"") +
+        QString("Debug:LIBS += -L\"$$OGREHOME/") +
+        ogreBuildDir +
+        QString("/lib/Debug\"") +
         QString("\n") +
-        QString("Release:LIBS += -L\"$$OGREHOME/VCBuild/lib/Release\"") +
+        QString("Release:LIBS += -L\"$$OGREHOME/") +
+        ogreBuildDir +
+        QString("/lib/Release\"") +
         QString("\n");
 
     str = str +
@@ -460,6 +466,7 @@ void QtOgreBuilder::copyOgreAssetFiles(const QString& qtHeader,
 
 //****************************************************************************/
 void QtOgreBuilder::copyOgreFiles(const QString &ogreRoot,
+                                  const QString &ogreBuildDir,
                                   const QString &ogreDir,
                                   const QString &qtHeader,
                                   const QString &qtSrc,
@@ -480,12 +487,18 @@ void QtOgreBuilder::copyOgreFiles(const QString &ogreRoot,
     fileUtil.copy(qtSrc + FILE_OGRE_RENDERMAN_CPP, fullOutputSrcDir + FILE_OGRE_RENDERMAN_CPP);
 
     // Copy the Ogre DLL's (MUST be present, otherwise the application crashes)
-    fileUtil.copy(ogreRoot + DIR_OGRE_BIN_RELEASE + FILE_OGRE_MAIN_DLL, fullOutputBinDir + FILE_OGRE_MAIN_DLL);
-    fileUtil.copy(ogreRoot + DIR_OGRE_BIN_DEBUG + FILE_OGRE_MAIN_D_DLL, fullOutputBinDir + FILE_OGRE_MAIN_D_DLL);
-    fileUtil.copy(ogreRoot + DIR_OGRE_BIN_RELEASE + FILE_OGRE_GL_DLL, fullOutputBinDir + FILE_OGRE_GL_DLL);
-    fileUtil.copy(ogreRoot + DIR_OGRE_BIN_DEBUG + FILE_OGRE_GL_D_DLL, fullOutputBinDir + FILE_OGRE_GL_D_DLL);
-    fileUtil.copy(ogreRoot + DIR_OGRE_BIN_RELEASE + FILE_OGRE_3D9_DLL, fullOutputBinDir + FILE_OGRE_3D9_DLL);
-    fileUtil.copy(ogreRoot + DIR_OGRE_BIN_DEBUG + FILE_OGRE_3D9_D_DLL, fullOutputBinDir + FILE_OGRE_3D9_D_DLL);
+    //fileUtil.copy(ogreRoot + DIR_OGRE_BIN_RELEASE + FILE_OGRE_MAIN_DLL, fullOutputBinDir + FILE_OGRE_MAIN_DLL);
+    //fileUtil.copy(ogreRoot + DIR_OGRE_BIN_DEBUG + FILE_OGRE_MAIN_D_DLL, fullOutputBinDir + FILE_OGRE_MAIN_D_DLL);
+    //fileUtil.copy(ogreRoot + DIR_OGRE_BIN_RELEASE + FILE_OGRE_GL_DLL, fullOutputBinDir + FILE_OGRE_GL_DLL);
+    //fileUtil.copy(ogreRoot + DIR_OGRE_BIN_DEBUG + FILE_OGRE_GL_D_DLL, fullOutputBinDir + FILE_OGRE_GL_D_DLL);
+    //fileUtil.copy(ogreRoot + DIR_OGRE_BIN_RELEASE + FILE_OGRE_3D9_DLL, fullOutputBinDir + FILE_OGRE_3D9_DLL);
+    //fileUtil.copy(ogreRoot + DIR_OGRE_BIN_DEBUG + FILE_OGRE_3D9_D_DLL, fullOutputBinDir + FILE_OGRE_3D9_D_DLL);
+    fileUtil.copy(ogreRoot + "/" + ogreBuildDir + DIR_OGRE_BIN_RELEASE + FILE_OGRE_MAIN_DLL, fullOutputBinDir + FILE_OGRE_MAIN_DLL); // Note, that ogreBuildDir doesn't have leading/trailing (back)slashes
+    fileUtil.copy(ogreRoot + "/" + ogreBuildDir + DIR_OGRE_BIN_DEBUG + FILE_OGRE_MAIN_D_DLL, fullOutputBinDir + FILE_OGRE_MAIN_D_DLL);
+    fileUtil.copy(ogreRoot + "/" + ogreBuildDir + DIR_OGRE_BIN_RELEASE + FILE_OGRE_GL_DLL, fullOutputBinDir + FILE_OGRE_GL_DLL);
+    fileUtil.copy(ogreRoot + "/" + ogreBuildDir + DIR_OGRE_BIN_DEBUG + FILE_OGRE_GL_D_DLL, fullOutputBinDir + FILE_OGRE_GL_D_DLL);
+    fileUtil.copy(ogreRoot + "/" + ogreBuildDir + DIR_OGRE_BIN_RELEASE + FILE_OGRE_3D9_DLL, fullOutputBinDir + FILE_OGRE_3D9_DLL);
+    fileUtil.copy(ogreRoot + "/" + ogreBuildDir + DIR_OGRE_BIN_DEBUG + FILE_OGRE_3D9_D_DLL, fullOutputBinDir + FILE_OGRE_3D9_D_DLL);
 
     // Copy the plugin and resourcefiles and the media
     fileUtil.copy(ogreDir + FILE_OGRE_PLUGINS_D, fullOutputBinDir + FILE_OGRE_PLUGINS_D);

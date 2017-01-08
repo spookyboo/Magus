@@ -69,6 +69,7 @@ static const QString CONFIG_KEY_OUTPUT_SRC_DIR = QString("output_src_dir");
 static const QString CONFIG_KEY_OGRE_ROOT = QString("ogre_root");
 static const QString CONFIG_KEY_OGRE_ROOT_ENV = QString("ogre_root_env");
 static const QString CONFIG_KEY_OGRE_ROOT_USE_ENV = QString("ogre_root_use_env");
+static const QString CONFIG_KEY_OGRE_BUILD_DIR = QString("ogre_build_dir");
 static const QString CONFIG_KEY_OGRE_VERSION = QString("ogre_version");
 static const QString TEMPLATE_KEY_PROJECT = QString("project");
 static const QString TEMPLATE_KEY_DESCRIPTION = QString("description");
@@ -109,6 +110,8 @@ static const QString OGRE2_SRC_DIR = QString("../common/ogre/"); // Ogre 2.0; Og
 static const QString OGRE2_OUTPUT_DIR = QString("common/ogre/"); // Ogre 2.0; Ogre output media depends on version
 static const QString OGRE3_SRC_DIR = QString("../common/ogre3/"); // Ogre 2.1; Ogre source media depends on version
 static const QString OGRE3_OUTPUT_DIR = QString("common/ogre3/"); // Ogre 2.1; Ogre output media depends on version
+static const QString OGRE3_MEDIA = QString("/Samples/Media/");
+static const QString OGRE3_HLMS = QString("Hlms/");
 
 //****************************************************************************/
 // Mime types
@@ -211,8 +214,8 @@ static const QString FILE_RESOURCES_OGRE_TUSK = QString("tusk.jpg");
 static const QString FILE_RESOURCES_OGRE_MATERIAL = QString("Ogre.material");
 static const QString FILE_RESOURCES_OGRE_HEAD = QString("ogrehead.mesh");
 static const QString FILE_RESOURCES_OGRE_MAP = QString("spheremap.png");
-static const QString DIR_OGRE_BIN_DEBUG = QString("/VCBuild/bin/debug/");
-static const QString DIR_OGRE_BIN_RELEASE = QString("/VCBuild/bin/release/");
+static const QString DIR_OGRE_BIN_DEBUG = QString("/bin/debug/");
+static const QString DIR_OGRE_BIN_RELEASE = QString("/bin/release/");
 
 //****************************************************************************/
 // Miscelanious

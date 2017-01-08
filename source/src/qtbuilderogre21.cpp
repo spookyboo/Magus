@@ -36,7 +36,7 @@ QtOgre21Builder::~QtOgre21Builder()
 }
 
 //****************************************************************************/
-QString QtOgre21Builder::createIncludeForPro(const QString &s)
+QString QtOgre21Builder::createIncludeForPro(const QString &ogreBuildDir, const QString &s)
 {
     QString str = s;
     str =
@@ -48,7 +48,9 @@ QString QtOgre21Builder::createIncludeForPro(const QString &s)
         QString("\n") +
         QString("INCLUDEPATH += \"$$OGREHOME/Components/Hlms/Unlit/include\"") +
         QString("\n") +
-        QString("INCLUDEPATH += \"$$OGREHOME/VCBuild/include\"") +
+        QString("INCLUDEPATH += \"$$OGREHOME/") +
+        ogreBuildDir +
+        QString("/include\"") +
         QString("\n") +
         QString("INCLUDEPATH += .") +
         QString("\n");
@@ -57,13 +59,17 @@ QString QtOgre21Builder::createIncludeForPro(const QString &s)
 }
 
 //****************************************************************************/
-QString QtOgre21Builder::createLibForPro(const QString &s)
+QString QtOgre21Builder::createLibForPro(const QString &ogreBuildDir, const QString &s)
 {
     QString str = s;
     str =
-        QString("Debug:LIBS += -L\"$$OGREHOME/VCBuild/lib/Debug\"") +
+        QString("Debug:LIBS += -L\"$$OGREHOME/") +
+        ogreBuildDir +
+        QString("/lib/Debug\"") +
         QString("\n") +
-        QString("Release:LIBS += -L\"$$OGREHOME/VCBuild/lib/Release\"") +
+        QString("Release:LIBS += -L\"$$OGREHOME/") +
+        ogreBuildDir +
+        QString("/lib/Release\"") +
         QString("\n\n");
 
     // Debug
@@ -193,6 +199,7 @@ QString QtOgre21Builder::createInclude(const QString &s)
 
 //****************************************************************************/
 void QtOgre21Builder::copyOgreFiles(const QString &ogreRoot,
+                                    const QString &ogreBuildDir,
                                     const QString &ogreDir,
                                     const QString &qtHeader,
                                     const QString &qtSrc,
@@ -213,22 +220,36 @@ void QtOgre21Builder::copyOgreFiles(const QString &ogreRoot,
     fileUtil.copy(qtSrc + FILE_OGRE3_RENDERMAN_CPP, fullOutputSrcDir + FILE_OGRE3_RENDERMAN_CPP); // Differentiates from Ogre 2.0
 
     // Copy the Ogre DLL's (MUST be present, otherwise the generated application crashes)
-    fileUtil.copy(ogreRoot + DIR_OGRE_BIN_RELEASE + FILE_OGRE_MAIN_DLL, fullOutputBinDir + FILE_OGRE_MAIN_DLL);
-    fileUtil.copy(ogreRoot + DIR_OGRE_BIN_DEBUG + FILE_OGRE_MAIN_D_DLL, fullOutputBinDir + FILE_OGRE_MAIN_D_DLL);
-    fileUtil.copy(ogreRoot + DIR_OGRE_BIN_RELEASE + FILE_OGRE_GL3PLUS_DLL, fullOutputBinDir + FILE_OGRE_GL3PLUS_DLL);
-    fileUtil.copy(ogreRoot + DIR_OGRE_BIN_DEBUG + FILE_OGRE_GL3PLUS_D_DLL, fullOutputBinDir + FILE_OGRE_GL3PLUS_D_DLL);
-    fileUtil.copy(ogreRoot + DIR_OGRE_BIN_RELEASE + FILE_OGRE_3D11_DLL, fullOutputBinDir + FILE_OGRE_3D11_DLL);
-    fileUtil.copy(ogreRoot + DIR_OGRE_BIN_DEBUG + FILE_OGRE_3D11_D_DLL, fullOutputBinDir + FILE_OGRE_3D11_D_DLL);
-    fileUtil.copy(ogreRoot + DIR_OGRE_BIN_RELEASE + FILE_OGRE_HLMS_PBS_DLL, fullOutputBinDir + FILE_OGRE_HLMS_PBS_DLL);
-    fileUtil.copy(ogreRoot + DIR_OGRE_BIN_DEBUG + FILE_OGRE_HLMS_PBS_D_DLL, fullOutputBinDir + FILE_OGRE_HLMS_PBS_D_DLL);
-    fileUtil.copy(ogreRoot + DIR_OGRE_BIN_RELEASE + FILE_OGRE_HLMS_UNLIT_DLL, fullOutputBinDir + FILE_OGRE_HLMS_UNLIT_DLL);
-    fileUtil.copy(ogreRoot + DIR_OGRE_BIN_DEBUG + FILE_OGRE_HLMS_UNLIT_D_DLL, fullOutputBinDir + FILE_OGRE_HLMS_UNLIT_D_DLL);
+    //fileUtil.copy(ogreRoot + DIR_OGRE_BIN_RELEASE + FILE_OGRE_MAIN_DLL, fullOutputBinDir + FILE_OGRE_MAIN_DLL);
+    //fileUtil.copy(ogreRoot + DIR_OGRE_BIN_DEBUG + FILE_OGRE_MAIN_D_DLL, fullOutputBinDir + FILE_OGRE_MAIN_D_DLL);
+    //fileUtil.copy(ogreRoot + DIR_OGRE_BIN_RELEASE + FILE_OGRE_GL3PLUS_DLL, fullOutputBinDir + FILE_OGRE_GL3PLUS_DLL);
+    //fileUtil.copy(ogreRoot + DIR_OGRE_BIN_DEBUG + FILE_OGRE_GL3PLUS_D_DLL, fullOutputBinDir + FILE_OGRE_GL3PLUS_D_DLL);
+    //fileUtil.copy(ogreRoot + DIR_OGRE_BIN_RELEASE + FILE_OGRE_3D11_DLL, fullOutputBinDir + FILE_OGRE_3D11_DLL);
+    //fileUtil.copy(ogreRoot + DIR_OGRE_BIN_DEBUG + FILE_OGRE_3D11_D_DLL, fullOutputBinDir + FILE_OGRE_3D11_D_DLL);
+    //fileUtil.copy(ogreRoot + DIR_OGRE_BIN_RELEASE + FILE_OGRE_HLMS_PBS_DLL, fullOutputBinDir + FILE_OGRE_HLMS_PBS_DLL);
+    //fileUtil.copy(ogreRoot + DIR_OGRE_BIN_DEBUG + FILE_OGRE_HLMS_PBS_D_DLL, fullOutputBinDir + FILE_OGRE_HLMS_PBS_D_DLL);
+    //fileUtil.copy(ogreRoot + DIR_OGRE_BIN_RELEASE + FILE_OGRE_HLMS_UNLIT_DLL, fullOutputBinDir + FILE_OGRE_HLMS_UNLIT_DLL);
+    //fileUtil.copy(ogreRoot + DIR_OGRE_BIN_DEBUG + FILE_OGRE_HLMS_UNLIT_D_DLL, fullOutputBinDir + FILE_OGRE_HLMS_UNLIT_D_DLL);
+
+    fileUtil.copy(ogreRoot + "/" + ogreBuildDir + DIR_OGRE_BIN_RELEASE + FILE_OGRE_MAIN_DLL, fullOutputBinDir + FILE_OGRE_MAIN_DLL);
+    fileUtil.copy(ogreRoot + "/" + ogreBuildDir + DIR_OGRE_BIN_DEBUG + FILE_OGRE_MAIN_D_DLL, fullOutputBinDir + FILE_OGRE_MAIN_D_DLL);
+    fileUtil.copy(ogreRoot + "/" + ogreBuildDir + DIR_OGRE_BIN_RELEASE + FILE_OGRE_GL3PLUS_DLL, fullOutputBinDir + FILE_OGRE_GL3PLUS_DLL);
+    fileUtil.copy(ogreRoot + "/" + ogreBuildDir + DIR_OGRE_BIN_DEBUG + FILE_OGRE_GL3PLUS_D_DLL, fullOutputBinDir + FILE_OGRE_GL3PLUS_D_DLL);
+    fileUtil.copy(ogreRoot + "/" + ogreBuildDir + DIR_OGRE_BIN_RELEASE + FILE_OGRE_3D11_DLL, fullOutputBinDir + FILE_OGRE_3D11_DLL);
+    fileUtil.copy(ogreRoot + "/" + ogreBuildDir + DIR_OGRE_BIN_DEBUG + FILE_OGRE_3D11_D_DLL, fullOutputBinDir + FILE_OGRE_3D11_D_DLL);
+    fileUtil.copy(ogreRoot + "/" + ogreBuildDir + DIR_OGRE_BIN_RELEASE + FILE_OGRE_HLMS_PBS_DLL, fullOutputBinDir + FILE_OGRE_HLMS_PBS_DLL);
+    fileUtil.copy(ogreRoot + "/" + ogreBuildDir + DIR_OGRE_BIN_DEBUG + FILE_OGRE_HLMS_PBS_D_DLL, fullOutputBinDir + FILE_OGRE_HLMS_PBS_D_DLL);
+    fileUtil.copy(ogreRoot + "/" + ogreBuildDir + DIR_OGRE_BIN_RELEASE + FILE_OGRE_HLMS_UNLIT_DLL, fullOutputBinDir + FILE_OGRE_HLMS_UNLIT_DLL);
+    fileUtil.copy(ogreRoot + "/" + ogreBuildDir + DIR_OGRE_BIN_DEBUG + FILE_OGRE_HLMS_UNLIT_D_DLL, fullOutputBinDir + FILE_OGRE_HLMS_UNLIT_D_DLL);
 
     // Copy the plugin and resourcefiles
     fileUtil.copy(ogreDir + FILE_OGRE_PLUGINS_D, fullOutputBinDir + FILE_OGRE_PLUGINS_D);
     fileUtil.copy(ogreDir + FILE_OGRE_PLUGINS, fullOutputBinDir + FILE_OGRE_PLUGINS);
     fileUtil.copy(ogreDir + FILE_OGRE_RESOURCES_D, fullOutputBinDir + FILE_OGRE_RESOURCES_D);
     fileUtil.copy(ogreDir + FILE_OGRE_RESOURCES, fullOutputBinDir + FILE_OGRE_RESOURCES);
+
+    // Copy the Hlms files (only Ogre versions 2.0 and 2.0+)
+    copyDirectoryRecursively (ogreRoot + OGRE3_MEDIA + OGRE3_HLMS, fullOutputOgreDir + OGRE3_HLMS);
 
     // Copy the media
     copyDirectoryRecursively (ogreDir, fullOutputOgreDir);

@@ -58,9 +58,10 @@ QtBuilder::QtBuilder()
     bool ogreRootUseEnv = globalSettings.value(CONFIG_KEY_OGRE_ROOT_USE_ENV).toBool();
     QString ogreRootEnv = globalSettings.value(CONFIG_KEY_OGRE_ROOT_ENV).toString();
     QString ogreRoot = globalSettings.value(CONFIG_KEY_OGRE_ROOT).toString();
+    QString ogreBuildDir = globalSettings.value(CONFIG_KEY_OGRE_BUILD_DIR).toString();
     QString ogreVersion = globalSettings.value(CONFIG_KEY_OGRE_VERSION).toString();
     mQtOgreBuilder = 0;
-    setOgre(ogreRootUseEnv, ogreRootEnv, ogreRoot, ogreVersion);
+    setOgre(ogreRootUseEnv, ogreRootEnv, ogreRoot, ogreBuildDir, ogreVersion);
     mCurrentProject = QString("");
     mCurrentProjectSlash = QString("");
 }
@@ -79,7 +80,11 @@ void QtBuilder::setOutputDir (const QString& outputDir)
 }
 
 //****************************************************************************/
-void QtBuilder::setOgre (bool ogreRootUseEnv, const QString& ogreRootEnv, const QString& ogreRoot, const QString& ogreVersion)
+void QtBuilder::setOgre (bool ogreRootUseEnv,
+                         const QString& ogreRootEnv,
+                         const QString& ogreRoot,
+                         const QString& ogreBuildDir,
+                         const QString& ogreVersion)
 {
     if (ogreRootUseEnv && !ogreRootEnv.isEmpty())
     {
@@ -103,6 +108,14 @@ void QtBuilder::setOgre (bool ogreRootUseEnv, const QString& ogreRootEnv, const 
     }
     mOgreRoot.remove(QRegExp(QString::fromUtf8("\""))); // Strip from double quotes
     mOgreRoot.replace(QChar('\\'), QChar('/')); // Change backslash into forward slash
+    mOgreRoot = Utils::stripTrailingCharacter(mOgreRoot, '/'); // remove trailing slash (if available)
+
+    mOgreBuildDir = ogreBuildDir;
+    mOgreBuildDir.remove(QRegExp(QString::fromUtf8("\""))); // Strip from double quotes
+    mOgreBuildDir = Utils::stripLeadingCharacter(mOgreBuildDir, '\\'); // remove leading backslash
+    mOgreBuildDir = Utils::stripLeadingCharacter(mOgreBuildDir, '/'); // remove leading slash
+    mOgreBuildDir = Utils::stripTrailingCharacter(mOgreBuildDir, '\\'); // remove trailing backslash
+    mOgreBuildDir = Utils::stripTrailingCharacter(mOgreBuildDir, '/'); // remove trailing slash
 
     if (mQtOgreBuilder)
         delete mQtOgreBuilder;
@@ -545,8 +558,8 @@ void QtBuilder::build(ApplicationTemplate* applicationTemplate)
         projectAdditionalHeader = mQtOgreBuilder->createHeaderForPro(mOutputHeaderDir, projectAdditionalHeader);
         projectAdditionalSrc = mQtOgreBuilder->createSrcForPro(mOutputSrcDir, projectAdditionalSrc);
         projectOgreRoot = mQtOgreBuilder->createRootForPro(mOgreRoot, projectOgreRoot);
-        ogreInclude = mQtOgreBuilder->createIncludeForPro(ogreInclude);
-        ogreLib = mQtOgreBuilder->createLibForPro(ogreLib);
+        ogreInclude = mQtOgreBuilder->createIncludeForPro(mOgreBuildDir, ogreInclude);
+        ogreLib = mQtOgreBuilder->createLibForPro(mOgreBuildDir, ogreLib);
 
         // Update the mainwindow.h file
         // Add the Ogre Rendermanager #include
@@ -564,13 +577,14 @@ void QtBuilder::build(ApplicationTemplate* applicationTemplate)
 
         // Copy the Ogre files
         mQtOgreBuilder->copyOgreFiles(mOgreRoot,
-                                    mOgreDir,
-                                    mQtHeader,
-                                    mQtSrc,
-                                    mFullOutputHeaderDir,
-                                    mFullOutputSrcDir,
-                                    mFullOutputBinDir,
-                                    mFullOutputOgreDir);
+                                      mOgreBuildDir,
+                                      mOgreDir,
+                                      mQtHeader,
+                                      mQtSrc,
+                                      mFullOutputHeaderDir,
+                                      mFullOutputSrcDir,
+                                      mFullOutputBinDir,
+                                      mFullOutputOgreDir);
     }
 
     // --------------------------------------------------------------------------------------------------------------------

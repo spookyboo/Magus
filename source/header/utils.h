@@ -35,6 +35,8 @@ class Utils
         static void writeStringtoFile(const QString &str, const QString &fileName);
         static QString makePrivateAttribute(const QString &name);
         static QString stripSpecialCharacters(const QString &str);
+        static QString stripLeadingCharacter(const QString &str, const QChar &ch);
+        static QString stripTrailingCharacter(const QString &str, const QChar &ch);
         static QString stripExtension(const QString &str);
         static QString firstCapital(const QString &str);
 };

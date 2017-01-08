@@ -31,12 +31,13 @@ class QtOgre21Builder : public QtOgre20Builder
     public:
         QtOgre21Builder();
         virtual ~QtOgre21Builder();
-        virtual QString createIncludeForPro(const QString &s);
-        virtual QString createLibForPro(const QString &s);
+        virtual QString createIncludeForPro(const QString &ogreBuildDir, const QString &s);
+        virtual QString createLibForPro(const QString &ogreBuildDir, const QString &s);
         virtual QString createHeaderForPro(const QString &outputHeaderDir, const QString &s);
         virtual QString createSrcForPro(const QString &outputSrcDir, const QString &s);
         virtual QString createInclude(const QString &s);
         virtual void copyOgreFiles(const QString &ogreRoot,
+                                   const QString &ogreBuildDir,
                                    const QString &ogreDir,
                                    const QString &qtHeader,
                                    const QString &qtSrc,

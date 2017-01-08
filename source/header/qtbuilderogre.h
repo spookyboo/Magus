@@ -47,8 +47,8 @@ class QtOgreBuilder
         virtual QString createUpdateEntryForMainWindow(const QString &s);
         virtual QString createInitializeEntryForMainWindow(const QString &s);
         virtual QString createRootForPro(const QString &ogreRoot, const QString &s);
-        virtual QString createIncludeForPro(const QString &s);
-        virtual QString createLibForPro(const QString &s);
+        virtual QString createIncludeForPro(const QString &ogreBuildDir, const QString &s);
+        virtual QString createLibForPro(const QString &ogreBuildDir, const QString &s);
         virtual QString createHeaderForPro(const QString &outputHeaderDir, const QString &s);
         virtual QString createSrcForPro(const QString &outputSrcDir, const QString &s);
         virtual QString createOgreAssetHeaderForPro(const QString& outputHeaderDir, const QString& s);
@@ -60,6 +60,7 @@ class QtOgreBuilder
                                         const QString& fullOutputSrcDir,
                                         const QString& fullOutputIconDir);
         virtual void copyOgreFiles(const QString &ogreRoot,
+                                   const QString &ogreBuildDir,
                                    const QString &ogreDir,
                                    const QString &qtHeader,
                                    const QString &qtSrc,
