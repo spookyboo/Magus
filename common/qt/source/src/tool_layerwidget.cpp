@@ -570,7 +570,7 @@ namespace Magus
         for (it = mLayerVec.begin(); it != mLayerVec.end(); ++it)
         {
             layer = *it;
-            if (layer->layerId = layerId)
+            if (layer->layerId == layerId)
                 return layer;
         }
 
