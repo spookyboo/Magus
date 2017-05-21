@@ -999,7 +999,7 @@ namespace Magus
     int QtResourceTreeWidget::getLastInParent(int parentId)
     {
         QTreeWidgetItemIterator it(mResourceTree);
-        QTreeWidgetItem* childItem;
+        QTreeWidgetItem* childItem = 0;
         while (*it)
         {
             if (parentId == getParentIdFromItem(*it))
@@ -1126,7 +1126,9 @@ namespace Magus
     {
         int id = -1;
         if (item)
+        {
             id = item->data(TOOL_RESOURCETREE_KEY_RESOURCEID, Qt::UserRole).toInt();
+        }
 
         return id;
     }
@@ -1504,8 +1506,9 @@ namespace Magus
         {
             // Check whether a custom item is selected
             QString menuItem;
+            int resourceId = 0;
             QTreeWidgetItem* item = mResourceTree->currentItem();
-            int resourceId = getResourceIdFromItem(item);
+            resourceId = getResourceIdFromItem(item);
             foreach (menuItem, mCustomContextMenuList)
             {
                 if (action->text() == menuItem)
@@ -1518,7 +1521,7 @@ namespace Magus
     int QtResourceTreeWidget::generateUniqueResourceId(void)
     {
         // Check the already added resources in the tree
-        int id = -1;
+        int id = 0;
         int max = 0;
         QTreeWidgetItemIterator it(mResourceTree);
         while (*it)
@@ -1656,4 +1659,10 @@ namespace Magus
         buildContextMenu();
     }
 
+    //****************************************************************************/
+    void QtResourceTreeWidget::clearSelection (void)
+    {
+        mResourceTree->clearSelection();
+        mResourceTree->setCurrentItem(0);
+    }
 }
