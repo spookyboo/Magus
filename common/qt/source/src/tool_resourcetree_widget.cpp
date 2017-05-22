@@ -604,6 +604,13 @@ namespace Magus
         mSubGroupSubMenu = 0;
         mToplevelGroupSubMenu = 0;
 
+        // Custom menu items
+        QString menuItemText;
+        if (mCustomContextMenuList.size() != 0)
+            foreach (menuItemText, mCustomContextMenuList)
+                if (!menuItemText.isEmpty())
+                    mContextMenu->addAction(new QAction(menuItemText, mResourceTree));
+
         // Menu item for creating a toplevel
         if (mCreateTopLevelGroupContextMenuItemEnabled)
             mToplevelGroupSubMenu = mContextMenu->addMenu(mActionCreateToplevelGroupText);
@@ -636,13 +643,6 @@ namespace Magus
         // Menu item for collapse/expand
         if (mCollapseExpandContextMenuItemEnabled)
             mContextMenu->addAction(new QAction(mActionCollapseExpandText, mResourceTree));
-
-        // Custom menu items
-        QString menuItemText;
-        if (mCustomContextMenuList.size() != 0)
-            foreach (menuItemText, mCustomContextMenuList)
-                if (!menuItemText.isEmpty())
-                    mContextMenu->addAction(new QAction(menuItemText, mResourceTree));
     }
 
     //****************************************************************************/
@@ -1664,5 +1664,22 @@ namespace Magus
     {
         mResourceTree->clearSelection();
         mResourceTree->setCurrentItem(0);
+    }
+
+    //****************************************************************************/
+    void QtResourceTreeWidget::setIcon (int resourceId, const QString& iconName)
+    {
+        QTreeWidgetItem* item = getResourceItem(resourceId);
+        if (!item)
+            return;
+
+        // Set icon
+        if (!iconName.isEmpty())
+        {
+            QImage imageIcon(mIconDir + iconName);
+            QPixmap pixMapIcon = QPixmap::fromImage(imageIcon).scaled(assetIconWidth, assetIconHeight);
+            item->setData(0, Qt::DecorationRole, QVariant(pixMapIcon));
+            item->setData(TOOL_RESOURCETREE_KEY_ICONNAME, Qt::UserRole, QVariant(iconName));
+        }
     }
 }

@@ -395,6 +395,12 @@ namespace Magus
             void setAssetIconWidth(int width) {assetIconWidth = width;}
             void setAssetIconHeigth(int height) {assetIconWidth = height;}
 
+            // Clear the selected item / item is unselected
+            void clearSelection (void);
+
+            // Set the icon in a resource
+            void setIcon (int resourceId, const QString& iconName);
+
         public slots:
             // Activated when a contextmenu item is selected
             void contextMenuItemSelected(QAction* action);
